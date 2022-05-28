@@ -1,0 +1,142 @@
+import net.aichler.jupiter.sbt.Import.JupiterKeys
+import sbt._
+object Version {
+  val scalaTest = "3.2.12"
+  val akka      = "2.6.19"
+
+  val akkaHttp       = "10.2.9"
+  val akkaManagement = "1.1.3"
+  val kamon          = "2.5.1"
+
+  val akkaPersistenceDynamoDB = "1.2.27"
+
+  val akkaPersistenceS3Snapshot = "1.2.56"
+}
+
+object Dependencies {
+  object airframe {
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.5.0"
+  }
+
+  object logback {
+    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.2.11"
+  }
+
+  object kodeinDI {
+    val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.11.0"
+  }
+  object arrowKt {
+    val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.2"
+  }
+  object vavr {
+    val varKotlin = "io.vavr" % "vavr-kotlin" % "0.10.2"
+  }
+  object typesafeAkka {
+    val akkaHttp          = "com.typesafe.akka" %% "akka-http"            % Version.akkaHttp
+    val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttp
+    val akkaHttpJackson   = "com.typesafe.akka" %% "akka-http-jackson"    % Version.akkaHttp
+
+    val akkaSlf4j                = "com.typesafe.akka" %% "akka-slf4j"                  % Version.akka
+    val akkaActorTyped           = "com.typesafe.akka" %% "akka-actor-typed"            % Version.akka
+    val akkaStreamTyped          = "com.typesafe.akka" %% "akka-stream-typed"           % Version.akka
+    val akkaClusterTyped         = "com.typesafe.akka" %% "akka-cluster-typed"          % Version.akka
+    val akkaClusterShardingTyped = "com.typesafe.akka" %% "akka-cluster-sharding-typed" % Version.akka
+    val akkaPersistenceTyped     = "com.typesafe.akka" %% "akka-persistence-typed"      % Version.akka
+    val akkaSerializationJackson = "com.typesafe.akka" %% "akka-serialization-jackson"  % Version.akka
+    val akkaDiscovery            = "com.typesafe.akka" %% "akka-discovery"              % Version.akka
+
+    val multiNodeTestkit  = "com.typesafe.akka" %% "akka-multi-node-testkit"  % Version.akka
+    val actorTestkitTyped = "com.typesafe.akka" %% "akka-actor-testkit-typed" % Version.akka
+    val streamTestkit     = "com.typesafe.akka" %% "akka-stream-testkit"      % Version.akka
+    val httpTestkit       = "com.typesafe.akka" %% "akka-http-testkit"        % Version.akkaHttp
+  }
+
+  object lightbend {
+    val akkaManagement = "com.lightbend.akka.management" %% "akka-management" % Version.akkaManagement
+    val akkaManagementClusterHttp =
+      "com.lightbend.akka.management" %% "akka-management-cluster-http" % Version.akkaManagement
+    val akkaManagementClusterBootstrap =
+      "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % Version.akkaManagement
+    val akkaDiscoveryAwsApiAsync =
+      "com.lightbend.akka.discovery" %% "akka-discovery-aws-api-async" % Version.akkaManagement
+  }
+
+  object kotlinx {
+    val coroutinesCoreJvm = "org.jetbrains.kotlinx" % "kotlinx-coroutines-core-jvm" % "1.6.1"
+    val coroutinesTest    = "org.jetbrains.kotlinx" % "kotlinx-coroutines-test"     % "1.6.1"
+  }
+
+  object scalatest {
+    val scalatest = "org.scalatest" %% "scalatest" % Version.scalaTest
+  }
+
+  object xenomachina {
+    val kotlinArgParser = "com.xenomachina" % "kotlin-argparser" % "2.0.6"
+  }
+
+  object jakarta {
+    val rsApi = "jakarta.ws.rs" % "jakarta.ws.rs-api" % "3.0.0"
+  }
+
+  object swaggerAkkaHttp {
+    val swaggerAkkaHttp = "com.github.swagger-akka-http" %% "swagger-akka-http" % "2.7.0"
+  }
+
+  object megard {
+    val akkaHttpCors = "ch.megard" %% "akka-http-cors" % "1.1.3"
+  }
+
+  object fasterXmlJackson {
+    val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.13.2"
+    val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.13.2"
+  }
+
+  object kamon {
+    val core          = "io.kamon" %% "kamon-core"           % Version.kamon
+    val statusPage    = "io.kamon" %% "kamon-status-page"    % Version.kamon
+    val akka          = "io.kamon" %% "kamon-akka"           % Version.kamon
+    val akkaHttp      = "io.kamon" %% "kamon-akka-http"      % Version.kamon
+    val systemMetrics = "io.kamon" %% "kamon-system-metrics" % Version.kamon
+    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
+    val datadog       = "io.kamon" %% "kamon-datadog"        % Version.kamon
+//    val apmReporter   = "io.kamon" %% "kamon-apm-reporter"   % Version.kamon
+  }
+
+  object jupiter {
+    val jupiterApi              = "org.junit.jupiter" % "junit-jupiter-api"              % "5.8.2"
+    val jupiter                 = "org.junit.jupiter" % "junit-jupiter"                  % "5.8.2"
+    val jupiterMigrationSupport = "org.junit.jupiter" % "junit-jupiter-migrationsupport" % "5.8.2"
+  }
+
+  object mockk {
+    val mockk = "io.mockk" % "mockk" % "1.12.3"
+  }
+
+  object aichler {
+    def jupiterInterface(version: String) = "net.aichler" % "jupiter-interface" % version
+  }
+
+  object awaitility {
+    val awaitility = "org.awaitility" % "awaitility" % "4.2.0"
+  }
+
+  object commonsIO {
+    val commonsIO = "commons-io" % "commons-io" % "2.11.0"
+  }
+
+  object fusesource {
+    val leveldbjniAll = "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8"
+  }
+
+  object iq80LevelDb {
+    val leveldb = "org.iq80.leveldb" % "leveldb" % "0.12"
+  }
+
+  object j5ik2o {
+    val akkaPersistenceDynamoDBJournal =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-journal" % Version.akkaPersistenceDynamoDB
+
+    val akkaPersistenceDynamoDBSnapshot =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot" % Version.akkaPersistenceDynamoDB
+  }
+}
