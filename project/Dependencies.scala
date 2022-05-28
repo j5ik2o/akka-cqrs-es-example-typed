@@ -1,5 +1,5 @@
-import net.aichler.jupiter.sbt.Import.JupiterKeys
 import sbt._
+
 object Version {
   val scalaTest = "3.2.12"
   val akka      = "2.6.19"
