@@ -6,8 +6,8 @@ import akka.actor.typed.javadsl.AskPattern
 import com.github.j5ik2o.adceet.api.write.adaptor.aggregate.ThreadAggregateProtocol
 import com.github.j5ik2o.adceet.api.write.domain.Message
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId
+import wvlet.airframe.ulid.ULID
 import java.time.Duration
-import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
@@ -19,7 +19,7 @@ class AddMessageUseCaseImpl(
   override fun execute(message: Message): CompletionStage<ThreadId> {
     return AskPattern.ask<ThreadAggregateProtocol.CommandRequest, ThreadAggregateProtocol.AddMessageReply>(
       threadAggregateRef,
-      { replyTo -> ThreadAggregateProtocol.AddMessage(UUID.randomUUID(), message.threadId, message, replyTo) },
+      { replyTo -> ThreadAggregateProtocol.AddMessage(ULID.newULID(), message.threadId, message, replyTo) },
       askTimeout,
       system.scheduler()
     ).thenCompose { result ->

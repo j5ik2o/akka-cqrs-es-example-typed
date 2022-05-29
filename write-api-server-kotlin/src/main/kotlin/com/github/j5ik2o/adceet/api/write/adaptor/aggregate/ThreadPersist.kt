@@ -15,7 +15,7 @@ import arrow.core.Option
 import arrow.core.Some
 import com.github.j5ik2o.adceet.api.write.domain.ThreadEvent
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId
-import java.util.UUID
+import wvlet.airframe.ulid.ULID
 import java.util.concurrent.ConcurrentHashMap
 
 object ThreadPersist {
@@ -37,7 +37,7 @@ object ThreadPersist {
         is Some -> {
           parentRef.tell(
             ThreadAggregateProtocol.StateRecoveryCompleted(
-              UUID.randomUUID(),
+              ULID.newULID(),
               id,
               ps.value
             )
@@ -48,7 +48,7 @@ object ThreadPersist {
           val state = ThreadState.Companion.Empty(id)
           parentRef.tell(
             ThreadAggregateProtocol.StateRecoveryCompleted(
-              UUID.randomUUID(),
+              ULID.newULID(),
               id,
               state
             )
@@ -86,7 +86,7 @@ object ThreadPersist {
     override fun signalHandler(): SignalHandler<ThreadState> {
       val builder = newSignalHandlerBuilder()
       builder.onSignal(RecoveryCompleted::class.java) { state, _ ->
-        parentRef.tell(ThreadAggregateProtocol.StateRecoveryCompleted(UUID.randomUUID(), id, state))
+        parentRef.tell(ThreadAggregateProtocol.StateRecoveryCompleted(ULID.newULID(), id, state))
       }
       return builder.build()
     }

@@ -11,7 +11,7 @@ import arrow.core.Either
 import com.github.j5ik2o.adceet.api.write.domain.Thread
 import com.github.j5ik2o.adceet.api.write.domain.ThreadEvent
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId
-import java.util.UUID
+import wvlet.airframe.ulid.ULID
 
 class ThreadAggregate(
   private val ctx: ActorContext<ThreadAggregateProtocol.CommandRequest>,
@@ -28,7 +28,7 @@ class ThreadAggregate(
     succ: (ThreadState) -> Behavior<ThreadAggregateProtocol.CommandRequest>
   ): Behavior<ThreadAggregateProtocol.CommandRequest> {
     val messageAdaptor = ctx.messageAdapter(ThreadPersist.PersistCompleted::class.java) { msg ->
-      ThreadAggregateProtocol.WrappedPersistReply(UUID.randomUUID(), id, msg)
+      ThreadAggregateProtocol.WrappedPersistReply(ULID.newULID(), id, msg)
     }
     persistRef.tell(ThreadPersist.Persist(threadEvent, messageAdaptor))
     return Behaviors.receiveMessage { msg ->
@@ -47,13 +47,13 @@ class ThreadAggregate(
       when (val result = state.thread.addMember(msg.accountId)) {
         is Either.Right ->
           persist(result.value) {
-            msg.replyTo.tell(ThreadAggregateProtocol.AddMemberSucceeded(UUID.randomUUID(), msg.id, id))
+            msg.replyTo.tell(ThreadAggregateProtocol.AddMemberSucceeded(ULID.newULID(), msg.id, id))
             just(it as ThreadState.Companion.Just)
           }
         is Either.Left -> {
           msg.replyTo.tell(
             ThreadAggregateProtocol.AddMemberFailed(
-              UUID.randomUUID(),
+              ULID.newULID(),
               msg.id,
               id,
               result.value
@@ -67,13 +67,13 @@ class ThreadAggregate(
       when (val result = state.thread.addMessage(msg.message.senderId, msg.message.id, msg.message.body)) {
         is Either.Right ->
           persist(result.value) {
-            msg.replyTo.tell(ThreadAggregateProtocol.AddMessageSucceeded(UUID.randomUUID(), msg.id, id))
+            msg.replyTo.tell(ThreadAggregateProtocol.AddMessageSucceeded(ULID.newULID(), msg.id, id))
             just(it as ThreadState.Companion.Just)
           }
         is Either.Left -> {
           msg.replyTo.tell(
             ThreadAggregateProtocol.AddMessageFailed(
-              UUID.randomUUID(),
+              ULID.newULID(),
               msg.id,
               id,
               result.value
@@ -92,13 +92,13 @@ class ThreadAggregate(
       when (val result = Thread.create(id, msg.accountId)) {
         is Either.Right ->
           persist(result.value) {
-            msg.replyTo.tell(ThreadAggregateProtocol.CreateThreadSucceeded(UUID.randomUUID(), msg.id, id))
+            msg.replyTo.tell(ThreadAggregateProtocol.CreateThreadSucceeded(ULID.newULID(), msg.id, id))
             just(it as ThreadState.Companion.Just)
           }
         is Either.Left -> {
           msg.replyTo.tell(
             ThreadAggregateProtocol.CreateThreadFailed(
-              UUID.randomUUID(),
+              ULID.newULID(),
               msg.id,
               id,
               result.value

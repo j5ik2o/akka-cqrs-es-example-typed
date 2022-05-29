@@ -2,7 +2,9 @@ package com.github.j5ik2o.adceet.api.write.domain
 
 import wvlet.airframe.ulid.ULID
 
-final case class ThreadId(value: ULID = ULID.newULID) extends ValueObject
+final case class ThreadId(value: ULID = ULID.newULID) extends ValueObject {
+  def asString: String = value.toString()
+}
 
 object ThreadId {
 
