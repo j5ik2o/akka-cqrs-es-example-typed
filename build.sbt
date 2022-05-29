@@ -1,9 +1,9 @@
 import Dependencies._
-import net.moznion.sbt.spotless.config.{ KotlinConfig, KtlintConfig }
 
 lazy val root = (project in file("."))
   .settings(
     Settings.baseSettings,
+    Settings.scalaSettings,
     name := "adceet-root"
   ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`)
 
@@ -146,10 +146,6 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
       mockk.mockk            % Test,
       kotlinx.coroutinesTest % Test
     ),
-    spotlessKotlin := KotlinConfig(
-      target = Seq("src/**/*.kt", "test/**/*.kt"),
-      ktlint = KtlintConfig(version = "0.40.0", userData = Map("indent_size" -> "2", "continuation_indent_size" -> "2"))
-    ),
     Test / publishArtifact := false,
     run / fork := false,
     Test / parallelExecution := false,
@@ -157,5 +153,8 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
 
 // --- Custom commands
-addCommandAlias("lint", ";spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalafixAll --check")
-addCommandAlias("fmt", ";spotlessApply;scalafmtAll;scalafmtSbt;scalafix RemoveUnused")
+addCommandAlias(
+  "lint",
+  ";write-api-server-kotlin/spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalafixAll --check"
+)
+addCommandAlias("fmt", ";write-api-server-kotlin/spotlessApply;scalafmtAll;scalafmtSbt;scalafix RemoveUnused")

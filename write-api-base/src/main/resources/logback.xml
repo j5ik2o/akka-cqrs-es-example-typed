@@ -11,7 +11,7 @@
         <appender-ref ref="STDOUT" />
     </appender>
 
-    <logger name="akka" level="${AKKA_LOG_LEVEL:-DEBUG}"/>
+    <logger name="akka" level="${AKKA_LOG_LEVEL:-INFO}"/>
     <logger name="example" level="${EXAMPLE_LOG_LEVEL:-DEBUG}"/>
     <logger name="kamon-example-default" level="${EXAMPLE_LOG_LEVEL:-DEBUG}"/>
 
