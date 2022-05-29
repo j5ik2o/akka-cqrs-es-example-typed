@@ -1,16 +1,18 @@
-import com.amazonaws.regions.{Region, Regions}
+import com.amazonaws.regions.{ Region, Regions }
 import com.github.sbt.git.SbtGit.git
 import com.typesafe.sbt.SbtNativePackager.autoImport.packageName
 import com.typesafe.sbt.packager.Keys.daemonUser
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.packager.docker._
-import kotlin.Keys.{kotlinLib, kotlinVersion, kotlincOptions}
+import kotlin.Keys.{ kotlinLib, kotlinVersion, kotlincOptions }
 import net.aichler.jupiter.sbt.Import.jupiterTestFramework
+import net.moznion.sbt.SbtSpotless.autoImport.spotlessKotlin
+import net.moznion.sbt.spotless.config.{ KotlinConfig, KtlintConfig }
 import sbt.Keys._
-import sbt.{Def, _}
+import sbt.{ Def, _ }
 import sbtecr.EcrPlugin.autoImport._
-import scalafix.sbt.ScalafixPlugin.autoImport.{scalafixScalaBinaryVersion, scalafixSemanticdb}
+import scalafix.sbt.ScalafixPlugin.autoImport.{ scalafixScalaBinaryVersion, scalafixSemanticdb }
 
 object Settings {
   val baseSettings: Seq[Def.Setting[_]] = Seq(
@@ -40,18 +42,19 @@ object Settings {
     testOptions += Tests.Argument(jupiterTestFramework, "-q", "-v"),
     kotlinLib("stdlib-jdk8"),
     kotlinLib("reflect"),
+    spotlessKotlin := KotlinConfig(
+      target = Seq("src/**/*.kt", "test/**/*.kt"),
+      ktlint = KtlintConfig(version = "0.40.0", userData = Map("indent_size" -> "2", "continuation_indent_size" -> "2"))
+    ),
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
     resolvers ++= Seq(
       "jitpack" at "https://jitpack.io",
       Resolver.jcenterRepo,
       Resolver.sonatypeRepo("snapshots"),
       Resolver.sonatypeRepo("releases")
     )
-  )
-
-  val scalafixSettings: Seq[Def.Setting[_]] = Seq(
-    semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision,
-    scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
   )
 
   private object EcrRepositorySetting {
