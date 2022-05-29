@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
   .settings(
     Settings.baseSettings,
     name := "adceet-root"
-  ).aggregate(`write-api-base`, `write-api-server`, `write-api-server-kt`)
+  ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`)
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
@@ -20,7 +20,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
     )
   )
 
-lazy val `write-api-server` = (project in file("write-api-server"))
+lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(
@@ -30,7 +30,7 @@ lazy val `write-api-server` = (project in file("write-api-server"))
     Settings.ecrSettings
   )
   .settings(
-    name := "adceet-write-api-server",
+    name := "adceet-write-api-server-scala",
     Compile / run / mainClass := Some("com.github.j5ik2o.api.write.Main"),
     dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
     dockerExposedPorts := Seq(8081, 8558, 25520),
@@ -50,17 +50,6 @@ lazy val `write-api-server` = (project in file("write-api-server"))
       "-Dcom.sun.management.jmxremote.local.only=true",
       "-Dcom.sun.management.jmxremote.authenticate=false",
       "-Dorg.aspectj.tracing.factory=default"
-    ),
-    // for Kotlin
-    libraryDependencies ++= Seq(
-      fasterXmlJackson.kotlin,
-      kodeinDI.kodeinDIJvm,
-      kotlinx.coroutinesCoreJvm,
-      xenomachina.kotlinArgParser,
-      arrowKt.arrowCore,
-      vavr.varKotlin,
-      mockk.mockk            % Test,
-      kotlinx.coroutinesTest % Test
     ),
     libraryDependencies ++= Seq(
       airframe.ulid,
@@ -110,17 +99,19 @@ lazy val `write-api-server` = (project in file("write-api-server"))
     Global / cancelable := false
   ).dependsOn(`write-api-base`)
 
-lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
+lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
+    Settings.kotlinSettings,
+    Settings.javaSettings,
     Settings.multiJvmSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
   )
   .settings(
-    name := "adceet-write-api-server-kt",
+    name := "adceet-write-api-server-kotlin",
     Compile / run / mainClass := Some("com.github.j5ik2o.api.write.Main"),
     dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
     dockerExposedPorts := Seq(8081, 8558, 25520),
