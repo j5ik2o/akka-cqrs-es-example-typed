@@ -75,7 +75,7 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
   )
   .settings(
     name := "adceet-write-api-server-scala",
-    Compile / run / mainClass := Some("com.github.j5ik2o.api.write.Main"),
+    Compile / run / mainClass := Some("com.github.j5ik2o.adceet.api.write.Main"),
     dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
     dockerExposedPorts := Seq(8081, 8558, 25520),
     javaAgents += "io.kamon" % "kanela-agent" % "1.0.14",
@@ -115,7 +115,7 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
   )
   .settings(
     name := "adceet-write-api-server-kotlin",
-    Compile / run / mainClass := Some("com.github.j5ik2o.api.write.Main"),
+    Compile / run / mainClass := Some("com.github.j5ik2o.adceet.api.write.Main"),
     dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
     dockerExposedPorts := Seq(8081, 8558, 25520),
     javaAgents += "io.kamon" % "kanela-agent" % "1.0.14",

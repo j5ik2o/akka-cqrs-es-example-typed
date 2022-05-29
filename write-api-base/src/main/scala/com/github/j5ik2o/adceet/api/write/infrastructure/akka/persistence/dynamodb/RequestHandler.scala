@@ -13,8 +13,6 @@ import com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynamo
 import com.github.j5ik2o.adceet.api.write.infrastructure.metrics.AwsMetricNames.CloudWatchLikeMetricNames
 import com.github.j5ik2o.akka.persistence.dynamodb.config.PluginConfig
 import com.github.j5ik2o.akka.persistence.dynamodb.metrics.Stopwatch
-import com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynamodb.AkkaPersistenceMetricNames.AwsSdkMetricNames
-import com.github.j5ik2o.adceet.api.write.infrastructure.metrics.AwsMetricNames.CloudWatchLikeMetricNames
 import kamon.Kamon
 import kamon.metric.MeasurementUnit
 import org.slf4j.LoggerFactory

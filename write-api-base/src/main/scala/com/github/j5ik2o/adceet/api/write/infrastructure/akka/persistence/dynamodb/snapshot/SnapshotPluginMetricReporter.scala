@@ -1,10 +1,10 @@
 package com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynamodb.snapshot
 
+import com.github.j5ik2o.adceet.api.write.infrastructure.metrics.AwsMetricNames.CloudWatchLikeMetricNames
+import com.github.j5ik2o.adceet.api.write.infrastructure.metrics.{ MetricName, MetricNames }
 import com.github.j5ik2o.akka.persistence.dynamodb.config.PluginConfig
 import com.github.j5ik2o.akka.persistence.dynamodb.metrics.{ MetricsReporter, Stopwatch }
 import com.github.j5ik2o.akka.persistence.dynamodb.model.Context
-import com.github.j5ik2o.api.write.infrastructure.metrics.AwsMetricNames.CloudWatchLikeMetricNames
-import com.github.j5ik2o.api.write.infrastructure.metrics.{ MetricName, MetricNames }
 import kamon.Kamon
 import kamon.metric.MeasurementUnit
 

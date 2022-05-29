@@ -32,7 +32,7 @@ services:
       - dynamodb-local
 
   write-api-server-1:
-    image: write-api-server
+    image: write-api-server-${MODE}
     container_name: write-api-server-1
     ports:
       - 18080:8081
@@ -62,7 +62,7 @@ services:
       - dynamodb-admin
       - dynamodb-setup
   write-api-server-2:
-    image: write-api-server
+    image: write-api-server-${MODE}
     container_name: write-api-server-2
     ports:
       - 18081:8081
@@ -93,7 +93,7 @@ services:
       - dynamodb-setup
       - write-api-server-1
   write-api-server-3:
-    image: write-api-server
+    image: write-api-server-${MODE}
     container_name: write-api-server-3
     ports:
       - 18082:8081

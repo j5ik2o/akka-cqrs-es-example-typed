@@ -1,9 +1,9 @@
 package com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynamodb.journal
 
+import com.github.j5ik2o.adceet.api.write.infrastructure.KamonSupport
 import com.github.j5ik2o.akka.persistence.dynamodb.config.PluginConfig
 import com.github.j5ik2o.akka.persistence.dynamodb.model.Context
 import com.github.j5ik2o.akka.persistence.dynamodb.trace.TraceReporter
-import com.github.j5ik2o.api.write.infrastructure.KamonSupport
 
 import scala.concurrent.Future
 
