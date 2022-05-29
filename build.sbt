@@ -5,20 +5,21 @@ lazy val root = (project in file("."))
   .settings(
     Settings.baseSettings,
     name := "adceet-root"
-  ).aggregate(`write-api-server-kt`)
+  ).aggregate(`write-api-server`)
 
-lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
+lazy val `write-api-server` = (project in file("write-api-server"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
+    Settings.scalafixSettings,
     Settings.multiJvmSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
   )
   .settings(
-    name := "adceet-write-api-server-kt",
-    Compile / run / mainClass := Some("example.api.Main"),
+    name := "adceet-write-api-server",
+    Compile / run / mainClass := Some("com.github.j5ik2o.api.write.Main"),
     dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
     dockerExposedPorts := Seq(8081, 8558, 25520),
     javaAgents += "io.kamon" % "kanela-agent" % "1.0.14",
@@ -38,14 +39,20 @@ lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
       "-Dcom.sun.management.jmxremote.authenticate=false",
       "-Dorg.aspectj.tracing.factory=default"
     ),
+    // for Kotlin
     libraryDependencies ++= Seq(
-      airframe.ulid,
-      logback.logbackClassic,
-      arrowKt.arrowCore,
-      vavr.varKotlin,
+      fasterXmlJackson.kotlin,
       kodeinDI.kodeinDIJvm,
       kotlinx.coroutinesCoreJvm,
       xenomachina.kotlinArgParser,
+      arrowKt.arrowCore,
+      vavr.varKotlin,
+      mockk.mockk                                                % Test,
+      kotlinx.coroutinesTest                                     % Test,
+    ),
+    libraryDependencies ++= Seq(
+      airframe.ulid,
+      logback.logbackClassic,
       jakarta.rsApi,
       swaggerAkkaHttp.swaggerAkkaHttp,
       megard.akkaHttpCors,
@@ -65,7 +72,6 @@ lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
       lightbend.akkaManagementClusterBootstrap,
       lightbend.akkaDiscoveryAwsApiAsync,
       fasterXmlJackson.scala,
-      fasterXmlJackson.kotlin,
       j5ik2o.akkaPersistenceDynamoDBJournal,
       j5ik2o.akkaPersistenceDynamoDBSnapshot,
       kamon.core,
@@ -80,8 +86,6 @@ lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
       jupiter.jupiterApi                                         % Test,
       jupiter.jupiter                                            % Test,
       jupiter.jupiterMigrationSupport                            % Test,
-      kotlinx.coroutinesTest                                     % Test,
-      mockk.mockk                                                % Test,
       typesafeAkka.actorTestkitTyped                             % Test,
       typesafeAkka.streamTestkit                                 % Test,
       typesafeAkka.httpTestkit                                   % Test,
@@ -103,5 +107,5 @@ lazy val `write-api-server-kt` = (project in file("write-api-server-kt"))
   )
 
 // --- Custom commands
-addCommandAlias("lint", ";spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck")
-addCommandAlias("fmt", ";spotlessApply;scalafmtAll;scalafmtSbt")
+addCommandAlias("lint", ";spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalafixAll --check")
+addCommandAlias("fmt", ";spotlessApply;scalafmtAll;scalafmtSbt;scalafix RemoveUnused")

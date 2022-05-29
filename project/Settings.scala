@@ -1,15 +1,16 @@
-import com.amazonaws.regions.{ Region, Regions }
+import com.amazonaws.regions.{Region, Regions}
 import com.github.sbt.git.SbtGit.git
 import com.typesafe.sbt.SbtNativePackager.autoImport.packageName
 import com.typesafe.sbt.packager.Keys.daemonUser
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.packager.docker._
-import kotlin.Keys.{ kotlinLib, kotlinVersion, kotlincOptions }
+import kotlin.Keys.{kotlinLib, kotlinVersion, kotlincOptions}
 import net.aichler.jupiter.sbt.Import.jupiterTestFramework
 import sbt.Keys._
-import sbt.{ Def, _ }
+import sbt.{Def, _}
 import sbtecr.EcrPlugin.autoImport._
+import scalafix.sbt.ScalafixPlugin.autoImport.{scalafixScalaBinaryVersion, scalafixSemanticdb}
 
 object Settings {
   val baseSettings: Seq[Def.Setting[_]] = Seq(
@@ -46,6 +47,13 @@ object Settings {
       Resolver.sonatypeRepo("releases")
     )
   )
+
+  val scalafixSettings: Seq[Def.Setting[_]] = Seq(
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
+  )
+
   private object EcrRepositorySetting {
     val Prefix: String                                        = sys.env.getOrElse("PREFIX", "dummy-prefix")
     val AwsAccountId: String                                  = sys.env.getOrElse("AWS_ACCOUNT_ID", "111111111111")
