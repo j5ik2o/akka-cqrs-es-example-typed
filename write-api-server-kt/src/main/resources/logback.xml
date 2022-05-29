@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="false" debug="false">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{32} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT" />
+    </appender>
+
+    <logger name="akka" level="${AKKA_LOG_LEVEL:-DEBUG}"/>
+    <logger name="example" level="${EXAMPLE_LOG_LEVEL:-DEBUG}"/>
+    <logger name="kamon-example-default" level="${EXAMPLE_LOG_LEVEL:-DEBUG}"/>
+
+    <root level="${ROOT_LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT_ASYNC"/>
+    </root>
+
+</configuration>

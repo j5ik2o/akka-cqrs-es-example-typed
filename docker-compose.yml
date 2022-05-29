@@ -1,32 +1,13 @@
 version: '3.6'
 services:
-  # DynamoDB Local
-  # FYI: https://github.com/search?q=dynamodb-local+docker-compose
-  #  dynamodb-local:
-  #    hostname: dynamodb-local
-  #    image: cnadiminti/dynamodb-local
-  #    ports:
-  #      - "8000:8000"
-  #    environment:
-  #      JAVA_OPTS: -Xmx256m
-  #    volumes:
-  #      - ./.dynamodb-local:/dynamodb_local_db
   dynamodb-local:
     image: amazon/dynamodb-local
     hostname: dynamodb-local
-    #    volumes:
-    #      - "./data:/home/dynamodblocal/data"
     environment:
       JAVA_OPTS: -Xms2g -Xmx2g
     ports:
       - "8000:8000"
     command: "-jar DynamoDBLocal.jar -port 8000 -inMemory -sharedDb"
-  #    entrypoint: >
-  #      /bin/sh -c "
-  #      java -jar DynamoDBLocal.jar -port 8000 -inMemory -sharedDb
-  #      "
-  # mkdir -p /home/dynamodblocal/data;
-  #    command: "-jar DynamoDBLocal.jar -port 8000 -dbPath ./data -sharedDb"
   dynamodb-setup:
     image: mesosphere/aws-cli
     environment:
@@ -50,9 +31,9 @@ services:
     depends_on:
       - dynamodb-local
 
-  kamon-example-1:
-    image: kamon-example
-    container_name: kamon-example-1
+  write-api-server-1:
+    image: write-api-server
+    container_name: write-api-server-1
     ports:
       - 18080:8081
       - 8558:8558
@@ -61,9 +42,9 @@ services:
       CONFIG_RESOURCE: application.conf
       AKKA_MANAGEMENT_HTTP_HOSTNAME: kamon-example-1
       AKKA_MANAGEMENT_HTTP_PORT: 8558
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: kamon-example-1
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: kamon-example-2
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: kamon-example-3
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: write-api-server-1
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: write-api-server-2
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: write-api-server-3
       JVM_HEAP_MIN: 1G
       JVM_HEAP_MAX: 1G
       JVM_META_MAX: 512M
@@ -80,20 +61,20 @@ services:
       - dynamodb-local
       - dynamodb-admin
       - dynamodb-setup
-  kamon-example-2:
-    image: kamon-example
-    container_name: kamon-example-2
+  write-api-server-2:
+    image: write-api-server
+    container_name: write-api-server-2
     ports:
       - 18081:8081
       - 8559:8559
     environment:
       AWS_REGION: ap-northeast-1
       CONFIG_RESOURCE: application.conf
-      AKKA_MANAGEMENT_HTTP_HOSTNAME: kamon-example-2
+      AKKA_MANAGEMENT_HTTP_HOSTNAME: write-api-server-2
       AKKA_MANAGEMENT_HTTP_PORT: 8559
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: kamon-example-1
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: kamon-example-2
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: kamon-example-3
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: write-api-server-1
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: write-api-server-2
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: write-api-server-3
       JVM_HEAP_MIN: 1G
       JVM_HEAP_MAX: 1G
       JVM_META_MAX: 512M
@@ -110,10 +91,10 @@ services:
       - dynamodb-local
       - dynamodb-admin
       - dynamodb-setup
-      - kamon-example-1
-  kamon-example-3:
-    image: kamon-example
-    container_name: kamon-example-3
+      - write-api-server-1
+  write-api-server-3:
+    image: write-api-server
+    container_name: write-api-server-3
     ports:
       - 18082:8081
       - 8560:8560
@@ -122,9 +103,9 @@ services:
       CONFIG_RESOURCE: application.conf
       AKKA_MANAGEMENT_HTTP_HOSTNAME: kamon-example-3
       AKKA_MANAGEMENT_HTTP_PORT: 8560
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: kamon-example-1
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: kamon-example-2
-      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: kamon-example-3
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST1: write-api-server-1
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST2: write-api-server-2
+      AKKA_DISCOVERY_CONFIG_SERVICES_KAMON_EXAMPLE_ENDPOINTS_HOST3: write-api-server-3
       JVM_HEAP_MIN: 1G
       JVM_HEAP_MAX: 1G
       JVM_META_MAX: 512M
@@ -141,4 +122,4 @@ services:
       - dynamodb-local
       - dynamodb-admin
       - dynamodb-setup
-      - kamon-example-2
+      - write-api-server-2

@@ -5,12 +5,40 @@ import com.typesafe.sbt.packager.Keys.daemonUser
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.packager.docker._
+import kotlin.Keys.{ kotlinLib, kotlinVersion, kotlincOptions }
+import net.aichler.jupiter.sbt.Import.jupiterTestFramework
 import sbt.Keys._
 import sbt.{ Def, _ }
 import sbtecr.EcrPlugin.autoImport._
 
 object Settings {
-  val baseSettings: Seq[Def.Setting[Seq[Resolver]]] = Seq(
+  val baseSettings: Seq[Def.Setting[_]] = Seq(
+    organization := "com.github.j5ik2o",
+    version := "1.0.0-SNAPSHOT",
+    scalaVersion := "2.13.8",
+    Compile / javacOptions ++= Seq(
+      "-encoding",
+      "UTF-8",
+      "-parameters",
+      "-Xlint:unchecked",
+      "-Xlint:deprecation"
+    ),
+    Compile / scalacOptions ++= Seq(
+      "-target:jvm-11",
+      "-encoding",
+      "UTF-8",
+      "-language:_",
+      "-deprecation",
+      "-feature",
+      "-unchecked",
+      "-Xlog-reflective-calls",
+      "-Xlint"
+    ),
+    kotlinVersion := "1.6.21",
+    kotlincOptions ++= Seq("-jvm-target", "11"),
+    testOptions += Tests.Argument(jupiterTestFramework, "-q", "-v"),
+    kotlinLib("stdlib-jdk8"),
+    kotlinLib("reflect"),
     resolvers ++= Seq(
       "jitpack" at "https://jitpack.io",
       Resolver.jcenterRepo,
