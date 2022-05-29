@@ -9,7 +9,9 @@ lazy val root = (project in file("."))
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
-    Settings.baseSettings
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
   ).settings(
     name := "adceet-write-api-base",
     libraryDependencies ++= Seq(
@@ -57,7 +59,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       // テストでは使っていないので削除してもよい
       fusesource.leveldbjniAll % Test,
       iq80LevelDb.leveldb      % Test
-    ),
+    )
   )
 
 lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
@@ -65,6 +67,8 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings,
     Settings.multiJvmSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
@@ -102,6 +106,7 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
+    Settings.scalaSettings,
     Settings.kotlinSettings,
     Settings.javaSettings,
     Settings.multiJvmSettings,
