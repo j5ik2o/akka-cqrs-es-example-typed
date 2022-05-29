@@ -111,8 +111,7 @@ final class ThreadAggregate private (
 
 object ThreadAggregate {
 
-  def create(
-      id: ThreadId,
+  def create(id: ThreadId)(
       persistBehaviorF: (
           ThreadId,
           ActorRef[ThreadAggregateProtocol.CommandRequest]
