@@ -11,7 +11,7 @@ import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
 import org.slf4j.{ Logger, LoggerFactory }
-import wvlet.airframe.{ bind, bindFactory, DISupport, Session }
+import wvlet.airframe.{ DISupport, Session }
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future }

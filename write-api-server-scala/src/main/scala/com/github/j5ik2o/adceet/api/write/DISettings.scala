@@ -1,5 +1,4 @@
 package com.github.j5ik2o.adceet.api.write
-import akka.actor.{ ClassicActorSystemProvider, ExtendedActorSystem }
 import akka.actor.typed.scaladsl.ActorContext
 import akka.actor.typed.{ ActorRef, ActorSystem, Scheduler }
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
