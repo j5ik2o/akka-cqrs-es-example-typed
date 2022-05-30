@@ -58,12 +58,12 @@ final class ThreadAggregate private (
             }
           case Left(err) =>
             msg.replyTo !
-              ThreadAggregateProtocol.AddMessageFailed(
-                ULID.newULID,
-                msg.id,
-                id,
-                err
-              )
+            ThreadAggregateProtocol.AddMessageFailed(
+              ULID.newULID,
+              msg.id,
+              id,
+              err
+            )
             just(state)
         }
     }

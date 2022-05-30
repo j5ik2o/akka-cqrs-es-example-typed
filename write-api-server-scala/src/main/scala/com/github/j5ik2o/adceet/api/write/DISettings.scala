@@ -18,8 +18,8 @@ object DISettings {
 
   val di: DesignWithContext[_] = newDesign
     .bind[Config].toInstance(ConfigFactory.load())
-    .bind[ActorSystem[MainActor.Command]].toProvider[Config] { config =>
-      ActorSystem(MainActor.create(), "adceet", config)
+    .bind[ActorSystem[MainActor.Command]].toProvider[Session, Config] { (session, config) =>
+      ActorSystem(MainActor.create(session), "adceet", config)
     }
     .bind[Scheduler].toProvider[ActorSystem[MainActor.Command]] { system =>
       system.scheduler
@@ -28,7 +28,7 @@ object DISettings {
   def mainDi(ctx: ActorContext[MainActor.Command]): DesignWithContext[_] =
     newDesign
       .bind[ClusterBootstrap].toInstance(ClusterBootstrap(ctx.system))
-      .bind[ActorRef[SelfUp]].toProvider[ActorRef[MainActor.Command]] { replyTo =>
+      .bind[ActorRef[SelfUp]].toProvider[ActorRef[MainActor.Command]] { replyTo: ActorRef[MainActor.Command] =>
         ctx.spawn(SelfUpReceiver.create(replyTo), "self-up")
       }.bind[ClusterSharding].toInstance(ClusterSharding(ctx.system))
       .bind[ActorRef[ThreadAggregateProtocol.CommandRequest]].toProvider[ClusterSharding] { clusterSharding =>
