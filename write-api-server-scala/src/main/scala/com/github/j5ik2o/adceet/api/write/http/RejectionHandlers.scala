@@ -14,7 +14,7 @@ object RejectionHandlers extends FailFastCirceSupport {
     RejectionHandler
       .newBuilder()
       .handle { case ValidationRejection(errorMessages) =>
-        val responseJson = ErrorsResponseJson(errorMessages.map(_.msg))
+        val responseJson = ErrorsResponseJson(errorMessages.map(_.msg).toList)
         complete(StatusCodes.BadRequest, responseJson)
       }.result()
   }
