@@ -45,7 +45,7 @@ class ShardedThreadAggregatesSpec extends ActorSpec(ShardedThreadAggregatesSpec.
       val system          = testKit.system
       val cluster         = Cluster(system)
       val clusterSharding = ClusterSharding(system)
-      cluster.manager.tell(Join(cluster.selfMember.address))
+      cluster.manager ! Join(cluster.selfMember.address)
       eventually {
         assert(cluster.selfMember.status == MemberStatus.Up)
       }

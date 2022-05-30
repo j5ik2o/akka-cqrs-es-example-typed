@@ -24,7 +24,7 @@ object ShardedThreadAggregate {
         Behaviors.receiveMessage {
           case ThreadAggregateProtocol.Idle =>
             ctx.log.debug("entityBehavior#receive ThreadAggregateProtocol.Idle")
-            entityContext.shard.tell(ClusterSharding.Passivate(ctx.self))
+            entityContext.shard ! ClusterSharding.Passivate(ctx.self)
             Behaviors.same
           case ThreadAggregateProtocol.Stop =>
             ctx.log.debug("entityBehavior#receive ThreadAggregateProtocol.Stop")

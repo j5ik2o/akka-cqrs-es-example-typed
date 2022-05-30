@@ -57,14 +57,13 @@ final class ThreadAggregate private (
               just(it.asInstanceOf[ThreadState.Just])
             }
           case Left(err) =>
-            msg.replyTo.tell(
+            msg.replyTo !
               ThreadAggregateProtocol.AddMessageFailed(
                 ULID.newULID,
                 msg.id,
                 id,
                 err
               )
-            )
             just(state)
         }
     }
@@ -75,7 +74,7 @@ final class ThreadAggregate private (
       Thread.create(id, msg.accountId) match {
         case Right(event) =>
           persist(event) { it =>
-            msg.replyTo.tell(ThreadAggregateProtocol.CreateThreadSucceeded(ULID.newULID, msg.id, id))
+            msg.replyTo ! ThreadAggregateProtocol.CreateThreadSucceeded(ULID.newULID, msg.id, id)
             just(it.asInstanceOf[ThreadState.Just])
           }
         case Left(err) =>

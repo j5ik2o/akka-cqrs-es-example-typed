@@ -20,14 +20,12 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     val accountId = AccountId()
 
     val createThreadReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.CreateThreadReply]()
-    threadRef.tell(
-      ThreadAggregateProtocol.CreateThread(
+    threadRef ! ThreadAggregateProtocol.CreateThread(
         ULID.newULID,
         id,
         accountId,
         createThreadReplyProbe.ref
       )
-    )
     val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
     assert(id == createThreadReply.threadId)
   }
@@ -64,14 +62,12 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     val body       = "ABC"
 
     val createThreadReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.CreateThreadReply]
-    threadRef.tell(
-      ThreadAggregateProtocol.CreateThread(
+    threadRef ! ThreadAggregateProtocol.CreateThread(
         ULID.newULID,
         id,
         accountId1,
         createThreadReplyProbe.ref
       )
-    )
     val createThreadReply =
       createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
     assert(id == createThreadReply.threadId)
@@ -83,8 +79,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     assert(id == addMemberReply.threadId)
 
     val addMessageReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMessageReply]
-    threadRef.tell(
-      ThreadAggregateProtocol.AddMessage(
+    threadRef ! ThreadAggregateProtocol.AddMessage(
         ULID.newULID,
         id,
         Message(
@@ -94,7 +89,6 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
           body
         ),
         addMessageReplyProbe.ref
-      )
     )
     val addMessageReply =
       addMessageReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMessageSucceeded]

@@ -20,7 +20,7 @@ object ThreadAggregates {
         }
       }
       Behaviors.receiveMessage { msg =>
-        getOrCreateRef(msg.threadId).tell(msg)
+        getOrCreateRef(msg.threadId) ! msg
         Behaviors.same
       }
     }
