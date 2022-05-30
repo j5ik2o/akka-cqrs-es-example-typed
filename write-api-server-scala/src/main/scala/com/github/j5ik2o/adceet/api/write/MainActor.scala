@@ -11,49 +11,52 @@ import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
 import org.slf4j.{ Logger, LoggerFactory }
-import wvlet.airframe.Session
+import wvlet.airframe.{ bind, bindFactory, DISupport, Session }
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future }
 import scala.util.{ Failure, Success }
 
 object MainActor {
   sealed trait Command
   case object MeUp extends Command
 
-  private val logger: Logger = LoggerFactory.getLogger(classOf[MainActor.type])
+  val logger: Logger = LoggerFactory.getLogger(classOf[MainActor])
+}
 
-  def create(session: Session): Behavior[Command] = {
+class MainActor(val session: Session) extends DISupport {
+  import MainActor._
+
+  def create: Behavior[Command] = {
     Behaviors.setup { ctx =>
-      val config                  = ctx.system.settings.config
-      val host                    = config.getString("http.host")
-      val port                    = config.getInt("http.port")
-      val terminationHardDeadLine = config.getDuration("management.http.termination-hard-deadline").toMillis.millis
-      val loadBalancerDetachWaitDuration =
-        config.getDuration("management.http.load-balancer-detach-wait-duration").toMillis.millis
+      session.withChildSession(DISettings.mainActor(ctx)) { childSession =>
+        val config                  = ctx.system.settings.config
+        val host                    = config.getString("http.host")
+        val port                    = config.getInt("http.port")
+        val terminationHardDeadLine = config.getDuration("management.http.termination-hard-deadline").toMillis.millis
+        val loadBalancerDetachWaitDuration =
+          config.getDuration("management.http.load-balancer-detach-wait-duration").toMillis.millis
 
-      val childSession = session.newChildSession(DISettings.mainDi(ctx))
+        implicit val system: ActorSystem[_]       = ctx.system
+        implicit val ec: ExecutionContextExecutor = ctx.executionContext
 
-      implicit val system = ctx.system
-      implicit val ec     = ctx.executionContext
+        val future = for {
+          _ <- startApplicationServer(childSession, ctx.system, host, port, terminationHardDeadLine)
+          _ <- startHealthCheckServer(ctx.system, loadBalancerDetachWaitDuration)
+        } yield ()
 
-      val future = for {
-        _ <- startApplicationServer(childSession, ctx.system, host, port, terminationHardDeadLine)
-        _ <- startHealthCheckServer(ctx.system, loadBalancerDetachWaitDuration)
-      } yield ()
+        Await.result(future, Duration.Inf)
 
-      Await.result(future, Duration.Inf)
+        val clusterBootstrap: ClusterBootstrap = childSession.build[ClusterBootstrap]
+        clusterBootstrap.start()
 
-      val clusterBootstrap: ClusterBootstrap = childSession.build[ClusterBootstrap]
-      clusterBootstrap.start()
+        childSession.build[ActorRef[SelfUp]]
 
-      val selfUpRefFactory = childSession.build[ActorRef[MainActor.Command] => ActorRef[SelfUp]]
-      selfUpRefFactory(ctx.self)
-
-      Behaviors
-        .receiveMessage[Command] { case MeUp =>
-          Behaviors.same
-        }
+        Behaviors
+          .receiveMessage[Command] { case MeUp =>
+            Behaviors.same
+          }
+      }
     }
   }
 
@@ -78,7 +81,7 @@ object MainActor {
         val address = serverBinding.localAddress
         logger.info(s"server bound to http://${address.getHostString}:${address.getPort}")
       case Failure(ex) =>
-        logger.error("Failed to bind endpoint, terminating system: $ex")
+        logger.error(s"Failed to bind endpoint, terminating system: $ex")
         system.terminate()
     }
     http.map(_ => Done)

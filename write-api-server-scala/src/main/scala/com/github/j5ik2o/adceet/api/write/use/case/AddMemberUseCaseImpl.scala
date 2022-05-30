@@ -11,7 +11,7 @@ import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.{ ExecutionContext, Future }
 
 final class AddMemberUseCaseImpl(
-    private val system: ActorSystem[Void],
+    private val system: ActorSystem[_],
     private val threadAggregateRef: ActorRef[ThreadAggregateProtocol.CommandRequest],
     private val askTimeout: FiniteDuration = 30.seconds
 ) extends AddMemberUseCase {
