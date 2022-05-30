@@ -31,6 +31,9 @@ object Dependencies {
   object vavr {
     val varKotlin = "io.vavr" % "vavr-kotlin" % "0.10.2"
   }
+  object heikoseeberger {
+    val akkaHttpCirce = "de.heikoseeberger" %% "akka-http-circe" % "1.39.2"
+  }
   object typesafeAkka {
     val akkaHttp          = "com.typesafe.akka" %% "akka-http"            % Version.akkaHttp
     val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttp
@@ -89,6 +92,13 @@ object Dependencies {
   object fasterXmlJackson {
     val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.13.2"
     val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.13.2"
+  }
+
+  object circre {
+    val circeVersion = "0.14.1"
+    val core         = "io.circe" %% "circe-core"    % circeVersion
+    val generic      = "io.circe" %% "circe-generic" % circeVersion
+    val parser       = "io.circe" %% "circe-parser"  % circeVersion
   }
 
   object kamon {
