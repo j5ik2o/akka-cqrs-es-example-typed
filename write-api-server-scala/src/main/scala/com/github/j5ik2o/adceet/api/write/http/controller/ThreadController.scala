@@ -32,6 +32,10 @@ class ThreadController(
     private val addMessageUseCase: AddMessageUseCase
 ) extends FailFastCirceSupport {
 
+  def toRoute(): Route = {
+    concat(createThread, addMember, addMessage)
+  }
+
   private def validateThreadIdWithAccountId(
       threadIdString: String,
       accountIdString: String

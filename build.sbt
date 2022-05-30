@@ -15,6 +15,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
   ).settings(
     name := "adceet-write-api-base",
     libraryDependencies ++= Seq(
+      airframe.di,
       typesafeAkka.akkaPersistenceTyped,
       j5ik2o.akkaPersistenceDynamoDBJournal,
       j5ik2o.akkaPersistenceDynamoDBSnapshot,

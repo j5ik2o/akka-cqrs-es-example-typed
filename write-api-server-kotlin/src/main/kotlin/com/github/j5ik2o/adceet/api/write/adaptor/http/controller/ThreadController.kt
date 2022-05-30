@@ -42,7 +42,7 @@ class ThreadController(
 ) : AllDirectives() {
 
   fun toRoute(): Route {
-    return concat(createThread(), addMember())
+    return concat(createThread(), addMember(), addMessage())
   }
 
   private fun validateThreadIdWithAccountId(

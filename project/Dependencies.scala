@@ -15,6 +15,7 @@ object Version {
 
 object Dependencies {
   object airframe {
+    val di   = "org.wvlet.airframe" %% "airframe"      % "22.5.0"
     val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.5.0"
   }
 
