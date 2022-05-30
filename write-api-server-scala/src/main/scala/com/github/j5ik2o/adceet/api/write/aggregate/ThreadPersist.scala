@@ -9,7 +9,6 @@ import com.github.j5ik2o.adceet.api.write.domain.ThreadEvents.ThreadEvent
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId
 import wvlet.airframe.ulid.ULID
 
-
 object ThreadPersist {
   final case class Persist(threadEvent: ThreadEvent, replyTo: ActorRef[PersistCompleted])
   final case class PersistCompleted(state: ThreadState)

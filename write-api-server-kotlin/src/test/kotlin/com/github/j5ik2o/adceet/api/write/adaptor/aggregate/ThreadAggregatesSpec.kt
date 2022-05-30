@@ -13,40 +13,43 @@ import org.junit.jupiter.api.TestInstance
 import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ThreadAggregateSpec {
-
+class ThreadAggregatesSpec {
   companion object {
     val CONFIG: Config = ConfigFactory.parseString(
       """
-                akka.loglevel = DEBUG
-                akka.actor.provider = local
-                akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-                akka.persistence.journal.inmem.test-serialization = on
-                akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-                akka.persistence.snapshot-store.local.dir = "target/snapshots/${javaClass.name}-${UUID.randomUUID()}"
-                akka.actor.serialization-bindings {
-                    "${CborSerializable::class.java.name}" = jackson-cbor
-                }
-                """
+            akka.loglevel = DEBUG
+            akka.actor.provider = local
+            akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+            akka.persistence.journal.inmem.test-serialization = on
+            akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
+            akka.persistence.snapshot-store.local.dir = "target/snapshots/${javaClass.name}-${UUID.randomUUID()}"
+            akka.actor.serialization-bindings {
+                "${CborSerializable::class.java.name}" = jackson-cbor
+            }
+            """
     )
+
     val underlying = object : AbstractThreadAggregateTestBase() {
       override fun behavior(
         id: ThreadId,
         inMemoryMode: Boolean
       ): Behavior<ThreadAggregateProtocol.CommandRequest> {
-        return ThreadAggregate.create(id) { id, ref ->
-          if (inMemoryMode) {
-            ThreadPersist.persistInMemoryBehavior(
-              id,
-              ref
-            )
-          } else {
-            ThreadPersist.persistBehavior(
-              id,
-              ref
-            )
+        return ThreadAggregates.create(
+          { it.asString() },
+          { id ->
+            ThreadAggregate.create(id) { id, ref ->
+              if (inMemoryMode) {
+                ThreadPersist.persistInMemoryBehavior(
+                  id, ref
+                )
+              } else {
+                ThreadPersist.persistBehavior(
+                  id, ref
+                )
+              }
+            }
           }
-        }
+        )
       }
     }
   }

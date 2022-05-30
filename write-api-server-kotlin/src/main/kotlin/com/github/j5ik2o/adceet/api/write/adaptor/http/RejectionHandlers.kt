@@ -5,8 +5,8 @@ import akka.http.javadsl.model.StatusCodes
 import akka.http.javadsl.server.Directives.complete
 import akka.http.javadsl.server.RejectionHandler
 import com.github.j5ik2o.adceet.api.write.JacksonObjectMappers
+import com.github.j5ik2o.adceet.api.write.adaptor.http.json.ErrorsResponseJson
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.ValidationRejection
-import com.github.j5ik2o.adceet.api.write.adaptor.json.ErrorsResponseJson
 
 object RejectionHandlers {
 

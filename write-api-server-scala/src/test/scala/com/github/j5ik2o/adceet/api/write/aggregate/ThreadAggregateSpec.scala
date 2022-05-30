@@ -42,6 +42,12 @@ class ThreadAggregateSpec extends ActorSpec(ThreadAggregateSpec.config) {
     "shouldCreateThread" in {
       underlying.shouldCreateThread()
     }
+    "shouldAddMember" in {
+      underlying.shouldAddMember()
+    }
+    "shouldAddMessage" in {
+      underlying.shouldAddMessage()
+    }
   }
 
 }
