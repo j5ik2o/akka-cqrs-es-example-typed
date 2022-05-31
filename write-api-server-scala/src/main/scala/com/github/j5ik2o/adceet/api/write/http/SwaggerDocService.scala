@@ -9,7 +9,7 @@ import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper.ThreadContr
 
 class SwaggerDocService(private val host: String, private val port: Int) {
 
-  val generator = new SwaggerGenerator() {
+  val generator: SwaggerGenerator = new SwaggerGenerator() {
 
     override def apiClasses: Set[Class[_]] = Set(
       classOf[ThreadController]
@@ -29,7 +29,7 @@ class SwaggerDocService(private val host: String, private val port: Int) {
     }
   }
 
-  def toRoute(): Route = {
+  def toRoute: Route = {
     val route: Route = concat(
       path("swagger") {
         getFromResource("swagger/index.html")
