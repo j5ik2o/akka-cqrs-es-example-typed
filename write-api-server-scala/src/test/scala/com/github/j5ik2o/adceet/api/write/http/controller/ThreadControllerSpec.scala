@@ -54,9 +54,7 @@ class ThreadControllerSpec
       val accountId = AccountId()
       val json      = CreateThreadRequestJson(accountId.asString)
 
-      val route = controller.createThread
-
-      Post("/threads", json) ~> route ~> check {
+      Post("/threads", json) ~> controller.createThread ~> check {
         response.status shouldEqual StatusCodes.OK
         val responseJson = responseAs[CreateThreadResponseJson]
         assert(responseJson.threadId == threadIdCaptor.value.asString)
@@ -140,9 +138,8 @@ class ThreadControllerSpec
 
       val accountId               = AccountId()
       val createThreadRequestJson = CreateThreadRequestJson(accountId.asString)
-      val createThreadRoute       = controller.createThread
 
-      Post("/threads", createThreadRequestJson) ~> createThreadRoute ~> check {
+      Post("/threads", createThreadRequestJson) ~> controller.createThread ~> check {
         response.status shouldEqual StatusCodes.OK
         val responseJson = responseAs[CreateThreadResponseJson]
         assert(responseJson.threadId == threadIdCaptorInCreateThread.value.asString)
@@ -169,6 +166,9 @@ class ThreadControllerSpec
         response.status shouldEqual StatusCodes.OK
         val responseJson = responseAs[AddMessageResponseJson]
         assert(responseJson.threadId == messageCaptorInAddMessage.value.threadId.asString)
+        assert(messageCaptorInAddMessage.value.threadId == threadIdCaptorInAddMember.value)
+        assert(messageCaptorInAddMessage.value.senderId == accountId)
+        assert(messageCaptorInAddMessage.value.body == message)
       }
 
       verify(mockCreateThreadUseCase, times(1)).execute(any, any)(any)
