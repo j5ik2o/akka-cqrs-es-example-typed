@@ -4,10 +4,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives
 import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
+import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
 import com.github.swagger.akka.{ model, SwaggerGenerator }
-import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper.ThreadController
 
-class SwaggerDocService(private val host: String, private val port: Int) {
+class SwaggerDocService(private val hostName: String, private val port: Int) {
 
   val generator: SwaggerGenerator = new SwaggerGenerator() {
 
@@ -17,7 +17,7 @@ class SwaggerDocService(private val host: String, private val port: Int) {
 
     override def schemes: List[String] = List("http")
 
-    override def host: String = s"$host:$port"
+    override def host: String = s"$hostName:$port"
 
     override def apiDocsPath: String = "api-docs"
 

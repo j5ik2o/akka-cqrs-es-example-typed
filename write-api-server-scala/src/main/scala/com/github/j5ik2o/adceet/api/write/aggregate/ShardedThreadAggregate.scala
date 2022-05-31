@@ -35,6 +35,7 @@ object ShardedThreadAggregate {
         }
       }
   }
+
   def initClusterSharding(
       clusterSharding: ClusterSharding,
       childBehavior: Behavior[ThreadAggregateProtocol.CommandRequest],
