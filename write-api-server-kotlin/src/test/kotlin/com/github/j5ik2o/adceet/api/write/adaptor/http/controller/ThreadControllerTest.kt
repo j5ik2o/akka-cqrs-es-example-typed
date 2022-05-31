@@ -180,7 +180,6 @@ class ThreadControllerTest {
     val jsonAsString =
       JacksonObjectMappers.default.writeValueAsString(
         AddMessageRequestJson(
-          threadId.asString(),
           accountId.asString(),
           body
         )

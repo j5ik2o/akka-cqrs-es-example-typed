@@ -32,7 +32,7 @@ class ThreadController(
     private val addMessageUseCase: AddMessageUseCase
 ) extends FailFastCirceSupport {
 
-  def toRoute(): Route = {
+  def toRoute: Route = {
     concat(createThread, addMember, addMessage)
   }
 
@@ -96,7 +96,7 @@ class ThreadController(
     }
   }
 
-  @Path("/threads/{threadId}/member")
+  @Path("/threads/{threadId}/members")
   @POST
   @Operation(
     description = "Add a member to the thread",

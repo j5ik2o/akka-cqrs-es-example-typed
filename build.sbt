@@ -15,6 +15,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
   ).settings(
     name := "adceet-write-api-base",
     libraryDependencies ++= Seq(
+      "org.mockito" %% "mockito-scala" % "1.17.5" % Test,
       airframe.di,
       typesafeAkka.akkaPersistenceTyped,
       j5ik2o.akkaPersistenceDynamoDBJournal,
