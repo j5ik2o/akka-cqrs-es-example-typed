@@ -5,6 +5,7 @@ import akka.actor.CoordinatedShutdown
 import akka.actor.typed.ActorRef
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.Behavior
+import akka.actor.typed.PostStop
 import akka.actor.typed.javadsl.AbstractBehavior
 import akka.actor.typed.javadsl.ActorContext
 import akka.actor.typed.javadsl.Behaviors
@@ -16,6 +17,7 @@ import akka.management.javadsl.AkkaManagement
 import akka.pattern.Patterns
 import com.github.j5ik2o.adceet.api.write.adaptor.http.Routes
 import com.github.j5ik2o.adceet.api.write.adaptor.http.controller.ThreadController
+import kamon.Kamon
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.factory
@@ -37,6 +39,9 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
 
     fun create(di: DI, args: ExampleArgs): Behavior<Command> {
       return Behaviors.setup { ctx ->
+        if (args.runModeFor == RunMode.PRODUCTION)
+          Kamon.init()
+
         val config = ctx.system.settings().config()
         val host = config.getString("http.host")
         val port = config.getInt("http.port")
@@ -59,13 +64,15 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
         val selfUpRefFactory: (ActorRef<Command>) -> ActorRef<SelfUp> by di.on(ctx).factory()
         selfUpRefFactory(ctx.self)
 
-        Behaviors.receiveMessage {
-          when (it) {
-            is MeUp -> {
-              MainActor(di, ctx)
-            }
+        Behaviors.receive(Command::class.java)
+          .onMessage(MeUp::class.java) {
+            MainActor(di, ctx)
           }
-        }
+          .onSignal(PostStop::class.java) {
+            if (args.runModeFor == RunMode.PRODUCTION)
+              Kamon.stop()
+            Behaviors.same()
+          }.build()
       }
     }
 

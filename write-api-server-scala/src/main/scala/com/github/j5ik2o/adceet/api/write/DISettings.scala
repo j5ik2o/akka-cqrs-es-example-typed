@@ -18,10 +18,10 @@ import wvlet.airframe._
 
 object DISettings {
 
-  val di: DesignWithContext[_] = newDesign
+  def di(args: Args): DesignWithContext[_] = newDesign
     .bind[Config].toInstance(ConfigFactory.load())
     .bind[ActorSystem[MainActor.Command]].toProvider[Session, Config] { (session, config) =>
-      ActorSystem(new MainActor(session).create, "adceet", config)
+      ActorSystem(new MainActor(session).create(args), "adceet", config)
     }
     .bind[Scheduler].toProvider[ActorSystem[MainActor.Command]] { system =>
       system.scheduler

@@ -34,6 +34,7 @@ services:
   write-api-server-1:
     image: adceet-write-api-server-${MODE}
     container_name: write-api-server-1
+    entrypoint: ["/opt/docker/bin/adceet-write-api-server-${MODE}", "-e", "development"]
     ports:
       - 18080:8081
       - 8558:8558
@@ -64,6 +65,7 @@ services:
   write-api-server-2:
     image: adceet-write-api-server-${MODE}
     container_name: write-api-server-2
+    entrypoint: ["/opt/docker/bin/adceet-write-api-server-${MODE}", "-e", "development"]
     ports:
       - 18081:8081
       - 8559:8559
@@ -95,6 +97,7 @@ services:
   write-api-server-3:
     image: adceet-write-api-server-${MODE}
     container_name: write-api-server-3
+    entrypoint: ["/opt/docker/bin/adceet-write-api-server-${MODE}", "-e", "development"]
     ports:
       - 18082:8081
       - 8560:8560

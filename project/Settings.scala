@@ -97,7 +97,17 @@ object Settings {
       ExecCmd("RUN", "apt", "update"),
       ExecCmd("RUN", "apt", "install", "-y", "udev")
     ),
-    Docker / daemonUser := "daemon" // https://www.scala-sbt.org/sbt-native-packager/formats/docker.html#daemon-user
+    Docker / daemonUser := "daemon", // https://www.scala-sbt.org/sbt-native-packager/formats/docker.html#daemon-user
+    dockerBuildCommand := {
+      if (sys.props("os.arch") != "amd64" && sys.env.getOrElse("TARGET_AMD64", "0") == "1") {
+        dockerExecCommand.value ++ Seq(
+          "buildx",
+          "build",
+          "--platform=linux/amd64",
+          "--load"
+        ) ++ dockerBuildOptions.value :+ "."
+      } else dockerBuildCommand.value
+    }
   )
 
   def ecrSettings: Seq[Def.Setting[_]] = {

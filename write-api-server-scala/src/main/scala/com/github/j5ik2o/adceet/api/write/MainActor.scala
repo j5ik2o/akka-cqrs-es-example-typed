@@ -2,42 +2,48 @@ package com.github.j5ik2o.adceet.api.write
 
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorRef, ActorSystem, Behavior }
-import akka.actor.{ ClassicActorSystemProvider, CoordinatedShutdown }
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
+import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
 import akka.cluster.typed.SelfUp
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
-import org.slf4j.{ Logger, LoggerFactory }
-import wvlet.airframe.{ DISupport, Session }
+import kamon.Kamon
+import org.slf4j.{Logger, LoggerFactory}
+import wvlet.airframe.{DISupport, Session}
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, ExecutionContext, ExecutionContextExecutor, Future }
-import scala.util.{ Failure, Success }
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
 
 object MainActor {
   sealed trait Command
+
   case object MeUp extends Command
 
   val logger: Logger = LoggerFactory.getLogger(classOf[MainActor])
 }
 
 class MainActor(val session: Session) extends DISupport {
+
   import MainActor._
 
-  def create: Behavior[Command] = {
+  def create(args: Args): Behavior[Command] = {
     Behaviors.setup { ctx =>
+      if (args.environment == Environments.Production)
+        Kamon.init()
+
       session.withChildSession(DISettings.mainActor(ctx)) { childSession =>
-        val config                  = ctx.system.settings.config
-        val host                    = config.getString("http.host")
-        val port                    = config.getInt("http.port")
+        val config = ctx.system.settings.config
+        val host = config.getString("http.host")
+        val port = config.getInt("http.port")
         val terminationHardDeadLine = config.getDuration("management.http.termination-hard-deadline").toMillis.millis
         val loadBalancerDetachWaitDuration =
           config.getDuration("management.http.load-balancer-detach-wait-duration").toMillis.millis
 
-        implicit val system: ActorSystem[_]       = ctx.system
+        implicit val system: ActorSystem[_] = ctx.system
         implicit val ec: ExecutionContextExecutor = ctx.executionContext
 
         val future = for {
@@ -55,18 +61,23 @@ class MainActor(val session: Session) extends DISupport {
         Behaviors
           .receiveMessage[Command] { case MeUp =>
             Behaviors.same
-          }
+          }.receiveSignal {
+          case (_, PostStop) =>
+            if (args.environment == Environments.Production)
+              Kamon.stop()
+            Behaviors.same
+        }
       }
     }
   }
 
   private def startApplicationServer(
-      session: Session,
-      system: ActorSystem[_],
-      host: String,
-      port: Int,
-      terminationHardDeadLine: FiniteDuration
-  )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
+                                      session: Session,
+                                      system: ActorSystem[_],
+                                      host: String,
+                                      port: Int,
+                                      terminationHardDeadLine: FiniteDuration
+                                    )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
 
     val threadController: ThreadController = session.build[ThreadController]
 
@@ -88,12 +99,12 @@ class MainActor(val session: Session) extends DISupport {
   }
 
   private def startHealthCheckServer(
-      system: ActorSystem[_],
-      loadBalancerDetachWaitDuration: FiniteDuration
-  )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
-    val typeName            = "akka-management"
+                                      system: ActorSystem[_],
+                                      loadBalancerDetachWaitDuration: FiniteDuration
+                                    )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
+    val typeName = "akka-management"
     val coordinatedShutdown = CoordinatedShutdown(system)
-    val akkaManagement      = AkkaManagement(system)
+    val akkaManagement = AkkaManagement(system)
     akkaManagement.start().map { _ =>
       logger
         .info(

@@ -15,7 +15,6 @@ lazy val `write-api-base` = (project in file("write-api-base"))
   ).settings(
     name := "adceet-write-api-base",
     libraryDependencies ++= Seq(
-      "org.mockito" %% "mockito-scala" % "1.17.5" % Test,
       airframe.di,
       typesafeAkka.akkaPersistenceTyped,
       j5ik2o.akkaPersistenceDynamoDBJournal,
@@ -52,6 +51,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       kamon.logback,
       kamon.datadog,
       aichler.jupiterInterface(JupiterKeys.jupiterVersion.value) % Test,
+      mockito.mocktioScala                                       % Test,
       scalatest.scalatest                                        % Test,
       jupiter.jupiterApi                                         % Test,
       jupiter.jupiter                                            % Test,
@@ -104,7 +104,11 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
     Test / publishArtifact := false,
     run / fork := false,
     Test / parallelExecution := false,
-    Global / cancelable := false
+    Global / cancelable := false,
+    libraryDependencies ++= Seq(
+      "com.github.scopt" %% "scopt" % "4.0.1",
+      "com.beachape" %% "enumeratum" % "1.7.0"
+    )
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
 
 lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin"))
