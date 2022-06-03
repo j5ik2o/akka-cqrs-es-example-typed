@@ -2,7 +2,7 @@ locals {
   enabled = var.enabled
 }
 resource "aws_lb" "main" {
-  count = local.enabled ? 1 : 0
+  count              = local.enabled ? 1 : 0
   name               = "${var.prefix}-alb-${var.name}"
   internal           = false
   load_balancer_type = "application"
@@ -18,7 +18,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_alb_target_group" "main" {
-  count = local.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   name        = "${var.prefix}-tg-${var.name}"
   port        = 80
   protocol    = "HTTP"

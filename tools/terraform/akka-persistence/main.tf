@@ -5,12 +5,7 @@ resource "aws_dynamodb_table" "journal-table" {
   hash_key  = "pkey"
   range_key = "skey"
 
-  billing_mode   = "PROVISIONED"
-  read_capacity  = var.journal_read_capacity
-  write_capacity = var.journal_write_capacity
-
-  # DynamoDB Streamsのシャードを8とかにしたい場合は、↓を指定するといい
-  # write_capacity = 4000
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "pkey"
@@ -32,31 +27,12 @@ resource "aws_dynamodb_table" "journal-table" {
     type = "N"
   }
 
-  /*
-    attribute {
-      name = "tags"
-      type = "S"
-    }
-  */
-
   global_secondary_index {
     name            = "${var.prefix}-${var.journal_gsi_name}"
     hash_key        = "persistence-id"
     range_key       = "sequence-nr"
-    write_capacity  = 1800
-    read_capacity   = 400
     projection_type = "ALL"
   }
-
-  /*
-    global_secondary_index {
-      name            = "${var.prefix}-TagsIndex"
-      hash_key        = "tags"
-      write_capacity  = 1800
-      read_capacity   = 1
-      projection_type = "ALL"
-    }
-  */
 
   stream_enabled = true
   stream_view_type = "NEW_IMAGE"
@@ -79,11 +55,7 @@ resource "aws_dynamodb_table" "snapshot-table" {
   hash_key  = "persistence-id"
   range_key = "sequence-nr"
 
-  billing_mode   = "PROVISIONED"
-  read_capacity  = var.snapshot_read_capacity
-  write_capacity = var.snapshot_write_capacity
-  # DynamoDB Streamsのシャードを8とかにしたい場合は、↓を指定するといい
-  # write_capacity = 4000
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "persistence-id"

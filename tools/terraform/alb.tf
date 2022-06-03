@@ -1,6 +1,6 @@
 module "alb" {
   source              = "./alb"
-  enabled = var.alb_enabled
+  enabled             = var.alb_enabled
   prefix              = var.prefix
   name                = var.name
   vpc_id              = module.vpc.vpc_id

@@ -1,6 +1,3 @@
-locals {
-  eks_cluster_name = "${var.prefix}-${var.eks_cluster_name}"
-}
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
 
@@ -13,8 +10,8 @@ module "vpc" {
 
   database_subnets = [] # var.aws_subnet_database
 
-  # enable_nat_gateway   = true
-  # single_nat_gateway   = true
+#  enable_nat_gateway   = true
+#  single_nat_gateway   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -23,12 +20,12 @@ module "vpc" {
   }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+   # "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                          = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+   # "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"                 = "1"
   }
 }

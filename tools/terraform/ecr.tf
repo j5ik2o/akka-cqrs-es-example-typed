@@ -1,4 +1,4 @@
-module "ecr_akka_http_kamon_example" {
+module "ecr_akka_app" {
   source   = "./ecr"
   prefix   = var.prefix
   owner    = var.owner

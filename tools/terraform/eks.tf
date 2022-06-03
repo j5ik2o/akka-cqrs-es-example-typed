@@ -1,43 +1,29 @@
-resource "eksctl_cluster" "primary" {
-  eksctl_version = "0.38.0"
-  name           = "primary1"
-  region         = var.aws_region
-  vpc_id         = module.vpc.vpc_id
-  spec           = <<EOS
+locals {
+  cluster_name = "${var.prefix}-${var.eks_cluster_name}-${random_string.suffix.result}"
+}
 
-nodeGroups:
-  - name: ng-1
-    instanceType: t2.small
-    desiredCapacity: 1
+module "eks" {
+  source = "./eks"
+  create_eks = var.eks_enabled
+  aws_profile = var.aws_profile
+  aws_region = var.aws_region
 
-vpc:
-  clusterEndpoint:
-    privateAccess: true
-    publicAccess: true
-  cidr: "${module.vpc.vpc_cidr_block}"
-  subnets:
-    # must provide 'private' and/or 'public' subnets by availibility zone as shown
-    private:
-      ${module.vpc.azs[0]}:
-        id: "${module.vpc.private_subnets[0]}"
-        cidr: "${module.vpc.private_subnets_cidr_blocks[0]}" # (optional, must match CIDR used by the given subnet)
-      ${module.vpc.azs[1]}:
-        id: "${module.vpc.private_subnets[1]}"
-        cidr: "${module.vpc.private_subnets_cidr_blocks[1]}"  # (optional, must match CIDR used by the given subnet)
-      ${module.vpc.azs[2]}:
-        id: "${module.vpc.private_subnets[2]}"
-        cidr: "${module.vpc.private_subnets_cidr_blocks[2]}"   # (optional, must match CIDR used by the given subnet)
-    public:
-      ${module.vpc.azs[0]}:
-        id: "${module.vpc.public_subnets[0]}"
-        cidr: "${module.vpc.public_subnets_cidr_blocks[0]}" # (optional, must match CIDR used by the given subnet)
-      ${module.vpc.azs[1]}:
-        id: "${module.vpc.public_subnets[1]}"
-        cidr: "${module.vpc.public_subnets_cidr_blocks[1]}"  # (optional, must match CIDR used by the given subnet)
-      ${module.vpc.azs[2]}:
-        id: "${module.vpc.public_subnets[2]}"
-        cidr: "${module.vpc.public_subnets_cidr_blocks[2]}"   # (optional, must match CIDR used by the given subnet)
+  prefix = var.prefix
 
-EOS
+  vpc_id = module.vpc.vpc_id
+  eks_cluster_name = local.cluster_name
+  subnet_ids = module.vpc.private_subnets
 
+  vpc_security_group_ids = [module.vpc.default_security_group_id]
+
+  eks_node_instance_type = var.eks_node_instance_type
+  eks_asg_desired_capacity = var.eks_asg_desired_capacity
+  eks_asg_max_size = var.eks_asg_max_size
+  eks_asg_min_size = var.eks_asg_min_size
+
+  eks_auth_users = var.eks_auth_users
+  eks_auth_roles = var.eks_auth_roles
+  eks_auth_accounts = var.eks_auth_accounts
+
+  eks_root_volume_type = var.eks_root_volume_type
 }

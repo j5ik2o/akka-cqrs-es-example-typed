@@ -4,16 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.10.0"
     }
-    eksctl = {
-      source  = "mumoshu/eksctl"
-      version = "0.15.1"
-    }
   }
   backend "s3" {
   }
 }
-
-provider "eksctl" {}
 
 data "aws_region" "current" {
 }

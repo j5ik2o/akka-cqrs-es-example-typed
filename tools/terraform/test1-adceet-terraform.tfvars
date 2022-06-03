@@ -12,17 +12,14 @@ health_check_path = "/health/ready"
 
 alb_enabled = true
 akka_persistence_enabled = false
-
 ecs_task_enabled = false
+
+eks_enabled = true
+eks_cluster_name = "test"
 
 # https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/AWS_Fargate.html
 ecs_task_cpu = "512"
 ecs_task_memory = "4096"
-
-akka_persistence_journal_read_capacity = 1800
-akka_persistence_journal_write_capacity = 1800
-akka_persistence_snapshot_read_capacity = 1800
-akka_persistence_snapshot_write_capacity = 1800
 
 jvm_heap_min = "1024m"
 jvm_heap_max = "1024m"

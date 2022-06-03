@@ -4,6 +4,7 @@ locals {
 }
 
 module "ecs" {
+  count                    = local.enabled ? 1 : 0
 
   source = "terraform-aws-modules/ecs/aws"
 
@@ -25,6 +26,7 @@ module "ecs" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
+  count                    = local.enabled ? 1 : 0
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -45,7 +47,8 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 EOF
 }
 
-resource "aws_iam_policy" "akka_http_kamon_example_ecs_policy" {
+resource "aws_iam_policy" "akka-app_ecs_policy" {
+  count                    = local.enabled ? 1 : 0
   name = "${var.prefix}-ecs-policy-${var.name}"
   path = "/"
   policy = <<EOF
@@ -77,22 +80,24 @@ resource "aws_iam_policy" "akka_http_kamon_example_ecs_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "akka-http-kamon-example-attach_ec2_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.akka_http_kamon_example_ecs_policy.arn
+resource "aws_iam_role_policy_attachment" "akka-app-attach_ec2_policy" {
+  count                    = local.enabled ? 1 : 0
+  role       = aws_iam_role.ecs_task_execution_role[0].name
+  policy_arn = aws_iam_policy.akka-app_ecs_policy[0].arn
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
+  count                    = local.enabled ? 1 : 0
   name  = "/ecs/logs/${var.prefix}-${var.name}"
 }
 
-resource "aws_ecs_task_definition" "akka-http-kamon-example" {
+resource "aws_ecs_task_definition" "akka-app" {
   count                    = local.enabled ? 1 : 0
   family                   = "${var.prefix}-ecs-task-def-${var.name}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role[0].arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role[0].arn
   cpu                      = var.ecs_task_cpu
   memory                   = var.ecs_task_memory
   container_definitions    = <<EOF
@@ -100,7 +105,7 @@ resource "aws_ecs_task_definition" "akka-http-kamon-example" {
   {
     "name": "${var.prefix}-${var.name}",
     "essential": true,
-    "image": "${module.ecr_akka_http_kamon_example.aws_ecr_repository_url}:${var.image_tag}",
+    "image": "${module.ecr_akka_app.aws_ecr_repository_url}:${var.image_tag}",
     "environment": [
       { "name": "ROOT_LOG_LEVEL", "value": "INFO" },
       { "name": "JVM_HEAP_MIN", "value": "${var.jvm_heap_min}" },
@@ -110,7 +115,7 @@ resource "aws_ecs_task_definition" "akka-http-kamon-example" {
       { "name": "CONFIG_RESOURCE", "value": "production.conf" },
       { "name": "KAMON_ENVIRONMENT_TAGS_ENV", "value": "${var.prefix}-${var.name}" },
       { "name": "AKKA_DISCOVERY_AWS_API_ECS_SERVICE", "value": "${local.ecs_service_name}" },
-      { "name": "AKKA_DISCOVERY_AWS_API_ECS_CLUSTER", "value": "${module.ecs.ecs_cluster_name}" },
+      { "name": "AKKA_DISCOVERY_AWS_API_ECS_CLUSTER", "value": "${module.ecs[0].ecs_cluster_name}" },
       { "name": "AKKA_CLUSTER_SHARDING_NUMBER_OF_SHARDS", "value": "${var.number_of_shards}" },
       { "name": "J5IK2O_DYNAMO_DB_JOURNAL_TABLE_NAME", "value": "${module.akka.aws_dynamodb_table_journal_table_name}" },
       { "name": "J5IK2O_DYNAMO_DB_JOURNAL_GET_JOURNAL_ROWS_INDEX_NAME", "value": "${module.akka.aws_dynamodb_table_journal_gsi_name}" },
@@ -124,7 +129,7 @@ resource "aws_ecs_task_definition" "akka-http-kamon-example" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "${aws_cloudwatch_log_group.log_group.name}",
+        "awslogs-group": "${aws_cloudwatch_log_group.log_group[0].name}",
         "awslogs-region": "${data.aws_region.current.name}",
         "awslogs-stream-prefix": "${var.prefix}-${var.name}"
       }
@@ -156,7 +161,7 @@ resource "aws_ecs_task_definition" "akka-http-kamon-example" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group":  "${aws_cloudwatch_log_group.log_group.name}",
+        "awslogs-group":  "${aws_cloudwatch_log_group.log_group[0].name}",
         "awslogs-region": "${data.aws_region.current.name}",
         "awslogs-stream-prefix": "datadog-agent"
       }
@@ -170,12 +175,12 @@ EOF
   ]
 }
 
-resource "aws_ecs_service" "akka_http_kamon_example_service" {
+resource "aws_ecs_service" "akka_http_service" {
   count    = local.enabled ? 1 : 0
   name     = local.ecs_service_name
-  cluster  = module.ecs.ecs_cluster_id
+  cluster  = module.ecs[0].ecs_cluster_id
 
-  task_definition = aws_ecs_task_definition.akka-http-kamon-example[0].arn
+  task_definition = aws_ecs_task_definition.akka-app[0].arn
 
   desired_count   = 3
 

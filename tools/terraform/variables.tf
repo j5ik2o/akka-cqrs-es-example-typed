@@ -11,7 +11,7 @@ variable "prefix" {
 }
 
 variable "name" {
-  default = "kamon-example"
+  default = "akka-app"
 }
 
 variable "owner" {
@@ -80,11 +80,6 @@ variable "akka_persistence_snapshot_name" {
   type = string
 }
 
-variable "akka_persistence_journal_read_capacity" {}
-variable "akka_persistence_journal_write_capacity" {}
-variable "akka_persistence_snapshot_read_capacity" {}
-variable "akka_persistence_snapshot_write_capacity" {}
-
 variable "number_of_shards" {
   type = number
 }
@@ -94,6 +89,10 @@ variable "ecs_task_enabled" {
 }
 
 variable "alb_enabled" {
+  default = false
+}
+
+variable "eks_enabled" {
   default = false
 }
 
@@ -130,3 +129,77 @@ variable "datadog-agent-key" {
 variable "eks_cluster_name" {
   type = string
 }
+
+variable "eks_node_instance_type" {
+  default = "t2.medium"
+}
+
+
+variable "eks_asg_desired_capacity" {
+  default = 3
+}
+
+variable "eks_asg_min_size" {
+  default = 3
+}
+
+variable "eks_asg_max_size" {
+  default = 10
+}
+
+variable "eks_auth_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap."
+  type = list(string)
+
+  default = [
+    "777777777777",
+    "888888888888",
+  ]
+}
+
+variable "eks_auth_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap."
+  type = list(object({
+    rolearn = string
+    username = string
+    groups = list(string)
+  }))
+
+  default = [
+    {
+      rolearn = "arn:aws:iam::66666666666:role/role1"
+      username = "role1"
+      groups = [
+        "system:masters"]
+    },
+  ]
+}
+
+variable "eks_auth_users" {
+  description = "Additional IAM users to add to the aws-auth configmap."
+  type = list(object({
+    userarn = string
+    username = string
+    groups = list(string)
+  }))
+
+  default = [
+    {
+      userarn = "arn:aws:iam::66666666666:user/user1"
+      username = "user1"
+      groups = [
+        "system:masters"]
+    },
+    {
+      userarn = "arn:aws:iam::66666666666:user/user2"
+      username = "user2"
+      groups = [
+        "system:masters"]
+    },
+  ]
+}
+
+variable "eks_root_volume_type" {
+  default = "gp2"
+}
+
