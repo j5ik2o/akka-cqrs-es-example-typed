@@ -2,16 +2,17 @@
 
 ## Tools
 
+- awscli
 - asdf
+- jq
 - java
 - sbt
 - terraform
-- jq
 
 ## Set up
 
 ```sh
-$ brew install asdf jq
+$ brew install awscli asdf jq
 ```
 
 - JDK
