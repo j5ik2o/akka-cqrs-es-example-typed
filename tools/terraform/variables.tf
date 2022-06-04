@@ -1,5 +1,5 @@
 variable "aws_region" {
-  default = "ap-northeast-1"
+  default = ""
 }
 
 variable "aws_profile" {
@@ -84,7 +84,7 @@ variable "number_of_shards" {
   type = number
 }
 
-variable "ecs_task_enabled" {
+variable "ecs_enabled" {
   default = false
 }
 
@@ -94,6 +94,10 @@ variable "alb_enabled" {
 
 variable "eks_enabled" {
   default = false
+}
+
+variable "eks_version" {
+  default = "1.21"
 }
 
 variable "image_tag" {
@@ -124,10 +128,6 @@ variable "jvm_meta_max" {
 variable "datadog-agent-key" {
   type = string
   default = ""
-}
-
-variable "eks_cluster_name" {
-  type = string
 }
 
 variable "eks_node_instance_type" {

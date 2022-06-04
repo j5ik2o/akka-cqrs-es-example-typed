@@ -1,10 +1,5 @@
-locals {
-  enabled = var.ecs_task_enabled
-  ecs_service_name = "${var.prefix}-ecs-service-${var.name}"
-}
-
 module "ecs" {
-  count                    = local.enabled ? 1 : 0
+  count                    = var.ecs_enabled ? 1 : 0
 
   source = "terraform-aws-modules/ecs/aws"
 
@@ -26,7 +21,7 @@ module "ecs" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  count                    = local.enabled ? 1 : 0
+  count                    = var.ecs_enabled ? 1 : 0
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -48,7 +43,7 @@ EOF
 }
 
 resource "aws_iam_policy" "akka-app_ecs_policy" {
-  count                    = local.enabled ? 1 : 0
+  count                    = var.ecs_enabled ? 1 : 0
   name = "${var.prefix}-ecs-policy-${var.name}"
   path = "/"
   policy = <<EOF
@@ -81,18 +76,18 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "akka-app-attach_ec2_policy" {
-  count                    = local.enabled ? 1 : 0
+  count                    =var.ecs_enabled ? 1 : 0
   role       = aws_iam_role.ecs_task_execution_role[0].name
   policy_arn = aws_iam_policy.akka-app_ecs_policy[0].arn
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
-  count                    = local.enabled ? 1 : 0
+  count                    = var.ecs_enabled ? 1 : 0
   name  = "/ecs/logs/${var.prefix}-${var.name}"
 }
 
 resource "aws_ecs_task_definition" "akka-app" {
-  count                    = local.enabled ? 1 : 0
+  count                    = var.ecs_enabled ? 1 : 0
   family                   = "${var.prefix}-ecs-task-def-${var.name}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
@@ -176,7 +171,7 @@ EOF
 }
 
 resource "aws_ecs_service" "akka_http_service" {
-  count    = local.enabled ? 1 : 0
+  count    = var.ecs_enabled ? 1 : 0
   name     = local.ecs_service_name
   cluster  = module.ecs[0].ecs_cluster_id
 

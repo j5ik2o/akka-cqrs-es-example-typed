@@ -1,10 +1,10 @@
 module "eks" {
-  source = "terraform-aws-modules/eks/aws"
+  source  = "terraform-aws-modules/eks/aws"
   version = "~> 18.0"
 
   create = var.create_eks
 
-  cluster_name = var.eks_cluster_name
+  cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_version
 
   cluster_endpoint_private_access = true
@@ -15,17 +15,19 @@ module "eks" {
       resolve_conflicts = "OVERWRITE"
     }
     kube-proxy = {}
-    vpc-cni = {
+    vpc-cni    = {
       resolve_conflicts = "OVERWRITE"
     }
   }
 
-  cluster_encryption_config = [{
-    provider_key_arn = aws_kms_key.eks.arn
-    resources        = ["secrets"]
-  }]
+  cluster_encryption_config = [
+    {
+      provider_key_arn = aws_kms_key.eks.arn
+      resources        = ["secrets"]
+    }
+  ]
 
-  vpc_id = var.vpc_id
+  vpc_id     = var.vpc_id
   subnet_ids = var.subnet_ids
 
   # Extend cluster security group rules
@@ -61,36 +63,6 @@ module "eks" {
     }
   }
 
-
-  # Self Managed Node Group(s)
-  self_managed_node_group_defaults = {
-    vpc_security_group_ids       = [aws_security_group.all_worker_mgmt[0].id]
-    iam_role_additional_policies = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
-  }
-
-  self_managed_node_groups = {
-    spot = {
-      instance_type = "m5.large"
-      instance_market_options = {
-        market_type = "spot"
-      }
-
-      pre_bootstrap_user_data = <<-EOT
-      echo "foo"
-      export FOO=bar
-      EOT
-
-      bootstrap_extra_args = "--kubelet-extra-args '--node-labels=node.kubernetes.io/lifecycle=spot'"
-
-      post_bootstrap_user_data = <<-EOT
-      cd /tmp
-      sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
-      sudo systemctl enable amazon-ssm-agent
-      sudo systemctl start amazon-ssm-agent
-      EOT
-    }
-  }
-
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"
@@ -101,15 +73,15 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    blue = {}
+    blue  = {}
     green = {
       min_size     = 1
-      max_size     = 10
+      max_size     = 3
       desired_size = 1
 
-      instance_types = ["t3.large"]
+      instance_types = [var.eks_node_instance_type]
       capacity_type  = "SPOT"
-      labels = {
+      labels         = {
         Environment = "test"
         GithubRepo  = "terraform-aws-eks"
         GithubOrg   = "terraform-aws-modules"
@@ -135,54 +107,37 @@ module "eks" {
 
   tags = {
     Environment = "test"
-    GithubRepo = "terraform-aws-eks"
-    GithubOrg = "terraform-aws-modules"
+    GithubRepo  = "terraform-aws-eks"
+    GithubOrg   = "terraform-aws-modules"
   }
-
-#  kubeconfig_aws_authenticator_env_variables = {
-#    AWS_PROFILE = var.aws_profile
-#  }
-#
-#  worker_groups = [
-#    {
-#      name = "app"
-#      instance_type = var.eks_node_instance_type
-#      asg_max_size = var.eks_asg_max_size
-#      asg_min_size = var.eks_asg_min_size
-#      asg_desired_capacity = var.eks_asg_desired_capacity
-#      root_volume_type = var.eks_root_volume_type
-#      tags = [
-#        {
-#          key = "k8s.io/cluster-autoscaler/enabled"
-#          propagate_at_launch = "true"
-#          value = "true"
-#        },
-#        {
-#          key = "k8s.io/cluster-autoscaler/${var.eks_cluster_name}"
-#          propagate_at_launch = "true"
-#          value = "owned"
-#        }
-#      ]
-#    }
-#  ]
-
-#  worker_additional_security_group_ids = [
-#    element(concat(aws_security_group.all_worker_mgmt[*].id, list("")), 0)]
-
-//  workers_additional_policies = [
-//    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-//    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-//    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
-//  ]
-
-#  config_output_path = "./config/"
 
   manage_aws_auth_configmap = true
 
-  aws_auth_roles = var.eks_auth_roles
-  aws_auth_users = var.eks_auth_users
+  aws_auth_node_iam_role_arns_non_windows = [
+    module.eks_managed_node_group.iam_role_arn
+  ]
+  aws_auth_roles    = var.eks_auth_roles
+  aws_auth_users    = var.eks_auth_users
   aws_auth_accounts = var.eks_auth_accounts
 
+}
+
+
+
+resource "aws_iam_role" "eks" {
+  name               = "eks_role"
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "eks.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
 }
 
 resource "aws_kms_key" "eks" {
@@ -190,5 +145,5 @@ resource "aws_kms_key" "eks" {
   deletion_window_in_days = 7
   enable_key_rotation     = true
 
-#  tags = local.tags
+  #  tags = local.tags
 }

@@ -15,6 +15,7 @@ source ../../env.sh
 export AWS_PAGER=""
 
 TABLE_NAME="${PREFIX}-${APPLICATION_NAME}-terraform-lock"
+echo "TABLE_NAME=$TABLE_NAME"
 
 aws --profile "$AWS_PROFILE" dynamodb \
   create-table \

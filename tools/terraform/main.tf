@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.10.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.11.0"
+    }
   }
   backend "s3" {
   }
@@ -18,4 +22,7 @@ resource "random_string" "suffix" {
 }
 
 data "aws_availability_zones" "available" {
+}
+
+data "aws_caller_identity" "current" {
 }

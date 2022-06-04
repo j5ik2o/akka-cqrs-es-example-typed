@@ -27,7 +27,7 @@ variable "prefix" {
 }
 
 variable "eks_version" {
-  default = "1.15"
+  default = "1.20"
 }
 
 variable "eks_cluster_name" {}

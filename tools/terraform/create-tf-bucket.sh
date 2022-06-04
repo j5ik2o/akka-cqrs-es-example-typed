@@ -15,6 +15,7 @@ source ../../env.sh
 export AWS_PAGER=""
 
 BUCKET_NAME="${PREFIX}-${APPLICATION_NAME}-terraform"
+echo "BUCKET_NAME=$BUCKET_NAME"
 
 aws --profile "${AWS_PROFILE}" \
   s3api create-bucket \
