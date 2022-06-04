@@ -34,3 +34,5 @@ tools/terraform $ ./terraform-apply.sh
 ```shell
 tools/terraform $ ./terraform-destroy.sh
 ```
+
+aws --profile adceet eks --region us-east-1 update-kubeconfig --name 

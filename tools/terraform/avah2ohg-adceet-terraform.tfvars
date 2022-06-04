@@ -15,13 +15,6 @@ akka_persistence_enabled = false
 ecs_enabled              = false
 
 eks_enabled      = true
-eks_auth_users   = [
-  {
-    userarn  = "arn:aws:iam::738575627980:user/j5ik2o-test"
-    username = "j5ik2o-test"
-    groups   = ["system:masters"]
-  }
-]
 
 # https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/AWS_Fargate.html
 ecs_task_cpu    = "512"

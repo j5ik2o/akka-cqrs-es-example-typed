@@ -107,14 +107,6 @@ module "eks" {
     }
   }
 
-#  eks_managed_node_group_defaults = {
-#    ami_type       = "AL2_x86_64"
-#    instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
-#
-#    attach_cluster_primary_security_group = true
-#    vpc_security_group_ids                = concat(module.vpc.default_security_group_id,aws_security_group.additional.*.id, [""])
-#  }
-
   eks_managed_node_groups = {
     initial = {
       capacity_type = "ON_DEMAND"
@@ -143,8 +135,6 @@ module "eks" {
   manage_aws_auth_configmap = true
 
   aws_auth_roles    = local.aws_auth_roles
-  aws_auth_users    = var.eks_auth_users
-  // aws_auth_accounts = var.eks_auth_accounts
 
 }
 
