@@ -14,7 +14,8 @@ source ../../env.sh
 
 export AWS_PAGER=""
 
-BUCKET_NAME="${PREFIX}-${APPLICATION_NAME}-terraform"
-echo "BUCKET_NAME=$BUCKET_NAME"
+TABLE_NAME="${PREFIX}-${APPLICATION_NAME}-terraform-lock"
+echo "TABLE_NAME=$TABLE_NAME"
 
-aws --profile "${AWS_PROFILE}" s3 mb s3://"$BUCKET_NAME"
+aws --profile "$AWS_PROFILE" \
+  dynamodb delete-table  --table-name "$TABLE_NAME"

@@ -12,5 +12,9 @@ fi
 
 source ../../env.sh
 
-# shellcheck disable=SC2046
-aws --profile "$AWS_PROFILE" eks update-kubeconfig --name $(./terraform-output.sh -raw eks_cluster_name)
+export AWS_PAGER=""
+
+BUCKET_NAME="${PREFIX}-${APPLICATION_NAME}-terraform"
+echo "BUCKET_NAME=$BUCKET_NAME"
+
+aws --profile "${AWS_PROFILE}" s3 rb s3://"$BUCKET_NAME" --force

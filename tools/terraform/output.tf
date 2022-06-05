@@ -47,6 +47,14 @@ output "vpc_cidr_block" {
 #  }
 #}
 
+output "eks_cluster_name" {
+  value = local.eks_cluster_name
+}
+
+output "eks_aws_auth_config_map" {
+  value = module.eks.aws_auth_configmap_yaml
+}
+
 output "alb_lb_dns_name" {
   value = module.alb.aws_lb_dns_name
 }

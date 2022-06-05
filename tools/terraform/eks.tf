@@ -28,18 +28,6 @@
 #  eks_root_volume_type = var.eks_root_volume_type
 #}
 
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_id]
-  }
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "18.23.0"
@@ -110,14 +98,14 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       capacity_type = "ON_DEMAND"
-      instance_types = ["t3.medium"]
+      instance_types = ["t2.medium"]
 
       min_size     = 1
       max_size     = 3
       desired_size = 1
 
       labels         = {
-        Environment = "test"
+        Environment = var.prefix
         GithubRepo  = "terraform-aws-eks"
         GithubOrg   = "terraform-aws-modules"
       }
@@ -125,9 +113,8 @@ module "eks" {
     }
   }
 
-
   tags = {
-    Environment = "test"
+    Environment = var.prefix
     GithubRepo  = "terraform-aws-eks"
     GithubOrg   = "terraform-aws-modules"
   }
