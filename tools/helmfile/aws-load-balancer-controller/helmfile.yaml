@@ -2,12 +2,12 @@ repositories:
   - name: eks
     url: https://aws.github.io/eks-charts
 environments:
-  {{ .Environment.Name }}:
+  "{{ .Environment.Name }}":
     values:
-      - ./environments/{{ .Environment.Name }}-values.yaml
+      - "./environments/{{ .Environment.Name }}-values.yaml"
 releases:
   - name: aws-load-balancer-controller
-  #  version: 2.4.0
+    version: 1.4.1
     namespace: kube-system
     chart: eks/aws-load-balancer-controller
     values:

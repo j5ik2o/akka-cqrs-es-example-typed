@@ -5,7 +5,7 @@
 ### Applying ClusterRoleBinding
 
 ```shell
-$ kubectl apply -f kubernetes-dashboard-clusterrolebinding.yaml
+$ ./apply-cluster-role-bindig.sh
 ```
 
 ### Port-forwarding  
