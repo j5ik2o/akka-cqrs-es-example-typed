@@ -7,11 +7,12 @@ repositories:
     url: https://kubernetes-sigs.github.io/metrics-server/
   - name: kubernetes-dashboard
     url: https://kubernetes.github.io/dashboard/
+
 environments:
   {{ .Environment.Name }}:
-#helmfiles:
-#  - path: ./aws-alb-ingress-controller
-#  - path: ./cluster-autoscaler
+helmfiles:
+  - path: ./aws-load-balancer-controller
+  - path: ./cluster-autoscaler
 releases:
   - name: metrics-server
     version: 3.8.2
@@ -25,3 +26,4 @@ releases:
     chart: kubernetes-dashboard/kubernetes-dashboard
     values:
       - ./kubernetes-dashboard/values.yaml
+

@@ -1,0 +1,25 @@
+awsRegion: {{ .Values.awsRegion }}
+
+image:
+  repository: {{ .Values.image.repository }}
+  tag: {{ .Values.image.tag }}
+
+rbac:
+  create: {{ .Values.rbac.create }}
+  serviceAccount:
+    create: true
+    name: {{ .Values.rbac.serviceAccount.name }}
+    annotations:
+        eks.amazonaws.com/role-arn: {{ index .Values.rbac.serviceAccount.annotations "eks.amazonaws.com/role-arn" }}
+
+autoDiscovery:
+  enabled: {{ .Values.autoDiscovery.enabled }}
+  clusterName: {{ .Values.autoDiscovery.clusterName }}
+
+extraArgs:
+  expander: {{ .Values.extraArgs.expander }}
+  balance-similar-node-groups: {{ index .Values.extraArgs "balance-similar-node-groups" }}
+  skip-nodes-with-system-pods: {{ index .Values.extraArgs "skip-nodes-with-system-pods" }}
+
+podAnnotations:
+  "cluster-autoscaler.kubernetes.io/safe-to-evict": {{ index .Values.podAnnotations "cluster-autoscaler.kubernetes.io/safe-to-evict" | quote }}

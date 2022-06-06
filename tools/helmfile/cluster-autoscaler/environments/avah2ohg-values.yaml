@@ -1,21 +1,21 @@
-awsRegion: ${aws_region}
+awsRegion: us-east-1
 
 # https://github.com/kubernetes/autoscaler/issues/2920
 image:
-  repository: ${image_repository}
-  tag: ${image_tag}
+  repository: k8s.gcr.io/autoscaling/cluster-autoscaler
+  tag: v1.23.0
 
 rbac:
   create: true
   serviceAccount:
     create: true
-    name: ${service_account_name}
+    name: cluster-autoscaler-aws-cluster-autoscaler
     annotations:
-        eks.amazonaws.com/role-arn: "arn:aws:iam::${aws_account_id}:role/${iam_role_name}"
+        eks.amazonaws.com/role-arn: "arn:aws:iam::738575627980:role/avah2ohg-cluster-autoscaler"
 
 autoDiscovery:
   enabled: true
-  clusterName: ${eks_cluster_name}
+  clusterName: avah2ohg-eks-adceet
 
 extraArgs:
   expander: least-waste

@@ -10,13 +10,13 @@ data "template_file" "chart_values" {
     iam_role_name = local.iam_role_name
   }
   depends_on = [
-    aws_iam_policy.ALBIngressControllerIAMPolicy
+    aws_iam_policy.aws-load-balancer-controller
   ]
 }
 
 resource "local_file" "chart_values" {
   count = var.create ? 1 : 0
-  content = element(concat(data.template_file.chart_values[*].rendered, list("")), 0)
-  filename = pathexpand("${path.module}/../../../helmfile/${local.chart_name}/environments/${var.prefix}-values.yaml")
+  content = element(concat(data.template_file.chart_values.*.rendered, [""]), 0)
+  filename = pathexpand("${path.module}/../../helmfile/${local.chart_name}/environments/${var.prefix}-values.yaml")
   file_permission = 666
 }

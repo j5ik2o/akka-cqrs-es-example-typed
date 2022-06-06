@@ -16,7 +16,7 @@ variable "prefix" {
 }
 
 variable "k8s_service_account_name" {
-  default = "aws-alb-ingress-controller"
+  default = "aws-load-balancer-controller"
 }
 
 variable "k8s_service_namespace" {
