@@ -10,6 +10,9 @@ if [[ ! -e ./terraform-env.sh ]]; then
     exit 1
 fi
 
+# shellcheck disable=SC2034
+OUTPUT_ENV=1
+
 source terraform-env.sh
 
 terraform apply --state="${TF_STATE_NAME}" --var-file="${TF_VAR_FILE}" "$@"

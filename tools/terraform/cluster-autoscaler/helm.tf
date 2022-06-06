@@ -19,6 +19,6 @@ data "template_file" "chart_values" {
 resource "local_file" "chart_values" {
   count = var.create ? 1 : 0
   content = element(concat(data.template_file.chart_values[*].rendered, list("")), 0)
-  filename = pathexpand("${path.module}/../../../helmfile/${local.chart_name}/environments/${var.prefix}-values.yaml")
+  filename = pathexpand("${path.module}/../../helmfile/${local.chart_name}/environments/${var.prefix}-values.yaml")
   file_permission = 666
 }

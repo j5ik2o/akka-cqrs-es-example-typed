@@ -11,34 +11,87 @@
 
 ## Set up
 
+### asdf
+
 ```sh
-$ brew install awscli asdf jq
+$ brew install asdf
 ```
 
-- JDK
+### jq
+
+```shell
+$ asdf plugin-add jq https://github.com/AZMCode/asdf-jq.git
+$ asdf install jq 1.6
+$ asdf local jq 1.6
+```
+
+### awscli
+
+```shell
+$ asdf plugin add awscli
+$ asdf install awscli 2.7.6
+$ asdf local  awscli 2.7.6
+```
+
+### Terraform
+
+```sh
+$ asdf plugin add terraform
+$ asdf install terraform 1.2.1
+$ asdf local terraform 1.2.1
+```
+
+### JDK
 
 ```sh
 $ asdf plugin add java
 $ asdf list all java
 $ asdf instal java temurin-11.0.14+101
-$ asdf global java temurin-11.0.14+101
+$ asdf local java temurin-11.0.14+101
 ```
 
-- sbt
+### sbt
 
 ```sh
 $ asdf plugin add sbt
-$ asdf install sbt latest
-$ asdf global sbt latest
+$ asdf install sbt 1.6.2
+$ asdf local sbt 1.6.2
 ```
 
-- Terraform
+### EKSを使う場合
 
-```sh
-$ asdf plugin add terraform
-$ asdf install terraform latest
-$ asdf global terraform latest
+#### kubectl
+
+トラブルを避けるためサーバ側と同じバージョンのkubectlをインストールしてください
+
+```shell
+$ KUBECTL_VERSION=1.21.13
+$ asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
+$ asdf install kubectl $KUBECTL_VERSION
+akka-ddd-cqrs-es-example-typed $ asdf local kubectl $KUBECTL_VERSION # 必ずプロジェクトルートで設定する
+$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.13", GitCommit:"80ec6572b15ee0ed2e6efa97a4dcd30f57e68224", GitTreeState:"clean", BuildDate:"2022-05-24T12:40:44Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"darwin/arm64"}
+Server Version: version.Info{Major:"1", Minor:"21+", GitVersion:"v1.21.12-eks-a64ea69", GitCommit:"d4336843ba36120e9ed1491fddff5f2fec33eb77", GitTreeState:"clean", BuildDate:"2022-05-12T18:29:27Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"linux/amd64"}
 ```
+
+#### helm
+
+```shell
+$ asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
+$ asdf install helm 3.9.0
+$ asdf local helm 3.9.0
+# helmfileで必要なプラグイン
+$ helm plugin install https://github.com/databus23/helm-diff
+```
+
+#### helmfile
+
+```shell
+$ asdf plugin-add helmfile https://github.com/feniix/asdf-helmfile.git
+$ asdf install helmfile 0.144.0
+$ asdf local helmfile 0.144.0
+```
+
 
 ## 初期設定
 

@@ -27,12 +27,34 @@ tools/terraform $ ./terraform-plan.sh
 
 ```shell
 tools/terraform $ ./terraform-apply.sh
+
+# -auto-approveを付けると確認なしで実行します。
+# tools/terraform $ ./terraform-apply.sh -auto-approve
 ```
 
 - インフラを破棄する
 
 ```shell
-tools/terraform $ ./terraform-destroy.sh
+tools/terraform $ ./terraform-destroy.sh 
+
+# -auto-approveを付けると確認なしで実行します。
+# tools/terraform $ ./terraform-destroy.sh -auto-approve
 ```
 
-aws --profile adceet eks --region us-east-1 update-kubeconfig --name 
+## kubeconfig
+
+```shell
+# ~/.kube/configが出力される
+$ ./update-kubeconfig.sh
+```
+
+## auth-config-map
+
+```shell
+# tools/terraform/eks_aws_auth_config_map
+$ ./export-auth-config-map.sh
+```
+
+```shell
+$ ./apply-auth-config-map.sh
+```

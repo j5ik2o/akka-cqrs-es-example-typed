@@ -10,7 +10,7 @@ number_of_shards     = 30
 health_check_port = 8558
 health_check_path = "/health/ready"
 
-alb_enabled              = true
+alb_enabled              = false
 akka_persistence_enabled = false
 ecs_enabled              = false
 

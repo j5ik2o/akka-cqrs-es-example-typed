@@ -19,6 +19,7 @@ Thumb.db
 env.sh
 
 .terraform/
+.shoal/
 
 .terraform.lock.hcl
 *.log
@@ -26,3 +27,7 @@ env.sh
 project/target
 target/
 .bsp/
+
+.tool-versions
+
+eks_aws_auth_config_map.yaml
