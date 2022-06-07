@@ -32,4 +32,5 @@ target/
 .sops.yaml
 eks_aws_auth_config_map.yaml
 
-environments/*.yaml
+**/environments/*-values.yaml
+**/*-terraform.tfvars
