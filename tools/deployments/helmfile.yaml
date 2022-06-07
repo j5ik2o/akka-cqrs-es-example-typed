@@ -1,23 +1,25 @@
 ---
 repositories:
-  - name: stable
-    url: https://charts.helm.sh/stable
-  - name: incubator
-    url: https://charts.helm.sh/incubator
+  - name: datadog
+    url: https://helm.datadoghq.com
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
 environments:
   {{ .Environment.Name }}:
-helmfiles:
-  - path: ./write-api-server
+#helmfiles:
+#  - path: ./write-api-server
 releases:
   - name: datadog-agent
-    namespace: sagrada
+    namespace: kube-system
     createNamespace: false
-    chart: stable/datadog
+    chart: datadog/datadog
     values:
       - ./datadog/values.yaml
+    secrets:
+      - ./datadog/secrets.yaml
   - name: kube-state-metrics
-    namespace: sagrada
+    namespace: kube-system
     createNamespace: false
-    chart: stable/kube-state-metrics
+    chart: prometheus-community/kube-state-metrics
     values:
       - ./kube-state-metrics/values.yaml

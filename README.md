@@ -96,6 +96,14 @@ $ asdf install helm 3.9.0
 $ asdf local helm 3.9.0
 # helmfileで必要なプラグイン
 $ helm plugin install https://github.com/databus23/helm-diff
+$ helm plugin install https://github.com/jkroepke/helm-secrets --version v3.12.0
+# https://github.com/jkroepke/helm-secrets
+```
+
+helm-secretsのためにkmsキーを作る
+
+```shell
+$ aws --profile adceet kms create-key
 ```
 
 #### helmfile
