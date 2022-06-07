@@ -31,3 +31,5 @@ target/
 .tool-versions
 .sops.yaml
 eks_aws_auth_config_map.yaml
+
+environments/*.yaml

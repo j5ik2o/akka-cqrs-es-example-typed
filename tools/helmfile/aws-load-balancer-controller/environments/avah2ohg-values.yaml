@@ -1,7 +1,0 @@
-clusterName: avah2ohg-eks-adceet
-region: us-east-1
-vpcId: vpc-0801ba28d7679a4ac
-serviceAccount:
-  name: aws-load-balancer-controller
-  annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::738575627980:role/avah2ohg-eks-aws-load-balancer-controller"
