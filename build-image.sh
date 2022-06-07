@@ -10,6 +10,9 @@ if [[ ! -e ./env.sh ]]; then
     exit 1
 fi
 
-source ./env.sh
+# shellcheck disable=SC2034
+OUTPUT_ENV=1
+
+. ./env.sh
 
 sbt write-api-server-"${MODE}"/docker:publishLocal

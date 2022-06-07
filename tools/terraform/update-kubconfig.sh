@@ -12,7 +12,7 @@ fi
 
 OUTPUT_ENV=1
 
-source ../../env.sh
+. ../../env.sh
 
 # shellcheck disable=SC2046
-aws --profile "$AWS_PROFILE" eks update-kubeconfig --name $(OUTPUT_ENV=0 ./terraform-output.sh -raw eks_cluster_name)
+aws --profile "$AWS_PROFILE" eks update-kubeconfig --name $(./terraform-output.sh -raw eks_cluster_name)

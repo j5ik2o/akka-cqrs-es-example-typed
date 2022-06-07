@@ -7,7 +7,8 @@ repositories:
     url: https://kubernetes-sigs.github.io/metrics-server/
   - name: kubernetes-dashboard
     url: https://kubernetes.github.io/dashboard/
-
+  - name: cowboysysop
+    url: https://cowboysysop.github.io/charts/
 environments:
   {{ .Environment.Name }}:
 helmfiles:
@@ -26,4 +27,6 @@ releases:
     chart: kubernetes-dashboard/kubernetes-dashboard
     values:
       - ./kubernetes-dashboard/values.yaml
-
+#  - name: vertical-pod-autoscaler
+#    namespace: kube-system
+#    chart: cowboysysop/vertical-pod-autoscaler

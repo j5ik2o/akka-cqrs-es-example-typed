@@ -13,7 +13,7 @@ fi
 # shellcheck disable=SC2034
 OUTPUT_ENV=1
 
-source terraform-env.sh
+. ./terraform-env.sh
 
 terraform init -backend=true \
   -backend-config="region=${AWS_REGION}" \

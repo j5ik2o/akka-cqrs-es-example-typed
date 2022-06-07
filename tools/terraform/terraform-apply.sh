@@ -13,6 +13,6 @@ fi
 # shellcheck disable=SC2034
 OUTPUT_ENV=1
 
-source terraform-env.sh
+. ./terraform-env.sh
 
 terraform apply --state="${TF_STATE_NAME}" --var-file="${TF_VAR_FILE}" "$@"

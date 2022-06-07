@@ -175,13 +175,15 @@ module "aws-load-balancer-controller" {
     module.eks
   ]
 }
-#
-#module "app" {
-#  source = "./app"
-#  create = var.create_eks
-#  prefix = var.prefix
-#  eks_cluster_id = module.eks.cluster_id
-#  eks_cluster_version = module.eks.cluster_version
-#  eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-#  dependencies = [module.eks.kubeconfig]
-#}
+
+module "app" {
+  source = "./app"
+  create = var.eks_enabled
+  prefix = var.prefix
+  eks_cluster_id = module.eks.cluster_id
+  eks_cluster_version = module.eks.cluster_version
+  eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  depends_on = [
+    module.eks
+  ]
+}

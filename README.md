@@ -23,6 +23,8 @@ $ brew install asdf
 $ asdf plugin-add jq https://github.com/AZMCode/asdf-jq.git
 $ asdf install jq 1.6
 $ asdf local jq 1.6
+$ jq --version
+jq-1.6
 ```
 
 ### awscli
@@ -31,6 +33,8 @@ $ asdf local jq 1.6
 $ asdf plugin add awscli
 $ asdf install awscli 2.7.6
 $ asdf local  awscli 2.7.6
+$ aws --version
+aws-cli/2.7.6 Python/3.9.11 Darwin/21.5.0 exe/x86_64 prompt/off
 ```
 
 ### Terraform
@@ -39,6 +43,12 @@ $ asdf local  awscli 2.7.6
 $ asdf plugin add terraform
 $ asdf install terraform 1.2.1
 $ asdf local terraform 1.2.1
+$ terraform version
+Terraform v1.2.1
+on darwin_arm64
+
+Your version of Terraform is out of date! The latest version
+is 1.2.2. You can update by downloading from https://www.terraform.io/downloads.html
 ```
 
 ### JDK
@@ -48,6 +58,10 @@ $ asdf plugin add java
 $ asdf list all java
 $ asdf instal java temurin-11.0.14+101
 $ asdf local java temurin-11.0.14+101
+$ java -version
+openjdk version "11.0.15" 2022-04-19
+OpenJDK Runtime Environment Temurin-11.0.15+10 (build 11.0.15+10)
+OpenJDK 64-Bit Server VM Temurin-11.0.15+10 (build 11.0.15+10, mixed mode)
 ```
 
 ### sbt

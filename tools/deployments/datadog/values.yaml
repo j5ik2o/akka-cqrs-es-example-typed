@@ -1,0 +1,14 @@
+datadog:
+#  # TODO Datadog API KEYの指定を外出ししたい
+  apiKey: "XXXXXX"
+  logLevel: INFO
+  kubeStateMetricsEnabled: false
+  dogstatsd:
+    nonLocalTraffic: true
+#  logs:
+#    enabled: true
+#    containerCollectAll: true
+  apm:
+    enabled: true
+agents:
+  useHostNetwork: true

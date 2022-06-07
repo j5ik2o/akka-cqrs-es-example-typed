@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-docker-compose down -v --remove-orphans $@
+docker-compose down -v --remove-orphans "$@"

@@ -1,0 +1,13 @@
+image:
+  repository: k8s.gcr.io/kube-state-metrics
+  tag: v1.8.0
+# replicas: 1
+# hostNetwork: true
+rbac:
+  create: true
+collectors:
+  volumeattachments: false
+  mutatingwebhookconfigurations: false
+  validatingwebhookconfigurations: false
+  networkpolicies: false
+  verticalpodautoscalers: false

@@ -5,7 +5,7 @@
 ### Applying ClusterRoleBinding
 
 ```shell
-$ ./apply-cluster-role-bindig.sh
+$ ./scripts/apply-cluster-role-bindig.sh
 ```
 
 ### Port-forwarding  

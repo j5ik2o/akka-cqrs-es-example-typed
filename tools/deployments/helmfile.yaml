@@ -1,0 +1,23 @@
+---
+repositories:
+  - name: stable
+    url: https://charts.helm.sh/stable
+  - name: incubator
+    url: https://charts.helm.sh/incubator
+environments:
+  {{ .Environment.Name }}:
+helmfiles:
+  - path: ./write-api-server
+releases:
+  - name: datadog-agent
+    namespace: sagrada
+    createNamespace: false
+    chart: stable/datadog
+    values:
+      - ./datadog/values.yaml
+  - name: kube-state-metrics
+    namespace: sagrada
+    createNamespace: false
+    chart: stable/kube-state-metrics
+    values:
+      - ./kube-state-metrics/values.yaml

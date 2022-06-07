@@ -5,7 +5,7 @@ if [[ ! -e ../../env.sh ]]; then
     exit 1
 fi
 
-source ../../env.sh
+. ../../env.sh
 
 # 新しいAWSアカウントの使用を開始する際、
 # TF_BUCKET_NAME に指定するS3バケット

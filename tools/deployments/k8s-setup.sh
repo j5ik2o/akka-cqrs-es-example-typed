@@ -5,7 +5,7 @@ set -eu
 # shellcheck disable=SC2046
 cd $(dirname "$0") || exit
 
-if [[ ! -e ./env.sh ]]; then
+if [ ! -e ../../env.sh ]; then
     echo "env.sh is not found."
     exit 1
 fi
@@ -13,8 +13,7 @@ fi
 # shellcheck disable=SC2034
 OUTPUT_ENV=1
 
-. ./env.sh
+. ../../env.sh
 
-export AWS_DEFAULT_PROFILE=$AWS_PROFILE
-
-sbt "$@"
+kubectl create -f "$PREFIX"/namespace.yaml
+kubectl create -f "$PREFIX"/service_account.yaml
