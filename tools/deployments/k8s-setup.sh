@@ -15,5 +15,5 @@ OUTPUT_ENV=1
 
 . ../../env.sh
 
-kubectl create -f "$PREFIX"/namespace.yaml
-kubectl create -f "$PREFIX"/service_account.yaml
+kubectl create -f adceet/"$PREFIX"/namespace.yaml
+kubectl create -f adceet/"$PREFIX"/service_account.yaml

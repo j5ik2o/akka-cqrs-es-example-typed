@@ -1,6 +1,7 @@
 locals {
   ecs_service_name = "${var.prefix}-ecs-service-${var.name}"
   eks_cluster_name   = replace("${var.prefix}-eks-${var.name}", "_", "-")
+  account_id = data.aws_caller_identity.current.account_id
 
   tags = {
     Example    = local.eks_cluster_name

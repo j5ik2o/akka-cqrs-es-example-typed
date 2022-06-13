@@ -39,11 +39,13 @@ aws-cli/2.7.6 Python/3.9.11 Darwin/21.5.0 exe/x86_64 prompt/off
 
 ### Terraform
 
+https://github.com/hashicorp/terraform
+
 ```sh
-$ asdf plugin add terraform
-$ asdf install terraform 1.2.1
-$ asdf local terraform 1.2.1
-$ terraform version
+adceet-root $ asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
+adceet-root $ ASDF_HASHICORP_OVERWRITE_ARCH=amd64 asdf install terraform 1.2.1
+adceet-root $ asdf local terraform 1.2.1
+adceet-root $ terraform version
 Terraform v1.2.1
 on darwin_arm64
 
@@ -51,7 +53,20 @@ Your version of Terraform is out of date! The latest version
 is 1.2.2. You can update by downloading from https://www.terraform.io/downloads.html
 ```
 
-### JDK
+### Terraformer
+
+https://github.com/GoogleCloudPlatform/terraforme
+
+```shell
+adceet-root $ asdf plugin add terraformer https://github.com/grimoh/asdf-terraformer.git
+adceet-root $ asdf install terraformer 0.8.20
+adceet-root $ asdf local terrformer 0.8.20
+adceet-root $ mkdir ./temp
+adceet-root/temp $ export GODEBUG=asyncpreemptoff=1
+adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer import datadog --resources=dashboard --filter=datadog_dashboard=XXXXX
+```
+
+### Java Development Kit
 
 ```sh
 $ asdf plugin add java

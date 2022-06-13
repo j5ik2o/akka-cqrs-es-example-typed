@@ -13,11 +13,11 @@ variable "dependencies" {
 
 
 variable "k8s_service_account_name" {
-  default = "app"
+  default = "adceet"
 }
 
 variable "k8s_service_namespace" {
-  default = "app"
+  default = "adceet"
 }
 
 variable "eks_cluster_id" {

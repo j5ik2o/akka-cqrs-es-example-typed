@@ -26,13 +26,13 @@ data "template_file" "namespace" {
 resource "local_file" "service_account" {
   count = var.create ? 1 : 0
   content = element(concat(data.template_file.service_account.*.rendered, [""]), 0)
-  filename = pathexpand("${path.module}/../../deployments/${var.prefix}/service_account.yaml")
+  filename = pathexpand("${path.module}/../../deployments/adceet/${var.prefix}/service_account.yaml")
   file_permission = 666
 }
 
 resource "local_file" "namespace" {
   count = var.create ? 1 : 0
   content = element(concat(data.template_file.namespace.*.rendered, [""]), 0)
-  filename = pathexpand("${path.module}/../../deployments/${var.prefix}/namespace.yaml")
+  filename = pathexpand("${path.module}/../../deployments/adceet/${var.prefix}/namespace.yaml")
   file_permission = 666
 }

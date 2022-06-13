@@ -176,10 +176,12 @@ module "aws-load-balancer-controller" {
   ]
 }
 
-module "app" {
-  source = "./app"
+module "adceet" {
+  source = "./adceet"
   create = var.eks_enabled
   prefix = var.prefix
+  k8s_service_namespace = "adceet"
+  k8s_service_account_name = "adceet"
   eks_cluster_id = module.eks.cluster_id
   eks_cluster_version = module.eks.cluster_version
   eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url

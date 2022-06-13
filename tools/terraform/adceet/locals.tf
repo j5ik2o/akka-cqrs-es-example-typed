@@ -1,5 +1,5 @@
 locals {
-  chart_name = "app"
+  chart_name = "write-api-server"
   k8s_service_namespace = var.k8s_service_namespace
   k8s_service_account_name = var.k8s_service_account_name
   iam_policy_name_prefix = "${var.prefix}-${local.chart_name}"
