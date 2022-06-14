@@ -1,7 +1,7 @@
 module "ecs" {
   count                    = var.ecs_enabled ? 1 : 0
 
-  source = "terraform-aws-modules/ecs/aws"
+  source = "registry.terraform.io/terraform-aws-modules/ecs/aws"
 
   name = "${var.prefix}-ecs-cluster-${var.name}"
 
