@@ -9,5 +9,5 @@ EOS
 ```
 
 ```shell
-AWS_PROFILE=profile-name helm secrets enc secrets.yaml
+AWS_PROFILE=XXX helm secrets enc secrets.yaml
 ```
