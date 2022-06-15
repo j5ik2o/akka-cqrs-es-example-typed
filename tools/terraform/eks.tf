@@ -189,3 +189,8 @@ module "adceet" {
     module.eks
   ]
 }
+
+resource "helm_release" "alb-controller-crds" {
+  name  = "alb-controller-crds"
+  chart = "../charts/alb-controller-crds"
+}

@@ -130,6 +130,8 @@ variable "datadog-agent-key" {
   default = ""
 }
 
+variable "datadog-api-key" {}
+
 variable "eks_node_instance_type" {
   default = "t2.medium"
 }

@@ -2,7 +2,7 @@
 - .sops.yaml
 
 ```shell
-datadog $ cat <<- EOS > .sops.yaml
+datadog $ cat <<- EOS > ..sops.yaml.tpl
 creation_rules:
 - kms: 'arn:aws:kms:ap-northeast-1:xxxxxx:key/xxxx-xxxx-xxxx-xxxxx'
 EOS

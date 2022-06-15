@@ -27,6 +27,12 @@ releases:
     chart: kubernetes-dashboard/kubernetes-dashboard
     values:
       - ./kubernetes-dashboard/values.yaml
+  - name: k8s-dashboard-crb
+    namespace: kubernetes-dashboard
+    chart: ../charts/k8s-dashboard-crb
+    needs:
+      - kubernetes-dashboard
 #  - name: vertical-pod-autoscaler
 #    namespace: kube-system
 #    chart: cowboysysop/vertical-pod-autoscaler
+
