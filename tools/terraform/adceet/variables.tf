@@ -3,12 +3,6 @@ variable "create" {
 }
 
 variable "prefix" {
-  default = "sg"
-}
-
-variable "dependencies" {
-  type = list(string)
-  default = []
 }
 
 variable "application_name" {}

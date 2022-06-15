@@ -46,7 +46,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
     assert(id == createThreadReply.threadId)
 
-    val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]
+    val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]()
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
       addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded]
@@ -61,7 +61,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     val messageId  = MessageId()
     val body       = "ABC"
 
-    val createThreadReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.CreateThreadReply]
+    val createThreadReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.CreateThreadReply]()
     threadRef ! ThreadAggregateProtocol.CreateThread(
       ULID.newULID,
       id,
@@ -72,13 +72,13 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
     assert(id == createThreadReply.threadId)
 
-    val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]
+    val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]()
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
       addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded]
     assert(id == addMemberReply.threadId)
 
-    val addMessageReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMessageReply]
+    val addMessageReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMessageReply]()
     threadRef ! ThreadAggregateProtocol.AddMessage(
       ULID.newULID,
       id,

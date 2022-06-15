@@ -80,6 +80,10 @@ variable "akka_persistence_snapshot_name" {
   type = string
 }
 
+variable "akka_persistence_snapshot_gsi_name" {
+  type = string
+}
+
 variable "number_of_shards" {
   type = number
 }

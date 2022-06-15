@@ -58,3 +58,20 @@ output "eks_aws_auth_config_map" {
 output "alb_lb_dns_name" {
   value = module.alb.aws_lb_dns_name
 }
+
+output "akka_persistence_journal_table_name" {
+  value = module.akka.aws_dynamodb_table_journal_table_name
+}
+
+output "akka_persistence_journal_gsi_name" {
+  value = module.akka.aws_dynamodb_table_journal_gsi_name
+}
+
+output "akka_persistence_snapshot_table_name" {
+  value = module.akka.aws_dynamodb_table_snapshot_table_name
+}
+
+output "akka_persistence_snapshot_gsi_name" {
+  value = module.akka.aws_dynamodb_table_snapshot_gsi_name
+}
+

@@ -8,7 +8,7 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.1"
 
-  val akkaPersistenceDynamoDB = "1.2.27"
+  val akkaPersistenceDynamoDB = "1.10.0"
 
   val akkaPersistenceS3Snapshot = "1.2.56"
 }
@@ -67,6 +67,10 @@ object Dependencies {
       "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % Version.akkaManagement
     val akkaDiscoveryAwsApiAsync =
       "com.lightbend.akka.discovery" %% "akka-discovery-aws-api-async" % Version.akkaManagement
+  }
+
+  object iheart {
+    val ficus = "com.iheart" %% "ficus" % "1.5.2"
   }
 
   object kotlinx {
@@ -148,10 +152,14 @@ object Dependencies {
   }
 
   object j5ik2o {
-    val akkaPersistenceDynamoDBJournal =
-      "com.github.j5ik2o" %% "akka-persistence-dynamodb-journal" % Version.akkaPersistenceDynamoDB
+    val akkaPersistenceDynamoDBJournalV1 =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-journal-v1" % Version.akkaPersistenceDynamoDB
+    val akkaPersistenceDynamoDBJournalV2 =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-journal-v2" % Version.akkaPersistenceDynamoDB
 
-    val akkaPersistenceDynamoDBSnapshot =
-      "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot" % Version.akkaPersistenceDynamoDB
+    val akkaPersistenceDynamoDBSnapshotV1 =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v1" % Version.akkaPersistenceDynamoDB
+    val akkaPersistenceDynamoDBSnapshotV2 =
+      "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v2" % Version.akkaPersistenceDynamoDB
   }
 }

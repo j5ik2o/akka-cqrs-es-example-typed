@@ -1,6 +1,6 @@
 package com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynamodb.journal
 
-import com.github.j5ik2o.akka.persistence.dynamodb.config.JournalPluginConfig
+import com.github.j5ik2o.akka.persistence.dynamodb.journal.config.JournalPluginConfig
 import com.github.j5ik2o.akka.persistence.dynamodb.journal.{ PartitionKey, PartitionKeyResolver, ToPersistenceIdOps }
 import com.github.j5ik2o.akka.persistence.dynamodb.model.{ PersistenceId, SequenceNumber }
 import net.ceedubs.ficus.Ficus._

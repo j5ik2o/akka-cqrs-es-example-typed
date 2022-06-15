@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "akka-app" {
   {
     "name": "${var.prefix}-${var.name}",
     "essential": true,
-    "image": "${module.ecr_akka_app.aws_ecr_repository_url}:${var.image_tag}",
+    "image": "${module.adceet-ecr-write-api-server.aws_ecr_repository_url}:${var.image_tag}",
     "environment": [
       { "name": "ROOT_LOG_LEVEL", "value": "INFO" },
       { "name": "JVM_HEAP_MIN", "value": "${var.jvm_heap_min}" },

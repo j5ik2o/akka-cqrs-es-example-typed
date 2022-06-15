@@ -98,7 +98,9 @@ module "eks" {
 
   manage_aws_auth_configmap = true
 
-  aws_auth_roles    = local.aws_auth_roles
+  aws_auth_roles = concat(local.aws_auth_roles, var.eks_auth_roles)
+  aws_auth_users = var.eks_auth_users
+  aws_auth_accounts = var.eks_auth_accounts
 
 }
 
@@ -203,7 +205,7 @@ module "adceet-write-api-server" {
   source = "./adceet"
   create = var.eks_enabled
   prefix = var.prefix
-  application_name = "adceet-write-api-server"
+  application_name = "write-api-server"
   k8s_service_namespace = "adceet"
   k8s_service_account_name = "adceet"
   eks_cluster_id = module.eks.cluster_id

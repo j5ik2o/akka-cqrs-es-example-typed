@@ -170,5 +170,5 @@ $ kubectl -n $DASHBOARD_NS port-forward $POD_NAME 8443:8443
 
 ```shell
 $ DASHBOARD_NS=kubernetes-dashboard
-$ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret | grep kubernetes-dashboard-token | awk '{print $1}')
+$ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret | grep kubernetes-dashboard-token | awk '{print $1}') | awk '$1=="token:"{print $2}'
 ```

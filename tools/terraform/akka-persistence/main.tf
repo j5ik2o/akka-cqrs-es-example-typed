@@ -52,10 +52,14 @@ resource "aws_dynamodb_table" "snapshot-table" {
   count = var.enabled ? 1 : 0
   name = "${var.prefix}-${var.snapshot_name}"
 
-  hash_key  = "persistence-id"
-  range_key = "sequence-nr"
+  hash_key  = "pkey"
 
   billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "pkey"
+    type = "S"
+  }
 
   attribute {
     name = "persistence-id"
@@ -65,6 +69,13 @@ resource "aws_dynamodb_table" "snapshot-table" {
   attribute {
     name = "sequence-nr"
     type = "N"
+  }
+
+  global_secondary_index {
+    name            = "${var.prefix}-${var.snapshot_gsi_name}"
+    hash_key        = "persistence-id"
+    range_key       = "sequence-nr"
+    projection_type = "ALL"
   }
 
   lifecycle {
