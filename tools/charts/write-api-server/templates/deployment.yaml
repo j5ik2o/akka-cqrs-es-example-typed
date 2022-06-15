@@ -35,7 +35,16 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.http.internalPort }}
+              protocol: TCP
+            - name: management
+              containerPort: {{ .Values.service.management.internalPort }}
+              protocol: TCP
+            - name: remoting
+              containerPort: {{ .Values.containerPort.akkaRemoting }}
+              protocol: TCP
+            - name: kamon
+              containerPort: {{ .Values.containerPort.kamon }}
               protocol: TCP
           livenessProbe:
             httpGet:

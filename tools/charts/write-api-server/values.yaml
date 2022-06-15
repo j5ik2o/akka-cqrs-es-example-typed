@@ -2,10 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 3
 
 image:
-  repository: nginx
+  repository: xxx.dkr.ecr.ap-northeast-1.amazonaws.com/adceet/adceet-write-api-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -37,8 +37,18 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  http:
+    externalPort: 18080
+    internalPort: 18080
+  management:
+    externalPort: 8558
+    internalPort: 8558
+    externalNodePort: 30081
+
+containerPort:
+  akkaRemoting: 25520
+  kamon: 5266
 
 ingress:
   enabled: false
@@ -80,3 +90,96 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+awsRegion: ap-northeast-1
+awsStsRegionalEndpoints: regional
+envName: production
+prefix: cwtest
+configResource: production.conf
+
+jvmHeapMin: 2048m
+jvmHeapMax: 2048m
+jvmMetaMax: 256m
+
+j5ik2o:
+  dynamoDbJournal:
+    pluginDispatcher: akka.actor.default-dispatcher
+    tableName: Journal
+    getJournalRowsIndexName: GetJournalRowsIndex
+    tagsIndexName: TagsIndex
+    shardCount: 1024
+    queueEnable: true
+    queueBufferSize: 512
+    queueOverflowStrategy: Fail
+    queueParallelism: 4
+    writeParallelism: 1024
+    queryBatchSize: 1024
+    scanBatchSize: 512
+    replayBatchSize: 1024
+    dynamoDbClient:
+      v1:
+        clientConfiguration:
+          connectionTimeout: 10s
+          maxConnections: 2048
+          requestTimeout: 10s
+          useReaper: true
+          connectionTtl: 0s
+          connectionMaxIdle: 10s
+      v2:
+        async:
+          maxConcurrency: 2048
+          maxPendingConnectionAcquires: 10000
+          readTimeout: 10s
+          writeTimeout: 10s
+          connectionTimeout: 10s
+          acquisitionTimeout: 10s
+          connectionTimeToLive: 0s
+          maxIdelConnectionTimeout: 10s
+          useConnectionReaper: true
+          threadOfEventLoopGroup: 512
+      accessKeyIdForDebug: x
+      secretAccessKeyForDebug: x
+      endpointForDebug: http://dynamodb-local:8000
+  dynamoDbSnapshot:
+    pluginDispatcher: akka.actor.default-dispatcher
+    tableName: Snapshot
+    getSnapshotRowsIndexName: GetSnapshotRowsIndex
+    shardCount: 1024
+    queryBatchSize: 1024
+    scanBatchSize: 512
+    replayBatchSize: 1024
+    dynamoDbClient:
+      v1:
+        clientConfiguration:
+          connectionTimeout: 10s
+          maxConnections: 2048
+          requestTimeout: 10s
+          useReaper: true
+          connectionTtl: 0s
+          connectionMaxIdle: 10s
+      v2:
+        async:
+          maxConcurrency: 2048
+          maxPendingConnectionAcquires: 10000
+          readTimeout: 10s
+          writeTimeout: 10s
+          connectionTimeout: 10s
+          acquisitionTimeout: 10s
+          connectionTimeToLive: 0s
+          maxIdelConnectionTimeout: 10s
+          useConnectionReaper: true
+          threadOfEventLoopGroup: 512
+      accessKeyIdForDebug: x
+      secretAccessKeyForDebug: x
+      endpointForDebug: http://dynamodb-local:8000
+
+datadog:
+  integration:
+    akkaHttp:
+      enabled: false
+    awsSdk:
+      enabled: false
+    javaConcurrent:
+      enabled: false
+    kafka:
+      enabled: false
