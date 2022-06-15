@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "write-api-server.fullname" . }}
+  name: {{ include "adceet-write-api-server.fullname" . }}
   labels:
-    {{- include "write-api-server.labels" . | nindent 4 }}
+    {{- include "adceet-write-api-server.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "write-api-server.selectorLabels" . | nindent 6 }}
+      {{- include "adceet-write-api-server.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "write-api-server.selectorLabels" . | nindent 8 }}
+        {{- include "adceet-write-api-server.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "write-api-server.serviceAccountName" . }}
+      serviceAccountName: {{ include "adceet-write-api-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -35,10 +35,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.http.internalPort }}
+              containerPort: {{ .Values.containerPort.http }}
               protocol: TCP
             - name: management
-              containerPort: {{ .Values.service.management.internalPort }}
+              containerPort: {{ .Values.containerPort.management }}
               protocol: TCP
             - name: remoting
               containerPort: {{ .Values.containerPort.akkaRemoting }}
@@ -46,6 +46,34 @@ spec:
             - name: kamon
               containerPort: {{ .Values.containerPort.kamon }}
               protocol: TCP
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+            - name: KAMON_ENVIRONMENT_TAGS_ENV_NAME
+              value: {{ .Values.envName | quote }}
+            - name: KAMON_ENVIRONMENT_TAGS_PREFIX
+              value: {{ .Values.prefix | quote }}
+            - name: AWS_REGION
+              value: {{ .Values.awsRegion | quote }}
+            - name: AWS_STS_REGIONAL_ENDPOINTS
+              value: {{ .Values.awsStsRegionalEndpoints | quote }}
+
+            - name: ENV_NAME
+              value: {{ .Values.envName | quote }}
+            - name: CONFIG_RESOURCE
+              value: {{ .Values.configResource | quote }}
+
+            - name: JVM_HEAP_MIN
+              value: {{ .Values.jvmHeapMin | quote }}
+            - name: JVM_HEAP_MAX
+              value: {{ .Values.jvmHeapMax | quote }}
+            - name: JVM_META_MAX
+              value: {{ .Values.jvmMetaMax | quote }}
+
+
           livenessProbe:
             httpGet:
               path: /

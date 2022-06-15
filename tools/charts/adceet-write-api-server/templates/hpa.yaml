@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "write-api-server.fullname" . }}
+  name: {{ include "adceet-write-api-server.fullname" . }}
   labels:
-    {{- include "write-api-server.labels" . | nindent 4 }}
+    {{- include "adceet-write-api-server.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "write-api-server.fullname" . }}
+    name: {{ include "adceet-write-api-server.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

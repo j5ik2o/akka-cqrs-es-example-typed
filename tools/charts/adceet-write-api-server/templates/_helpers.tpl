@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "write-api-server.name" -}}
+{{- define "adceet-write-api-server.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "write-api-server.fullname" -}}
+{{- define "adceet-write-api-server.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "write-api-server.chart" -}}
+{{- define "adceet-write-api-server.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "write-api-server.labels" -}}
-helm.sh/chart: {{ include "write-api-server.chart" . }}
-{{ include "write-api-server.selectorLabels" . }}
+{{- define "adceet-write-api-server.labels" -}}
+helm.sh/chart: {{ include "adceet-write-api-server.chart" . }}
+{{ include "adceet-write-api-server.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "write-api-server.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "write-api-server.name" . }}
+{{- define "adceet-write-api-server.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "adceet-write-api-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "write-api-server.serviceAccountName" -}}
+{{- define "adceet-write-api-server.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "write-api-server.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "adceet-write-api-server.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

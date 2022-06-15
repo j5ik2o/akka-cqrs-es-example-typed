@@ -1,4 +1,4 @@
-module "akka" {
+module "akka-persistence" {
   source = "./akka-persistence"
   enabled = var.akka_persistence_enabled
   prefix = var.prefix
