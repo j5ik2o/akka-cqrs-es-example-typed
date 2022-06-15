@@ -149,6 +149,21 @@ resource "aws_security_group" "additional" {
   tags = local.tags
 }
 
+resource "helm_release" "metrics-server" {
+  name  = "metrics-server"
+  chart = "https://github.com/kubernetes-sigs/metrics-server/releases/download/metrics-server-helm-chart-3.8.2/metrics-server-3.8.2.tgz"
+  namespace = "kube-system"
+
+  set {
+    name = "containerPort"
+    value = 443
+  }
+
+  depends_on = [
+    module.eks
+  ]
+}
+
 module "cluster-autoscaler" {
   source = "./cluster-autoscaler"
   create = var.eks_enabled
@@ -157,6 +172,14 @@ module "cluster-autoscaler" {
   eks_cluster_id = module.eks.cluster_id
   eks_cluster_version = module.eks.cluster_version
   eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  depends_on = [
+    module.eks
+  ]
+}
+
+resource "helm_release" "alb-controller-crds" {
+  name  = "alb-controller-crds"
+  chart = "../charts/alb-controller-crds"
   depends_on = [
     module.eks
   ]
@@ -172,7 +195,7 @@ module "aws-load-balancer-controller" {
   eks_cluster_version = module.eks.cluster_version
   eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
   depends_on = [
-    module.eks
+    helm_release.alb-controller-crds
   ]
 }
 
@@ -190,7 +213,72 @@ module "adceet" {
   ]
 }
 
-resource "helm_release" "alb-controller-crds" {
-  name  = "alb-controller-crds"
-  chart = "../charts/alb-controller-crds"
+resource "helm_release" "kubernetes-dashboard" {
+  name  = "kubernetes-dashboard"
+  chart = "https://kubernetes.github.io/dashboard/kubernetes-dashboard-5.3.1.tgz"
+  namespace = "kubernetes-dashboard"
+
+  set {
+    name = "rbac.create"
+    value = true
+  }
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+resource "helm_release" "k8s-dashboard-crb" {
+  name  = "k8s-dashboard-crb"
+  chart = "../charts/k8s-dashboard-crb"
+  depends_on = [
+    helm_release.kubernetes-dashboard
+  ]
+}
+
+resource "helm_release" "datadog" {
+  name  = "datadog"
+  namespace = "kube-system"
+  chart = "https://github.com/DataDog/helm-charts/releases/download/datadog-2.35.3/datadog-2.35.3.tgz"
+
+  set_sensitive {
+    name  = "datadog.apiKey"
+    value = var.datadog-api-key
+  }
+
+  set {
+    name = "datadog.logLevel"
+    value = "INFO"
+  }
+
+  set {
+    name = "datadog.kubeStateMetricsEnabled"
+    value = false
+  }
+
+  set {
+    name = "datadog.dogstatsd.nonLocalTraffic"
+    value = true
+  }
+
+  set {
+    name = "apm.enabled"
+    value = true
+  }
+
+  set {
+    name = "logs.enabled"
+    value = false
+  }
+
+  set {
+    name = "logs.containerCollectAll"
+    value = false
+  }
+
+  set {
+    name = "agents.useHostNetwork"
+    value = true
+  }
+
 }

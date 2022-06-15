@@ -1,5 +1,5 @@
 module "iam_assumable_role_admin" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source                        = "registry.terraform.io/terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   create_role                   = var.create
   role_name                     = local.iam_role_name
   provider_url                  = replace(var.eks_cluster_oidc_issuer_url, "https://", "")

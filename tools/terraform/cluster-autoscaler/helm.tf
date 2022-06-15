@@ -1,24 +1,62 @@
-
-data "template_file" "chart_values" {
+resource "helm_release" "cluster-autoscaler" {
   count = var.create ? 1 : 0
-  template = file("${path.module}/templates/values.yaml.tpl")
-  vars = {
-    image_repository = local.image_repository
-    image_tag = local.image_tag
-    aws_region = var.aws_region
-    aws_account_id = data.aws_caller_identity.self.account_id
-    eks_cluster_name  = var.eks_cluster_id
-    service_account_name = local.k8s_service_account_name
-    iam_role_name = local.iam_role_name
+  name  = "cluster-autoscaler"
+  namespace = "kube-system"
+  chart = "https://github.com/kubernetes/autoscaler/releases/download/cluster-autoscaler-chart-9.19.1/cluster-autoscaler-9.19.1.tgz"
+
+  set {
+    name = "rbac.create"
+    value = true
   }
-  depends_on = [
-    aws_iam_policy.cluster_autoscaler
-  ]
-}
 
-resource "local_file" "chart_values" {
-  count = var.create ? 1 : 0
-  content = element(concat(data.template_file.chart_values.*.rendered, [""]), 0)
-  filename = pathexpand("${path.module}/../../kubernetes/${local.chart_name}/environments/${var.prefix}-values.yaml")
-  file_permission = 666
+  set {
+    name  = "rbac.serviceAccount.create"
+    value = true
+  }
+
+  set {
+    name  = "rbac.serviceAccount.name"
+    value = local.k8s_service_account_name
+  }
+
+  set {
+    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${local.iam_role_name}"
+    type  = "string"
+  }
+
+  set {
+    name = "autoDiscovery.enabled"
+    value = true
+  }
+
+  set {
+    name = "autoDiscovery.clusterName"
+    value = var.eks_cluster_id
+  }
+
+  set {
+    name = "extraArgs.expander"
+    value = "least-waste"
+  }
+
+  set {
+    name = "extraArgs.balance-similar-node-groups"
+    value = true
+  }
+
+  set {
+    name = "extraArgs.skip-nodes-with-system-pods"
+    value = false
+  }
+
+  set {
+    name = "podAnnotations.cluster-autoscaler\\kubernetes\\io/safe-to-evict"
+    value = false
+    type = "string"
+  }
+
+  depends_on = [
+    module.iam_assumable_role_admin
+  ]
 }

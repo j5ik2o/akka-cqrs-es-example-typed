@@ -1,22 +1,36 @@
-data "template_file" "chart_values" {
+resource "helm_release" "aws-load-balancer-controller" {
   count = var.create ? 1 : 0
-  template = file("${path.module}/templates/values.yaml.tpl")
-  vars = {
-    aws_region = var.aws_region
-    vpc_id = var.vpc_id
-    aws_account_id = data.aws_caller_identity.self.account_id
-    eks_cluster_name  = var.eks_cluster_id
-    service_account_name = local.k8s_service_account_name
-    iam_role_name = local.iam_role_name
-  }
-  depends_on = [
-    aws_iam_policy.aws-load-balancer-controller
-  ]
-}
+  name      = "aws-load-balancer-controller"
+  namespace = "kube-system"
+  chart     = "https://aws.github.io/eks-charts/aws-load-balancer-controller-1.4.2.tgz"
 
-resource "local_file" "chart_values" {
-  count = var.create ? 1 : 0
-  content = element(concat(data.template_file.chart_values.*.rendered, [""]), 0)
-  filename = pathexpand("${path.module}/../../kubernetes/${local.chart_name}/environments/${var.prefix}-values.yaml")
-  file_permission = 666
+  set {
+    name  = "clusterName"
+    value = var.eks_cluster_id
+  }
+
+  set {
+    name  = "region"
+    value = var.aws_region
+  }
+
+  set {
+    name  = "vpcId"
+    value = var.vpc_id
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = local.k8s_service_account_name
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${local.iam_role_name}"
+    type  = "string"
+  }
+
+  depends_on = [
+    module.iam_assumable_role_admin
+  ]
 }
