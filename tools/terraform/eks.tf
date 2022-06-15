@@ -199,10 +199,11 @@ module "aws-load-balancer-controller" {
   ]
 }
 
-module "adceet" {
+module "adceet-write-api-server" {
   source = "./adceet"
   create = var.eks_enabled
   prefix = var.prefix
+  application_name = "adceet-write-api-server"
   k8s_service_namespace = "adceet"
   k8s_service_account_name = "adceet"
   eks_cluster_id = module.eks.cluster_id

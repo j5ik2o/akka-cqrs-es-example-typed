@@ -1,6 +1,7 @@
 locals {
   enabled = var.enabled
 }
+
 resource "aws_lb" "main" {
   count              = local.enabled ? 1 : 0
   name               = "${var.prefix}-alb-${var.name}"

@@ -1,2 +1,0 @@
-- https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
-- https://artifacthub.io/packages/helm/cowboysysop/vertical-pod-autoscaler

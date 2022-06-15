@@ -30,12 +30,3 @@ data "aws_availability_zones" "available" {
 
 data "aws_caller_identity" "current" {
 }
-
-
-module "datadog" {
-  source = "./datadog"
-  prefix = var.prefix
-  aws_profile = var.aws_profile
-  datadog_api_key = var.datadog-api-key
-}
-

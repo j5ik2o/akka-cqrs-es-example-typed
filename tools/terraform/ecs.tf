@@ -1,5 +1,5 @@
 module "ecs" {
-  count                    = var.ecs_enabled ? 1 : 0
+  count = 0 # var.ecs_enabled ? 1 : 0
 
   source = "registry.terraform.io/terraform-aws-modules/ecs/aws"
 

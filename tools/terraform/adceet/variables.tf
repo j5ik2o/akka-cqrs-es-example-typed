@@ -11,6 +11,7 @@ variable "dependencies" {
   default = []
 }
 
+variable "application_name" {}
 
 variable "k8s_service_account_name" {
   default = "adceet"

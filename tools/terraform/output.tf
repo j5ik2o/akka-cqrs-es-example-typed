@@ -58,7 +58,3 @@ output "eks_aws_auth_config_map" {
 output "alb_lb_dns_name" {
   value = module.alb.aws_lb_dns_name
 }
-
-output "datadog_secret_key" {
-  value = module.datadog.datadog_secret_key_arn
-}
