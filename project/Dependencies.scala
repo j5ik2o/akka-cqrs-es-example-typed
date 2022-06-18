@@ -132,7 +132,7 @@ object Dependencies {
   }
 
   object aichler {
-    def jupiterInterface(version: String) = "net.aichler" % "jupiter-interface" % version
+    def jupiterInterface(version: String): ModuleID = "net.aichler" % "jupiter-interface" % version
   }
 
   object awaitility {
@@ -149,6 +149,16 @@ object Dependencies {
 
   object iq80LevelDb {
     val leveldb = "org.iq80.leveldb" % "leveldb" % "0.12"
+  }
+
+  object awssdk {
+    object v1 {
+      val sts = "com.amazonaws" % "aws-java-sdk-sts" % "1.12.241"
+    }
+    object v2 {
+      val sts = "software.amazon.awssdk" % "sts" % "2.17.212"
+    }
+
   }
 
   object j5ik2o {
