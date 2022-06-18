@@ -52,14 +52,14 @@ class ShardedThreadAggregatesSpec extends ActorSpec(ShardedThreadAggregatesSpec.
 
       ShardedThreadAggregate.initClusterSharding(
         clusterSharding,
-        ThreadAggregates.create { _.asString } { id =>
+        Some(ThreadAggregates.create { _.asString } { id =>
           ThreadAggregate.create(id) { (id, ref) =>
             ThreadPersist.persistBehavior(
               id,
               ref
             )
           }
-        }
+        })
       )
 
       ShardedThreadAggregate.ofProxy(clusterSharding)

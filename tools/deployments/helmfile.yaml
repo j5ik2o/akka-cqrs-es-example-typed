@@ -2,4 +2,4 @@
 environments:
   {{ .Environment.Name }}:
 helmfiles:
-  - path: ./write-api-server
+  - path: ./addceet-write-api-server

@@ -37,10 +37,6 @@ resource "aws_dynamodb_table" "journal-table" {
   stream_enabled = true
   stream_view_type = "NEW_IMAGE"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
   tags = {
     Name  = "${var.prefix}-${var.journal_name}"
     Owner = var.owner
@@ -53,11 +49,17 @@ resource "aws_dynamodb_table" "snapshot-table" {
   name = "${var.prefix}-${var.snapshot_name}"
 
   hash_key  = "pkey"
+  range_key = "skey"
 
   billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "pkey"
+    type = "S"
+  }
+
+  attribute {
+    name = "skey"
     type = "S"
   }
 
@@ -76,10 +78,6 @@ resource "aws_dynamodb_table" "snapshot-table" {
     hash_key        = "persistence-id"
     range_key       = "sequence-nr"
     projection_type = "ALL"
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 
   tags = {

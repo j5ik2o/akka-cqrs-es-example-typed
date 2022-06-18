@@ -156,6 +156,10 @@ resource "helm_release" "metrics-server" {
   chart = "https://github.com/kubernetes-sigs/metrics-server/releases/download/metrics-server-helm-chart-3.8.2/metrics-server-3.8.2.tgz"
   namespace = "kube-system"
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   set {
     name = "containerPort"
     value = 443
@@ -182,6 +186,11 @@ module "cluster-autoscaler" {
 resource "helm_release" "alb-controller-crds" {
   name  = "alb-controller-crds"
   chart = "../charts/alb-controller-crds"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
   depends_on = [
     module.eks
   ]
@@ -211,6 +220,7 @@ module "adceet-write-api-server" {
   eks_cluster_id = module.eks.cluster_id
   eks_cluster_version = module.eks.cluster_version
   eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+
   depends_on = [
     module.eks
   ]
@@ -220,6 +230,10 @@ resource "helm_release" "kubernetes-dashboard" {
   name  = "kubernetes-dashboard"
   chart = "https://kubernetes.github.io/dashboard/kubernetes-dashboard-5.3.1.tgz"
   namespace = "kubernetes-dashboard"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   set {
     name = "rbac.create"
@@ -234,6 +248,11 @@ resource "helm_release" "kubernetes-dashboard" {
 resource "helm_release" "k8s-dashboard-crb" {
   name  = "k8s-dashboard-crb"
   chart = "../charts/k8s-dashboard-crb"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
   depends_on = [
     helm_release.kubernetes-dashboard
   ]
@@ -243,6 +262,10 @@ resource "helm_release" "datadog" {
   name  = "datadog"
   namespace = "kube-system"
   chart = "https://github.com/DataDog/helm-charts/releases/download/datadog-2.35.3/datadog-2.35.3.tgz"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   set_sensitive {
     name  = "datadog.apiKey"

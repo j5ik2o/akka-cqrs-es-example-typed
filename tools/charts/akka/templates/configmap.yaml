@@ -1,0 +1,31 @@
+{{- $root := . -}}
+{{- range $name, $config := .Values.configmaps }}
+{{- if eq (printf "%T" $config) "string" }}
+{{- if ne $config "" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "akka.labels" $root | nindent 4 }}
+  name: "{{ template "akka.fullname" $root }}-{{ $name | replace "." "-" | lower }}"
+data:
+  {{ $name }}: |
+    {{- tpl $config $root | nindent 4 }}
+{{- end }}
+{{- else }}
+{{- if $config }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "akka.labels" $root | nindent 4 }}
+  name: "{{ template "akka.fullname" $root }}-{{ $name | replace "." "-" | lower }}"
+data:
+  {{- range $k, $v := $config }}
+  {{ $k }}: {{- tpl $v $root | toYaml | indent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,32 @@
+# See: https://doc.akka.io/docs/akka-management/current/bootstrap/kubernetes-api.html
+akka:
+  cluster:
+    enabled: true
+  discovery:
+    enabled: true
+    method: kubernetes-api
+  management:
+    enabled: true
+    service:
+      enabled: false
+  remote:
+    enabled: true
+
+replicaCount: 3
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+
+podDisruptionBudget:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+metrics:
+  enabled: false
+
+useResourceApplicationConf: true

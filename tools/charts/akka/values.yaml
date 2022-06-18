@@ -1,0 +1,406 @@
+# Default values for akka.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: kinzal/akkavis
+  tags: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Akka Configuraion
+# If useResourceApplicationConf is true, create a configuration file and use that configuration in -Dconfig.file=/opt/conf/chart.conf.
+# Also, change akka.conf and kubernetes configuration along with this configuration.
+akka:
+  # See: https://github.com/akka/akka/blob/master/akka-actor/src/main/resources/reference.conf
+  # Log level used by the configured loggers (see "loggers") as soon
+  loglevel: INFO
+
+  actor:
+    # Enable java serialization
+    allowJavaSerialization: true
+
+  # See: https://doc.akka.io/docs/akka/current/typed/cluster.html
+  cluster:
+    # If true, it will work as actor.provider=cluster.
+    enabled: true
+
+  # See: https://doc.akka.io/docs/akka/current/discovery/index.html
+  discovery:
+    # If true, enable service discovery in the cluster.
+    enabled: true
+    # Service discovery running on kubernetes is kubernetes-api, akka-dns and aggregate(kubernetes-api, akka-dns).
+    # If you use kubernetes-api, you need to specify rbac.create=true and serviceAccount.create=true.
+    method: kubernetes-api
+    aggregate:
+      discoveryMethods: []
+
+  # See: https://doc.akka.io/docs/akka-http/current/introduction.html
+  http:
+    # If true, enable akka-http.
+    # This setting affects container ports, services, and ingress.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 8080
+    portName: http
+
+    # Extra HTTP ports.
+    extraPorts: []
+    # - name: other-port
+    #   containerPort: 10008
+    #   protocol: TCP
+
+    # Service for akka-http.
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      type: NodePort
+      ports:
+      # - targetPort: http
+      #   name: http
+      #   port: 8080
+      #   nodePort: 38080
+      #   protocol: TCP
+
+    # Ingress for akka-http.
+    ingresses: []
+      # - annotations: {}
+      #   labels: {}
+      #   name: "your-ingress-name"
+      #   tls: []
+      #     - hosts: []
+      #       secretName: ""
+      #   hosts: []
+      #     - host:
+      #       paths: []
+    #   targetPort: 8080
+
+  # See: https://doc.akka.io/docs/akka-management/current/index.html
+  management:
+    # If true, enable akka-http.
+    # This setting affects container ports, services, and startup/readiness/liveness probe.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 8558
+
+    cluster:
+      bootstrap:
+        contactPointDiscovery:
+          serviceName:
+          # The smallest number of contact points that need to be discovered before the bootstrap process can start.
+          requiredContactPointNr: 3
+
+    # Using health check of akka-management as a health check for the Pod.
+    healthChecks:
+      livenessPath: alive
+      readinessPath: ready
+      startupPath: ready
+
+    # Service fo akka-management.
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      clusterIP:
+      publishNotReadyAddresses: false
+      type: ClusterIP
+
+  # See: https://doc.akka.io/docs/akka/current/remoting-artery.html
+  remote:
+    # If true, enable akka-remote.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 25520
+
+# Deployment/StatefulSet Configuration
+affinity: {}
+
+annotations: {}
+
+containerName: ""
+
+command: []
+
+env: []
+  # - name: DEMO_GREETING
+#   value: "Hello from the environment"
+
+envFrom: []
+  # - configMapRef:
+#     name: special-config
+
+extraContainers: []
+  # - name: sidecar
+#   image: [your image]
+
+extraVolumes: []
+  # - name: volime-name
+  #   hostPath:
+#     path: /path/to
+
+extraVolumeMounts: []
+  # - name: volume-name
+#   mountPath: /path/to
+
+labels: {}
+
+lifecycle: {}
+
+startupProbe:
+  # If true, enable the startup probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  # This feature is available since 1.18
+  enabled: false
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+livenessProbe:
+  # If true, enable the liveness probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  enabled: true
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext: {}
+# fsGroup: 2000
+
+priorityClassName: ""
+
+readinessGate: []
+
+readinessProbe:
+  # If true, enable the readiness probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  enabled: true
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+replicaCount: 3
+
+revisionHistoryLimit: 10
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 128Mi
+
+restartPolicy: Always
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+# runAsUser: 1000
+
+strategy: {}
+
+terminationGracePeriodSeconds: 60
+
+tolerations: []
+
+# RBAC Configuration
+rbac:
+  # Specifies whether a role and rolebinding should be created.
+  create: true
+
+# SA Configuration
+serviceAccount:
+  # Specifies whether a service account should be created.
+  create: true
+  # Annotations to add to the service account.
+  annotations: {}
+  labels: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name:
+
+# PDB Configuration
+podDisruptionBudget:
+  # If true, enable PDB.
+  enabled: false
+  annotations: {}
+  labels: {}
+  maxUnavailable:
+  minAvailable:
+
+# HPA Configurattion
+autoscaling:
+  # If true, enable HPA.
+  enabled: false
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: []
+  # This feature is available since 1.18
+  behavior: {}
+
+# Metrics Configuration.
+metrics:
+  # If true, it enables metric collection in prometheus.
+  # This setting affects kamon.conf, container ports, and pod annotations.
+  #
+  # See: https://kamon.io/docs/latest/reporters/prometheus/
+  enabled: false
+  port: 9095
+  path: "/"
+
+# ConfigMap Configurations
+configmaps:
+  chart.conf: |
+    include "application"
+    include file("/opt/conf/akka.conf")
+    {{- if .Values.metrics.enabled }}
+    include file("/opt/conf/kamon.conf")
+    {{- end }}
+
+  akka.conf: |
+    akka {
+      loglevel = {{ .Values.akka.loglevel }}
+      actor {
+        {{- if .Values.akka.cluster.enabled }}
+        provider = cluster
+        {{- else if .Values.akka.remote.enabled }}
+        provider = remote
+        {{- else }}
+        provider = local
+        {{- end }}
+        allow-java-serialization = {{ if .Values.akka.actor.allowJavaSerialization }}on{{ else }}off{{ end }}
+      }
+      {{- if .Values.akka.discovery.enabled }}
+      discovery {
+        method = {{ .Values.akka.discovery.method }}
+        {{- if eq .Values.akka.discovery.method "aggregate" }}
+        aggregate {
+          discovery-methods = {{ toJson .Values.akka.discovery.aggregate.discoveryMethods }}
+        }
+        {{- end }}
+        {{- if or (eq .Values.akka.discovery.method "kubernetes-api") (and (eq .Values.akka.discovery.method "aggregate") (has "kubernetes-api" .Values.akka.discovery.aggregate.discoveryMethods)) }}
+        kubernetes-api {
+          pod-namespace = "{{ .Release.Namespace }}"
+          pod-label-selector = "app.kubernetes.io/instance={{ .Release.Name }}"
+        }
+        {{- end }}
+      }
+      {{- end }}
+      {{- if .Values.akka.management.enabled }}
+      management {
+        cluster {
+          bootstrap.contact-point-discovery {
+            {{- if .Values.akka.management.cluster.bootstrap.contactPointDiscovery.serviceName }}
+            service-name = "{{ .Values.akka.management.cluster.bootstrap.contactPointDiscovery.serviceName }}"
+            {{- else if or (eq .Values.akka.discovery.method "akka-dns") (and (eq .Values.akka.discovery.method "aggregate") (has "akka-dns" .Values.akka.discovery.aggregate.discoveryMethods) ) }}
+            service-name = "{{ include "akka.fullname" . }}-management.{{ .Release.Namespace }}.svc.cluster.local"
+            {{- end }}
+            discovery-method = {{ .Values.akka.discovery.method }}
+            required-contact-point-nr = {{ .Values.akka.management.cluster.bootstrap.contactPointDiscovery.requiredContactPointNr }}
+          }
+        }
+        {{- if .Values.akka.management.healthChecks }}
+        health-checks {
+          {{- if .Values.startupProbe.enabled }}
+          startup-path = "{{ .Values.akka.management.healthChecks.startupPath }}"
+          {{- end }}
+          readiness-path = "{{ .Values.akka.management.healthChecks.readinessPath }}"
+          liveness-path = "{{ .Values.akka.management.healthChecks.livenessPath }}"
+        }
+        {{- end }}
+      }
+      {{- end }}
+      {{- if .Values.akka.remote.enabled }}
+      remote {
+        artery {
+          bind {
+            hostname = "{{ .Values.akka.remote.hostname }}"
+            port = {{ .Values.akka.remote.port }}
+          }
+        }
+      }
+      {{- end }}
+    }
+
+  kamon.conf: |
+    {{- if .Values.metrics.enabled -}}
+    kamon.prometheus {
+      embedded-server {
+        hostname = "0.0.0.0"
+        port = {{ .Values.metrics.port }}
+      }
+    }
+    {{- end }}
+
+# If true, it passes -Dconfig.file=/opt/conf/chart.conf as the argument to the container to execute.
+# It works with containers using sbt native packager, sbt pack.
+# For other containers, please support the -D option in the entry point.
+useResourceApplicationConf: true
+
+# Secret Configuration
+secrets: {}
+
+# This feature is available since 1.18
+# https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+#  - maxSkew: 1
+#    topologyKey: topology.kubernetes.io/zone
+#    whenUnsatisfiable: DoNotSchedule
+
+test:
+  enabled: false
+  annotations: {}
+  labels: {}
+  spec: {}

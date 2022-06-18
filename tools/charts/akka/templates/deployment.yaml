@@ -1,0 +1,236 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ include "akka.fullname" . }}"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "akka.selectorLabels" . | nindent 6 }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        checksum/secret: "{{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}"
+        {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        prometheus.io/path: "{{ .Values.metrics.path }}"
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "akka.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- if semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion }}
+      topologySpreadConstraints:
+        {{- range .Values.topologySpreadConstraints }}
+        - maxSkew: {{ .maxSkew }}
+          topologyKey: {{ .topologyKey }}
+          whenUnsatisfiable: {{ .whenUnsatisfiable }}
+          labelSelector:
+            matchLabels:
+              {{- include "akka.selectorLabels" $root | nindent 14 }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - args:
+            {{- if .Values.useResourceApplicationConf }}
+            - "-Dconfig.file=/opt/conf/chart.conf"
+            {{- end }}
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          envFrom:
+            {{- toYaml .Values.envFrom | nindent 12 }}
+          name: "{{ include "akka.containerName" . }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tags }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if and .Values.akka.management.enabled .Values.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              scheme: HTTP
+              path: "/{{ .Values.akka.management.healthChecks.startupPath }}"
+              port: {{ .Values.akka.management.port }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- else if .Values.startupProbe.enabled }}
+          startupProbe:
+            {{- with .Values.startupProbe.httpGet }}
+            httpGet:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.startupProbe.tcpSocket }}
+            tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.startupProbe.exec }}
+            exec:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- end }}
+          {{- if and .Values.akka.management.enabled .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: "/{{ .Values.akka.management.healthChecks.livenessPath }}"
+              port: {{ .Values.akka.management.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- else if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- with .Values.livenessProbe.httpGet }}
+            httpGet:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.livenessProbe.tcpSocket }}
+            tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.livenessProbe.exec }}
+            exec:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            {{- if .Values.akka.http.enabled }}
+            - name: "{{.Values.akka.http.portName }}"
+              containerPort: {{ .Values.akka.http.port }}
+              protocol: TCP
+            {{- with .Values.akka.http.extraPorts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.akka.management.enabled }}
+            - name: management
+              containerPort: {{ .Values.akka.management.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.akka.remote.enabled }}
+            - name: remoting
+              containerPort: {{ .Values.akka.remote.port }}
+              protocol: TCP
+            {{- end }}
+          {{- if and .Values.akka.management.enabled .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: "/{{ .Values.akka.management.healthChecks.readinessPath }}"
+              port: {{ .Values.akka.management.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- else if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            {{- with .Values.readinessProbe.httpGet }}
+            httpGet:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.readinessProbe.tcpSocket }}
+            tcpSocket:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.readinessProbe.exec }}
+            exec:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.useResourceApplicationConf }}
+            {{- range $name, $v := .Values.configmaps }}
+            {{- if ne $v "" }}
+            - name: "{{ $name | replace "." "-" | lower }}"
+              mountPath: "/opt/conf/{{ $name }}"
+              subPath: "{{ $name }}"
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+        {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      readinessGates:
+        {{- toYaml .Values.readinessGate | nindent 8 }}
+      restartPolicy: "{{ .Values.restartPolicy }}"
+      priorityClassName: {{ .Values.priorityClassName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: "{{ include "akka.serviceAccountName" . }}"
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      volumes:
+        {{- if .Values.useResourceApplicationConf }}
+        {{- range $name, $v := .Values.configmaps }}
+        {{- if ne $v "" }}
+        - name: "{{ $name | replace "." "-" | lower }}"
+          configMap:
+            name: "{{ template "akka.fullname" $root }}-{{ $name | replace "." "-" | lower }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}

@@ -4,6 +4,10 @@ resource "helm_release" "aws-load-balancer-controller" {
   namespace = "kube-system"
   chart     = "https://aws.github.io/eks-charts/aws-load-balancer-controller-1.4.2.tgz"
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   set {
     name  = "clusterName"
     value = var.eks_cluster_id

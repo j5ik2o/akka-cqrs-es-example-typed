@@ -18,6 +18,8 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       iheart.ficus,
       airframe.di,
       typesafeAkka.akkaPersistenceTyped,
+      awssdk.v1.sts,
+      awssdk.v2.sts,
       j5ik2o.akkaPersistenceDynamoDBJournalV1,
       j5ik2o.akkaPersistenceDynamoDBJournalV2,
       j5ik2o.akkaPersistenceDynamoDBSnapshotV1,

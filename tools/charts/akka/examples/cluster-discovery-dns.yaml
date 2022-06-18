@@ -1,0 +1,34 @@
+# See: https://doc.akka.io/docs/akka-management/current/bootstrap/kubernetes.html
+akka:
+  cluster:
+    enabled: true
+  discovery:
+    enabled: true
+    method: akka-dns
+  management:
+    enabled: true
+    service:
+      enabled: true
+      clusterIP: None
+      publishNotReadyAddresses: true
+  remote:
+    enabled: true
+
+replicaCount: 3
+
+rbac:
+  create: false
+
+serviceAccount:
+  create: false
+
+podDisruptionBudget:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+metrics:
+  enabled: false
+
+useResourceApplicationConf: true

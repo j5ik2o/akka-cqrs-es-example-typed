@@ -1,0 +1,28 @@
+{{- if and .Values.akka.http.enabled .Values.akka.http.service.enabled }}
+{{- $svcType := .Values.akka.http.service.type }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- toYaml .Values.akka.http.service.annotations | nindent 4 }}
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+    {{- with .Values.akka.http.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ include "akka.fullname" . }}"
+spec:
+  ports:
+    {{- range $i, $v := .Values.akka.http.service.ports }}
+    - targetPort: {{ $v.targetPort }}
+      name: "{{ $v.name }}"
+      port: {{ $v.port }}
+      {{- if and (eq $svcType "NodePort") $v.nodePort }}
+      nodePort: {{ $v.nodePort }}
+      {{- end }}
+      protocol: "{{ $v.protocol }}"
+    {{- end }}
+  selector:
+    {{- include "akka.selectorLabels" . | nindent 4 }}
+  type: "{{ $svcType }}"
+{{- end }}

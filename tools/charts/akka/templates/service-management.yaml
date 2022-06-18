@@ -1,0 +1,26 @@
+{{- if and .Values.akka.management.enabled .Values.akka.management.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- toYaml .Values.akka.management.service.annotations | nindent 4 }}
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+    {{- with .Values.akka.management.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ include "akka.fullname" . }}-management"
+spec:
+  {{- with .Values.akka.management.service.clusterIP }}
+  clusterIP: {{ . }}
+  {{- end }}
+  publishNotReadyAddresses: {{ .Values.akka.management.service.publishNotReadyAddresses }}
+  ports:
+    - port: {{ .Values.akka.management.port }}
+      targetPort: management
+      protocol: TCP
+      name: management
+  selector:
+    {{- include "akka.selectorLabels" . | nindent 4 }}
+  type: "{{ .Values.akka.management.service.type }}"
+{{- end }}

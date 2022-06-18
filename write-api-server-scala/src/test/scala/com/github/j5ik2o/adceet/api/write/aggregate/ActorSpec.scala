@@ -16,9 +16,7 @@ import scala.concurrent.duration.FiniteDuration
 abstract class ActorSpec(testKit: ActorTestKit)
     extends ScalaTestWithActorTestKit(testKit)
     with AnyFreeSpecLike
-    with ScalaFutures
-    with Diagrams
-    with Waiters {
+     {
 
   def testTimeFactor: Double = testKit.testKitSettings.TestTimeFactor
 

@@ -4,7 +4,7 @@ import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
 import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
-import akka.cluster.typed.SelfUp
+import akka.cluster.typed.{Cluster, SelfUp}
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
@@ -35,7 +35,21 @@ class MainActor(val session: Session) extends DISupport {
       if (args.environment == Environments.Production)
         Kamon.init()
 
-      session.withChildSession(DISettings.mainActor(ctx)) { childSession =>
+      val cluster = Cluster(ctx.system)
+      val selfMember = cluster.selfMember
+      logger.info(s"Specified role(s) = ${selfMember.roles.mkString(", ")}")
+
+      val roleNames = (
+        if (selfMember.hasRole(RoleNames.Frontend.toString.toLowerCase))
+          Seq(RoleNames.Frontend)
+        else Seq.empty
+        ) ++ (
+        if (selfMember.hasRole(RoleNames.Backend.toString.toLowerCase))
+          Seq(RoleNames.Backend)
+        else Seq.empty
+        )
+
+      session.withChildSession(DISettings.mainActor(ctx, roleNames)) { childSession =>
         val config = ctx.system.settings.config
         val host = config.getString("http.host")
         val port = config.getInt("http.port")
@@ -47,7 +61,10 @@ class MainActor(val session: Session) extends DISupport {
         implicit val ec: ExecutionContextExecutor = ctx.executionContext
 
         val future = for {
-          _ <- startApplicationServer(childSession, ctx.system, host, port, terminationHardDeadLine)
+          _ <- if (roleNames.contains(RoleNames.Frontend))
+            startHttpServer(childSession, ctx.system, host, port, terminationHardDeadLine)
+          else
+            Future.successful(())
           _ <- startHealthCheckServer(ctx.system, loadBalancerDetachWaitDuration)
         } yield ()
 
@@ -71,13 +88,13 @@ class MainActor(val session: Session) extends DISupport {
     }
   }
 
-  private def startApplicationServer(
-                                      session: Session,
-                                      system: ActorSystem[_],
-                                      host: String,
-                                      port: Int,
-                                      terminationHardDeadLine: FiniteDuration
-                                    )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
+  private def startHttpServer(
+                               session: Session,
+                               system: ActorSystem[_],
+                               host: String,
+                               port: Int,
+                               terminationHardDeadLine: FiniteDuration
+                             )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
 
     val threadController: ThreadController = session.build[ThreadController]
 

@@ -1,0 +1,31 @@
+{{- $root := . -}}
+{{- if .Values.autoscaling.enabled -}}
+{{- if semverCompare ">=1.23-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: autoscaling/v2
+{{- else }}
+apiVersion: autoscaling/v2beta2
+{{- end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    {{- toYaml .Values.autoscaling.annotations | nindent 4}}
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+    {{- with .Values.autoscaling.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: "{{ template "akka.fullname" . }}"
+spec:
+  {{- with .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    {{- toYaml .Values.autoscaling.metrics | nindent 4 }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  scaleTargetRef:
+    kind: Deployment
+    apiVersion: apps/v1
+    name: "{{ template "akka.fullname" . }}"
+{{- end }}

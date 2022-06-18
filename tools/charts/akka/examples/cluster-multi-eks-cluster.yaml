@@ -1,0 +1,97 @@
+# NOTE: This example only works on EKS. Therefore, you should not run it in CI.
+#
+# This sample is designed to update the kubernetes cluster with a bluegreen deployment.
+# If you want to do rolling updates on a single cluster, use akka-dns or kubernetes-api.
+akka:
+  cluster:
+    enabled: true
+  discovery:
+    enabled: true
+    method: aggregate
+    aggregate:
+      discoveryMethods:
+        - akka-dns
+        - kubernetes-api
+  http:
+    enabled: true
+    service:
+      enabled: true
+      ports:
+        - targetPort: http
+          name: http
+          port: 8080
+          nodePort: 30000
+          protocol: TCP
+    ingresses:
+      - annotations:
+          kubernetes.io/ingress.class: "alb"
+          alb.ingress.kubernetes.io/scheme: internet-facing
+          external-dns.alpha.kubernetes.io/hostname: "[your domain]"
+          external-dns.alpha.kubernetes.io/aws-weight: "100"
+          external-dns.alpha.kubernetes.io/set-identifier: "[your cluster name]"
+        labels: {}
+        tls: {}
+        name: ""
+        hosts:
+          - host: "[your domain]"
+            paths: ["/*"]
+        targetPort: 8080
+  management:
+    enabled: true
+    port: 8558
+    cluster:
+      bootstrap:
+        contactPointDiscovery:
+          serviceName: "[your management domain]"
+    healthChecks:
+      livenessPath: health/alive
+      readinessPath: health/ready
+    service:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: "[your management domain]"
+        external-dns.alpha.kubernetes.io/ttl: "1"
+      clusterIP: None
+  remote:
+    enabled: true
+    port: 25520
+
+env:
+  - name: AKKAVIS_PORT
+    value: "8080"
+
+podSecurityContext:
+  fsGroup: 0
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 20%
+    maxUnavailable: 20%
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 80%
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 25
+
+metrics:
+  enabled: true
+
+useResourceApplicationConf: true

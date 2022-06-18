@@ -101,7 +101,7 @@ variable "eks_enabled" {
 }
 
 variable "eks_version" {
-  default = "1.21"
+  default = "1.22"
 }
 
 variable "image_tag" {

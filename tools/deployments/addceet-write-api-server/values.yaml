@@ -1,0 +1,334 @@
+# Default values for akka.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: {{ .Values.image.repository }}
+  tags: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Akka Configuraion
+# If useResourceApplicationConf is true, create a configuration file and use that configuration in -Dconfig.file=/opt/conf/chart.conf.
+# Also, change akka.conf and kubernetes configuration along with this configuration.
+akka:
+  # See: https://github.com/akka/akka/blob/master/akka-actor/src/main/resources/reference.conf
+  # Log level used by the configured loggers (see "loggers") as soon
+  loglevel: INFO
+
+  actor:
+    # Enable java serialization
+    allowJavaSerialization: true
+
+  # See: https://doc.akka.io/docs/akka/current/typed/cluster.html
+  cluster:
+    # If true, it will work as actor.provider=cluster.
+    enabled: true
+
+  # See: https://doc.akka.io/docs/akka/current/discovery/index.html
+  discovery:
+    # If true, enable service discovery in the cluster.
+    enabled: true
+    # Service discovery running on kubernetes is kubernetes-api, akka-dns and aggregate(kubernetes-api, akka-dns).
+    # If you use kubernetes-api, you need to specify rbac.create=true and serviceAccount.create=true.
+    method: kubernetes-api
+    aggregate:
+      discoveryMethods: []
+
+  # See: https://doc.akka.io/docs/akka-http/current/introduction.html
+  http:
+    # If true, enable akka-http.
+    # This setting affects container ports, services, and ingress.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 8080
+    portName: http
+
+    # Extra HTTP ports.
+    extraPorts: []
+    # - name: other-port
+    #   containerPort: 10008
+    #   protocol: TCP
+
+    # Service for akka-http.
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      type: NodePort
+      ports:
+        # - targetPort: http
+        #   name: http
+        #   port: 8080
+        #   nodePort: 38080
+        #   protocol: TCP
+
+    # Ingress for akka-http.
+    ingresses: []
+      # - annotations: {}
+      #   labels: {}
+      #   name: "your-ingress-name"
+      #   tls: []
+      #     - hosts: []
+      #       secretName: ""
+      #   hosts: []
+      #     - host:
+      #       paths: []
+      #   targetPort: 8080
+
+  # See: https://doc.akka.io/docs/akka-management/current/index.html
+  management:
+    # If true, enable akka-http.
+    # This setting affects container ports, services, and startup/readiness/liveness probe.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 8558
+
+    cluster:
+      bootstrap:
+        contactPointDiscovery:
+          serviceName:
+          # The smallest number of contact points that need to be discovered before the bootstrap process can start.
+          requiredContactPointNr: 3
+
+    # Using health check of akka-management as a health check for the Pod.
+    healthChecks:
+      livenessPath: alive
+      readinessPath: ready
+      startupPath: ready
+
+    # Service fo akka-management.
+    service:
+      enabled: false
+      annotations: {}
+      labels: {}
+      clusterIP:
+      publishNotReadyAddresses: false
+      type: ClusterIP
+
+  # See: https://doc.akka.io/docs/akka/current/remoting-artery.html
+  remote:
+    # If true, enable akka-remote.
+    enabled: true
+    hostname: 0.0.0.0
+    port: 25520
+
+# Deployment/StatefulSet Configuration
+affinity: {}
+
+annotations: {}
+
+containerName: ""
+
+command: []
+
+env:
+  {{- with .Values.writeApi.writeApiServer.backend.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with .Values.writeApi.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  - name: CONFIG_FORCE_kamon_environment_tags_version
+    value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag }}'
+
+envFrom: []
+  # - configMapRef:
+  #     name: special-config
+
+extraContainers: []
+  # - name: sidecar
+  #   image: [your image]
+
+extraVolumes: []
+  # - name: volime-name
+  #   hostPath:
+  #     path: /path/to
+
+extraVolumeMounts: []
+  # - name: volume-name
+  #   mountPath: /path/to
+
+labels: {}
+
+lifecycle: {}
+
+startupProbe:
+  # If true, enable the startup probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  # This feature is available since 1.18
+  enabled: false
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+livenessProbe:
+  # If true, enable the liveness probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  enabled: true
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 0
+
+priorityClassName: ""
+
+readinessGate: []
+
+readinessProbe:
+  # If true, enable the readiness probe.
+  # The probe overrides the akka-management setting.
+  # If you don't use akka-management, you should set up httpGet or tcpSocket.
+  enabled: true
+  httpGet: {}
+  #   scheme: HTTP
+  #   path: [your http path]
+  #   port: [your http port]
+  tcpSocket: {}
+  #   port: [your tcp port]
+  exec: {}
+  #   command: [your command]
+  initialDelaySeconds: 60
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+replicaCount: 3
+
+revisionHistoryLimit: 10
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+restartPolicy: Always
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+strategy: {}
+
+terminationGracePeriodSeconds: 60
+
+tolerations: []
+
+# RBAC Configuration
+rbac:
+  # Specifies whether a role and rolebinding should be created.
+  create: true
+
+# SA Configuration
+serviceAccount:
+  # Specifies whether a service account should be created.
+  create: true
+  # Annotations to add to the service account.
+  annotations: {}
+  labels: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name:
+
+# PDB Configuration
+podDisruptionBudget:
+  # If true, enable PDB.
+  enabled: false
+  annotations: {}
+  labels: {}
+  maxUnavailable:
+  minAvailable:
+
+# HPA Configurattion
+autoscaling:
+  # If true, enable HPA.
+  enabled: false
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: []
+  # This feature is available since 1.18
+  behavior: {}
+
+# Metrics Configuration.
+metrics:
+  # If true, it enables metric collection in prometheus.
+  # This setting affects kamon.conf, container ports, and pod annotations.
+  #
+  # See: https://kamon.io/docs/latest/reporters/prometheus/
+  enabled: false
+  port: 9095
+  path: "/"
+
+# ConfigMap Configurations
+configmaps:
+  chart.conf: ""
+  akka.conf: ""
+  kamon.conf: ""
+
+# If true, it passes -Dconfig.file=/opt/conf/chart.conf as the argument to the container to execute.
+# It works with containers using sbt native packager, sbt pack.
+# For other containers, please support the -D option in the entry point.
+useResourceApplicationConf: false
+
+# Secret Configuration
+secrets: {}
+
+# This feature is available since 1.18
+# https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+#  - maxSkew: 1
+#    topologyKey: topology.kubernetes.io/zone
+#    whenUnsatisfiable: DoNotSchedule
+
+test:
+  enabled: false
+  annotations: {}
+  labels: {}
+  spec: {}

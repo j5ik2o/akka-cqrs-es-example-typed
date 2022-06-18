@@ -1,0 +1,12 @@
+{{- if .Values.rbac.create }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    {{- include "akka.labels" . | nindent 4 }}
+  name: "{{ include "akka.fullname" . }}"
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "watch", "list"]
+{{- end }}

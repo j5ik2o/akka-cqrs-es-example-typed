@@ -1,0 +1,84 @@
+image:
+  repository: kinzal/akka-http-sample
+  tag: latest
+  pullPolicy: IfNotPresent
+
+akka:
+  cluster:
+    enabled: false
+  discovery:
+    enabled: false
+  http:
+    enabled: true
+    service:
+      enabled: true
+      type: NodePort
+      ports:
+        - targetPort: http
+          name: http
+          port: 7777
+          nodePort: 30000
+          protocol: TCP
+  management:
+    enabled: false
+  remote:
+    enabled: false
+
+env:
+  - name: APP_HOSTNAME
+    value: "0.0.0.0"
+  - name: APP_PORT
+    value: "7777"
+
+startupProbe:
+  enabled: true
+  httpGet:
+    scheme: HTTP
+    path: "/"
+    port: 7777
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    scheme: HTTP
+    path: "/"
+    port: 7777
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    scheme: HTTP
+    path: "/"
+    port: 7777
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+rbac:
+  create: false
+
+serviceAccount:
+  create: false
+
+podDisruptionBudget:
+  enabled: false
+
+autoscaling:
+  enabled: false
+
+metrics:
+  enabled: false
+
+useResourceApplicationConf: true
