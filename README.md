@@ -55,7 +55,7 @@ is 1.2.2. You can update by downloading from https://www.terraform.io/downloads.
 
 ### Terraformer
 
-https://github.com/GoogleCloudPlatform/terraforme
+https://github.com/GoogleCloudPlatform/terraformer
 
 ```shell
 adceet-root $ asdf plugin add terraformer https://github.com/grimoh/asdf-terraformer.git
