@@ -50,7 +50,7 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
           config.getDuration("management.http.load-balancer-detach-wait-duration")
 
         // アプリケーションの起動
-        val appServer = startApplicationServer(di, ctx, host, port, terminationHardDeadLine)
+        val appServer = startHttpServer(di, ctx, host, port, terminationHardDeadLine)
         appServer.thenApply {
           // ヘルスチェックの起動
           startHealthCheckServer(ctx.system, loadBalancerDetachWaitDuration)
@@ -78,7 +78,7 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
 
     private val logger: Logger = LoggerFactory.getLogger("main")
 
-    private fun startApplicationServer(
+    private fun startHttpServer(
       di: DI,
       ctx: ActorContext<Command>,
       host: String,

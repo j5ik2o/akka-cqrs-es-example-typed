@@ -39,8 +39,10 @@ import org.slf4j.LoggerFactory
 object DISettings {
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
+  data class CtxWithArgs(val ctx: ActorContext<MainActor.Companion.Command>, val roleNames: List<RoleName>)
+
   fun toDI(args: ExampleArgs): DI = DI {
-    val ctxScope = WeakContextScope.of<ActorContext<MainActor.Companion.Command>>()
+    val ctxScope = WeakContextScope.of<CtxWithArgs>()
     bindSingleton<Config> {
       val config = ConfigFactory.load()
       logger.info("config = {}", config.root().render(ConfigRenderOptions.concise()))
@@ -62,23 +64,22 @@ object DISettings {
     }
     bind<ClusterBootstrap> {
       scoped(ctxScope).singleton {
-        ClusterBootstrap.get(context.system)
+        ClusterBootstrap.get(context.ctx.system)
       }
     }
     bind<ActorRef<SelfUp>> {
       scoped(ctxScope).factory { replyTo: ActorRef<MainActor.Companion.Command> ->
-        context.spawn(SelfUpReceiver.create(replyTo), "self-up")
+        context.ctx.spawn(SelfUpReceiver.create(replyTo), "self-up")
       }
     }
     bind<ClusterSharding> {
       scoped(ctxScope).singleton {
-        ClusterSharding.get(context.system)
+        ClusterSharding.get(context.ctx.system)
       }
     }
     bind<ActorRef<ThreadAggregateProtocol.CommandRequest>> {
       scoped(ctxScope).singleton {
-        ShardedThreadAggregate.initClusterSharding(
-          instance(),
+        val behavior = if (context.roleNames.contains(RoleName.BACKEND)) {
           ThreadAggregates.create(
             { it.asString() },
             { id ->
@@ -90,23 +91,26 @@ object DISettings {
               }
             }
           )
-        )
-        context.spawn(ShardedThreadAggregate.ofProxy(instance()), "sharded-thread")
+        } else {
+          null
+        }
+        ShardedThreadAggregate.initClusterSharding(instance(), behavior)
+        context.ctx.spawn(ShardedThreadAggregate.ofProxy(instance()), "sharded-thread")
       }
     }
     bind<CreateThreadUseCase> {
       scoped(ctxScope).singleton {
-        CreateThreadUseCaseImpl(context.system, instance())
+        CreateThreadUseCaseImpl(context.ctx.system, instance())
       }
     }
     bind<AddMemberUseCase> {
       scoped(ctxScope).singleton {
-        AddMemberUseCaseImpl(context.system, instance())
+        AddMemberUseCaseImpl(context.ctx.system, instance())
       }
     }
     bind<AddMessageUseCase> {
       scoped(ctxScope).singleton {
-        AddMessageUseCaseImpl(context.system, instance())
+        AddMessageUseCaseImpl(context.ctx.system, instance())
       }
     }
     bind<ThreadController> {

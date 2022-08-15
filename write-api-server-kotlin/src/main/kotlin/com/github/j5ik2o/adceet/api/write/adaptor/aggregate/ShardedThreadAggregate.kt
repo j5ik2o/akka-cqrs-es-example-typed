@@ -46,13 +46,13 @@ object ShardedThreadAggregate {
 
   fun initClusterSharding(
     clusterSharding: ClusterSharding,
-    childBehavior: Behavior<ThreadAggregateProtocol.CommandRequest>,
+    childBehavior: Behavior<ThreadAggregateProtocol.CommandRequest>?,
     receiveTimeout: Duration? = null
   ): ActorRef<ShardingEnvelope<ThreadAggregateProtocol.CommandRequest>> {
     val entity = Entity.of(
       TypeKey,
       entityBehavior(
-        childBehavior,
+        childBehavior ?: Behaviors.empty(),
         receiveTimeout
       )
     ).withStopMessage(ThreadAggregateProtocol.Stop)
