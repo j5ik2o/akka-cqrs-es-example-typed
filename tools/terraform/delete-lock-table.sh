@@ -10,6 +10,9 @@ if [[ ! -e ../../env.sh ]]; then
     exit 1
 fi
 
+# shellcheck disable=SC2034
+OUTPUT_ENV=1
+
 source ../../env.sh
 
 export AWS_PAGER=""

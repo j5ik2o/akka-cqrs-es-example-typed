@@ -10,9 +10,10 @@ if [[ ! -e ../../env.sh ]]; then
     exit 1
 fi
 
+# shellcheck disable=SC2034
 OUTPUT_ENV=1
 
-. ../../env.sh
+source ../../env.sh
 
 # shellcheck disable=SC2046
 aws --profile "$AWS_PROFILE" eks update-kubeconfig --name $(./terraform-output.sh -raw eks_cluster_name)
