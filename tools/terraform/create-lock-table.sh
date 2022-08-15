@@ -5,6 +5,9 @@ set -eu
 # shellcheck disable=SC2046
 cd $(dirname "$0") || exit
 
+# shellcheck disable=SC2034
+OUTPUT_ENV=1
+
 if [[ ! -e ../../env.sh ]]; then
     echo "env.sh is not found."
     exit 1
