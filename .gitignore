@@ -35,3 +35,5 @@ eks_aws_auth_config_map.yaml
 **/environments/*-values.yaml
 **/*-terraform.tfvars
 tools/deployments/adceet/**/*.yaml
+
+.vscode/
