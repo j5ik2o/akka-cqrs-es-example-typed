@@ -175,7 +175,7 @@ jvm_heap_min = "1024m"
 jvm_heap_max = "1024m"
 jvm_meta_max = "512m"
 
-datadog-api-key = "a8b1810a63547673031be992d9378a9f"
+datadog-api-key = "xxxx"
 
 eks_auth_roles = []
 eks_auth_users = []
