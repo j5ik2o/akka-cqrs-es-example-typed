@@ -1,7 +1,8 @@
 package com.github.j5ik2o.adceet.api.write
+
 import enumeratum._
 import akka.actor.typed.ActorSystem
-import wvlet.airframe.{DISupport, Session}
+import wvlet.airframe.{ DISupport, Session }
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -40,7 +41,7 @@ object Main extends App with DISupport {
 
   val parsedArgs = OParser.parse(parser, args, Args()).get
 
-  val design = DISettings.di(parsedArgs)
+  val design           = DISettings.di(parsedArgs)
   val session: Session = design.newSession
   try {
     val system = session.build[ActorSystem[MainActor.Command]]
