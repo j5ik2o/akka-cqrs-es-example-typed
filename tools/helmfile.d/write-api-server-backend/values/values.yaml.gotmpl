@@ -1,0 +1,167 @@
+image:
+  repository: '{{ .Values.writeApi.writeApiServer.backend.image.repository }}'
+  tags: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
+  pullPolicy: '{{ .Values.writeApi.writeApiServer.backend.image.pullPolicy}}'
+
+{{- if .Values.ecrCred.enabled }}
+  imagePullSecrets:
+  - name: ecr-cred-regcred
+{{- end }}
+
+nameOverride: ""
+fullnameOverride: ""
+
+akka:
+  cluster:
+    enabled: true
+  discovery:
+    enabled: true
+  management:
+    enabled: true
+    service:
+      enabled: false
+    healthChecks:
+      livenessPath: /health/ready
+  http:
+    enabled: false
+  remote:
+    enabled: true
+
+affinity: {}
+
+annotations: {}
+
+containerName: ""
+
+command:
+  {{- toYaml .Values.writeApi.writeApiServer.backend.command | nindent 2 }}
+
+env:
+  {{- with .Values.writeApi.writeApiServer.backend.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with .Values.writeApi.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  - name: CONFIG_FORCE_kamon_environment_tags_version
+    value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
+
+podLabels:
+  adceet/akka-cluster-name: '{{ .Values.writeApi.akkaClusterName }}'
+
+lifecycle:
+  preStop:
+    exec:
+      command: [ "sh", "-c", "sleep {{ .Values.writeApi.writeApiServer.backend.processTimeoutInSec}}" ]
+
+startupProbe:
+  enabled: false
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 0
+
+priorityClassName: ""
+
+readinessGate: []
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+replicaCount: {{ .Values.writeApi.writeApiServer.backend.replicaCount }}
+
+revisionHistoryLimit: 10
+
+resources:
+  {{- toYaml .Values.writeApi.writeApiServer.backend.resources | nindent 2 }}
+
+restartPolicy: Always
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 10%
+    maxUnavailable: 0%
+
+terminationGracePeriodSeconds: {{ add .Values.writeApi.writeApiServer.backend.processTimeoutInSec 5 }}
+
+tolerations: []
+
+# RBAC Configuration
+rbac:
+  create: true
+
+# SA Configuration
+serviceAccount:
+  create: true
+  annotations: {}
+  labels: {}
+  name:
+
+# PDB Configuration
+podDisruptionBudget:
+  enabled: false
+  annotations: {}
+  labels: {}
+  maxUnavailable:
+  minAvailable:
+
+# HPA Configurattion
+autoscaling:
+  enabled: false
+  annotations: {}
+  labels: {}
+  minReplicas:
+  maxReplicas:
+  metrics: []
+  # This feature is available since 1.18
+  behavior: {}
+
+# Metrics Configuration.
+metrics:
+  enabled: false
+  port: 9095
+  path: "/"
+
+# ConfigMap Configurations
+configmaps:
+  chart.conf: ""
+  akka.conf: ""
+  kamon.conf: ""
+
+useResourceApplicationConf: false
+
+# Secret Configuration
+secrets: {}
+
+test:
+  enabled: false
+  annotations: {}
+  labels: {}
+  spec: {}

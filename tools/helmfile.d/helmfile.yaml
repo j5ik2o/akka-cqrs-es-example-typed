@@ -1,0 +1,8 @@
+---
+environments:
+  {{ .Environment.Name }}:
+helmDefaults:
+  wait: false
+helmfiles:
+  - path: ./addceet-write-api-server-frontend
+  - path: ./addceet-write-api-server-backend
