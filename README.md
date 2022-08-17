@@ -4,21 +4,21 @@ Status: WIP
 
 ## TODO
 
-- [] Write API Server(on akka cluster) 
+- [ ] Write API Server(on akka cluster) 
   - [x] Implementations
   - [x] Docker Compose Support
-  - [] Deployment to EKS (WIP)
-  - [] Deployment to minikube
-- [] Read Model Updater(without akka cluster) 
-  - [] Implementations
-  - [] Docker Compose Support
-  - [] Deployment to EKS
-  - [] Deployment to minikube
-- [] Read API Server(without akka cluster)
-  - [] Implementations
-  - [] Docker Compose Support
-  - [] Deployment to EKS
-  - [] Deployment to minikube
+  - [ ] Deployment to EKS (WIP)
+  - [ ] Deployment to minikube
+- [ ] Read Model Updater(without akka cluster) 
+  - [ ] Implementations
+  - [ ] Docker Compose Support
+  - [ ] Deployment to EKS
+  - [ ] Deployment to minikube
+- [ ] Read API Server(without akka cluster)
+  - [ ] Implementations
+  - [ ] Docker Compose Support
+  - [ ] Deployment to EKS
+  - [ ] Deployment to minikube
 
 ## Tools
 
