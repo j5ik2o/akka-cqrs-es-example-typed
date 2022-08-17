@@ -9,7 +9,7 @@
 - sbt
 - terraform
 
-## Set up
+## Installation of the tools
 
 ### asdf
 
@@ -87,17 +87,17 @@ $ asdf install sbt 1.6.2
 $ asdf local sbt 1.6.2
 ```
 
-### EKSを使う場合
+### EKS
 
 #### kubectl
 
-トラブルを避けるためサーバ側と同じバージョンのkubectlをインストールしてください
+Please install the same version of kubectl as the server side to avoid trouble.
 
 ```shell
 $ KUBECTL_VERSION=1.21.13
 $ asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
 $ asdf install kubectl $KUBECTL_VERSION
-akka-ddd-cqrs-es-example-typed $ asdf local kubectl $KUBECTL_VERSION # 必ずプロジェクトルートで設定する
+akka-ddd-cqrs-es-example-typed $ asdf local kubectl $KUBECTL_VERSION # Always set up in the project root.
 $ kubectl version
 Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.13", GitCommit:"80ec6572b15ee0ed2e6efa97a4dcd30f57e68224", GitTreeState:"clean", BuildDate:"2022-05-24T12:40:44Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"darwin/arm64"}
 Server Version: version.Info{Major:"1", Minor:"21+", GitVersion:"v1.21.12-eks-a64ea69", GitCommit:"d4336843ba36120e9ed1491fddff5f2fec33eb77", GitTreeState:"clean", BuildDate:"2022-05-12T18:29:27Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"linux/amd64"}
@@ -109,16 +109,8 @@ Server Version: version.Info{Major:"1", Minor:"21+", GitVersion:"v1.21.12-eks-a6
 $ asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
 $ asdf install helm 3.9.0
 $ asdf local helm 3.9.0
-# helmfileで必要なプラグイン
+# Required plug-ins in helmfile
 $ helm plugin install https://github.com/databus23/helm-diff
-$ helm plugin install https://github.com/jkroepke/helm-secrets --version v3.12.0
-# https://github.com/jkroepke/helm-secrets
-```
-
-helm-secretsのためにkmsキーを作る
-
-```shell
-$ aws --profile adceet kms create-key
 ```
 
 #### helmfile
@@ -129,29 +121,104 @@ $ asdf install helmfile 0.144.0
 $ asdf local helmfile 0.144.0
 ```
 
+## Setup
 
-## 初期設定
+### Add an aws profile
+
+edit `~/.aws/credentials` as follows.
+
+```
+# ...
+[adceet]
+aws_access_key_id=xxxxx
+aws_secret_access_key=xxxxx
+aws_session_token=xxxxx
+# ...
+```
+
+### copy env.sh.default as env.sh, and edit it
 
 ```shell
 $ cp env.sh.default env.sh
 ```
 
-PREFIX, APPLICATION_NAMEを適宜修正する。
-個人環境を作りたい場合は、PREFIXを変更するとよい。
+Modify PREFIX, APPLICATION_NAME as appropriate.
+If you want to create a personal environment, change PREFIX.
 
-### Debug by using IntelliJ IDEA
+## Building an AWS environment with terraform 
 
-Edit Configurations
+Create a new file `akka-dddcqrs-es-example-typed/tools/terraform/${PREFIX}-${APPLICATION_NAME}-terraform.tfvars` with the following.
+Changes defined in variables.tf can be overridden in this tfvars file.
 
-com.github.j5ik2o.api.write.Main
+```
+akka_persistence_journal_name      = "Journal"
+akka_persistence_journal_gsi_name  = "GetJournalRowsIndex"
+akka_persistence_snapshot_name     = "Snapshot"
+akka_persistence_snapshot_gsi_name = "GetSnapshotRowsIndex"
 
-1. PORT=8081;AKKA_MANAGEMENT_HTTP_PORT=8558;JMX_PORT=8100
-2. PORT=8082;AKKA_MANAGEMENT_HTTP_PORT=8559;JMX_PORT=8101
-3. PORT=8083;AKKA_MANAGEMENT_HTTP_PORT=8560;JMX_PORT=8102
+container_port       = 8081
+akka_management_port = 8558
+akka_remote_port     = 25520
+number_of_shards     = 30
 
-3つの分の設定を作り、IntelliJ IDEAで実行してください。デバッグしたい場合はいずれか1個のプロジェクトをデバッグで起動してください。
+health_check_port = 8558
+health_check_path = "/health/ready"
 
-## kubernetes-dashboard
+alb_enabled              = false
+akka_persistence_enabled = true
+ecs_enabled              = false
+
+eks_version = "1.22"
+eks_enabled      = true
+
+jvm_heap_min = "1024m"
+jvm_heap_max = "1024m"
+jvm_meta_max = "512m"
+
+datadog-api-key = "a8b1810a63547673031be992d9378a9f"
+
+eks_auth_roles = []
+eks_auth_users = []
+eks_auth_accounts = []
+```
+
+### create a lock table
+
+Create a lock table for terraform on DynamoDB.
+
+```shell
+akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
+```
+
+### create a s3 bucket for tfstate
+
+Create an s3 bucket to store tfstate.
+
+```shell
+akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-tf-bucket.sh
+```
+
+### terraform init
+
+```shell
+akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-init.sh
+```
+
+### terraform plan
+
+```shell
+akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-plan.sh
+```
+
+### terraform apply
+
+```shell
+akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-apply.sh
+```
+
+## Confirm kubernetes-dashboard
+
+### Port forward to kubernetes-dashboard
 
 ```shell
 $ DASHBOARD_NS=kubernetes-dashboard
@@ -172,3 +239,17 @@ $ kubectl -n $DASHBOARD_NS port-forward $POD_NAME 8443:8443
 $ DASHBOARD_NS=kubernetes-dashboard
 $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret | grep kubernetes-dashboard-token | awk '{print $1}') | awk '$1=="token:"{print $2}'
 ```
+
+## How to debug
+
+### Debug by using IntelliJ IDEA
+
+Edit Configurations
+
+com.github.j5ik2o.api.write.Main
+
+1. PORT=8081;AKKA_MANAGEMENT_HTTP_PORT=8558;JMX_PORT=8100
+2. PORT=8082;AKKA_MANAGEMENT_HTTP_PORT=8559;JMX_PORT=8101
+3. PORT=8083;AKKA_MANAGEMENT_HTTP_PORT=8560;JMX_PORT=8102
+
+Create a configuration for all three and run it in IntelliJ IDEA. If you want to debug, run any one of the projects in debug.
