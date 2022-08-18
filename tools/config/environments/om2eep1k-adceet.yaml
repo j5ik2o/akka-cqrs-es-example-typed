@@ -40,13 +40,12 @@ writeApi:
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
-      # sandbox-sagradaは同じVPCなのでinternal可能
       hostname: xxxx
       externalDNS:
         awsWeight: 100
       serviceAccount:
-        create: false
-        name: eksctl-write-api-server-backend-akka
+        create: true
+        name: write-api-server-frontend-akka
       command:
         - /opt/docker/bin/write-api-server-scala
         - -Dconfig.resource=application-cluster-frontend.conf
@@ -66,7 +65,7 @@ writeApi:
       enabled: true
       version: 0.2.5
       image:
-        repository: 123663190905.dkr.ecr.ap-northeast-1.amazonaws.com/sagrada-write-api-server
+        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-write-api-server
         tag: 202206.15.1
         pullPolicy: Always
       resources:
@@ -81,10 +80,10 @@ writeApi:
         enabled: false
       processTimeoutInSec: 10
       serviceAccount:
-        create: false
+        create: true
         name: write-api-server-backend-akka
       command:
-        - /opt/docker/bin/write-api-server
+        - /opt/docker/bin/write-api-server-scala
         - -Dconfig.resource=application-cluster-backend.conf
         - -Dconfig.override_with_env_vars=true
       env:

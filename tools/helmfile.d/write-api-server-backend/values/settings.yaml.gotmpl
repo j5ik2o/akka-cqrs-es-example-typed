@@ -4,7 +4,7 @@ image:
   pullPolicy: '{{ .Values.writeApi.writeApiServer.backend.image.pullPolicy}}'
 
 {{- if .Values.ecrCred.enabled }}
-  imagePullSecrets:
+imagePullSecrets:
   - name: ecr-cred-regcred
 {{- end }}
 
@@ -29,10 +29,6 @@ akka:
 
 affinity: {}
 
-annotations: {}
-
-containerName: ""
-
 command:
   {{- toYaml .Values.writeApi.writeApiServer.backend.command | nindent 2 }}
 
@@ -45,9 +41,6 @@ env:
   {{- end }}
   - name: CONFIG_FORCE_kamon_environment_tags_version
     value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
-
-podLabels:
-  adceet/akka-cluster-name: '{{ .Values.writeApi.akkaClusterName }}'
 
 lifecycle:
   preStop:
@@ -69,14 +62,11 @@ nodeSelector: {}
 
 podAnnotations: {}
 
-podLabels: {}
+podLabels:
+  adceet/akka-cluster-name: '{{ .Values.writeApi.akkaClusterName }}'
 
 podSecurityContext:
   fsGroup: 0
-
-priorityClassName: ""
-
-readinessGate: []
 
 readinessProbe:
   enabled: true
@@ -88,12 +78,8 @@ readinessProbe:
 
 replicaCount: {{ .Values.writeApi.writeApiServer.backend.replicaCount }}
 
-revisionHistoryLimit: 10
-
 resources:
   {{- toYaml .Values.writeApi.writeApiServer.backend.resources | nindent 2 }}
-
-restartPolicy: Always
 
 securityContext: {}
   # capabilities:
@@ -111,57 +97,30 @@ strategy:
 
 terminationGracePeriodSeconds: {{ add .Values.writeApi.writeApiServer.backend.processTimeoutInSec 5 }}
 
-tolerations: []
-
-# RBAC Configuration
 rbac:
   create: true
 
-# SA Configuration
 serviceAccount:
-  create: true
-  annotations: {}
-  labels: {}
-  name:
+  create: {{ .Values.writeApi.writeApiServer.backend.serviceAccount.create }}
+  {{- if .Values.writeApi.writeApiServer.backend.serviceAccount.name }}
+  name: {{ .Values.writeApi.writeApiServer.backend.serviceAccount.name }}
+  {{- end }}
 
-# PDB Configuration
 podDisruptionBudget:
-  enabled: false
-  annotations: {}
-  labels: {}
-  maxUnavailable:
-  minAvailable:
+  enabled: true
+  maxUnavailable: 1
 
-# HPA Configurattion
 autoscaling:
-  enabled: false
-  annotations: {}
-  labels: {}
-  minReplicas:
-  maxReplicas:
-  metrics: []
-  # This feature is available since 1.18
-  behavior: {}
+  {{- toYaml .Values.writeApi.writeApiServer.backend.autoscaling | nindent 2 }}
 
-# Metrics Configuration.
 metrics:
   enabled: false
   port: 9095
   path: "/"
 
-# ConfigMap Configurations
 configmaps:
   chart.conf: ""
   akka.conf: ""
   kamon.conf: ""
 
 useResourceApplicationConf: false
-
-# Secret Configuration
-secrets: {}
-
-test:
-  enabled: false
-  annotations: {}
-  labels: {}
-  spec: {}
