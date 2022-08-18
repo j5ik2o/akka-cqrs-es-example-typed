@@ -43,11 +43,12 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
           Kamon.init()
 
         val config = ctx.system.settings().config()
-        val host = config.getString("http.host")
-        val port = config.getInt("http.port")
-        val terminationHardDeadLine = config.getDuration("management.http.termination-hard-deadline")
+        val adceetConfig = config.getConfig("adceet")
+        val host = adceetConfig.getString("http.host")
+        val port = adceetConfig.getInt("http.port")
+        val terminationHardDeadLine = adceetConfig.getDuration("management.http.termination-hard-deadline")
         val loadBalancerDetachWaitDuration =
-          config.getDuration("management.http.load-balancer-detach-wait-duration")
+          adceetConfig.getDuration("management.http.load-balancer-detach-wait-duration")
 
         // アプリケーションの起動
         val appServer = startHttpServer(di, ctx, host, port, terminationHardDeadLine)
