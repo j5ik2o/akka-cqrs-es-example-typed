@@ -11,7 +11,7 @@ import net.moznion.sbt.SbtSpotless.autoImport.spotlessKotlin
 import net.moznion.sbt.spotless.config.{ KotlinConfig, KtlintConfig }
 import sbt.Keys._
 import sbt.{ Def, _ }
-import sbtecr.EcrPlugin.autoImport._
+import adceet_sbtecr.EcrPlugin.autoImport._
 import scalafix.sbt.ScalafixPlugin.autoImport.{ scalafixScalaBinaryVersion, scalafixSemanticdb }
 
 object Settings {
@@ -74,7 +74,7 @@ object Settings {
     val AwsRegion: String       = sys.env.getOrElse("AWS_REGION", "ap-northeast-1")
     val RepositoryUri: String   = s"$AwsAccountId.dkr.ecr.$AwsRegion.amazonaws.com"
 
-    def repositoryNameForProject(projectName: String): String = s"$Prefix-ecr-$ApplicationName-$projectName"
+    def repositoryNameForProject(projectName: String): String = s"$Prefix-ecr-$projectName"
   }
 
   val dockerCommonSettings: Seq[Def.Setting[_]] = Seq(

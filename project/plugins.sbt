@@ -5,9 +5,23 @@ resolvers ++= Seq(
   Resolver.jcenterRepo
 )
 
+libraryDependencies ++= {
+  val amazonSdkV = "1.11.672"
+  val scalaTestV = "3.0.8"
+  val awsSsoSdkV = "2.16.63"
+  Seq(
+    "com.amazonaws"          % "aws-java-sdk-sts" % amazonSdkV,
+    "com.amazonaws"          % "aws-java-sdk-ecr" % amazonSdkV,
+    "software.amazon.awssdk" % "sso"              % awsSsoSdkV,
+    "org.scalatest"         %% "scalatest"        % scalaTestV % "test"
+  )
+}
+
 addSbtPlugin("com.lightbend.sbt" % "sbt-javaagent" % "0.1.6")
 
-addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.16.0")
+// addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.16.0")
+//lazy val root       = project.in(file(".")).dependsOn(githubRepo)
+//lazy val githubRepo = RootProject(uri("git://github.com/crossroad0201/sbt-ecr.git#69d8121"))
 
 addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.3")
 

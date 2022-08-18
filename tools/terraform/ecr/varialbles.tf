@@ -6,4 +6,6 @@ variable "prefix" {}
 
 variable "owner" {}
 
+variable "application_name" {}
+
 variable "name" {}
