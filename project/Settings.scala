@@ -68,12 +68,13 @@ object Settings {
   )
 
   private object EcrRepositorySetting {
-    val Prefix: String        = sys.env.getOrElse("PREFIX", "dummy-prefix")
-    val AwsAccountId: String  = sys.env.getOrElse("AWS_ACCOUNT_ID", "111111111111")
-    val AwsRegion: String     = sys.env.getOrElse("AWS_REGION", "ap-northeast-1")
-    val RepositoryUri: String = s"$AwsAccountId.dkr.ecr.$AwsRegion.amazonaws.com"
+    val Prefix: String          = sys.env.getOrElse("PREFIX", "dummy")
+    val ApplicationName: String = sys.env.getOrElse("APPLICATION_NAME", "dummy")
+    val AwsAccountId: String    = sys.env.getOrElse("AWS_ACCOUNT_ID", "111111111111")
+    val AwsRegion: String       = sys.env.getOrElse("AWS_REGION", "ap-northeast-1")
+    val RepositoryUri: String   = s"$AwsAccountId.dkr.ecr.$AwsRegion.amazonaws.com"
 
-    def repositoryNameForProject(projectName: String): String = s"$Prefix-ecr-$projectName"
+    def repositoryNameForProject(projectName: String): String = s"$Prefix-ecr-$ApplicationName-$projectName"
   }
 
   val dockerCommonSettings: Seq[Def.Setting[_]] = Seq(
