@@ -141,6 +141,8 @@ $ asdf install helmfile 0.144.0
 $ asdf local helmfile 0.144.0
 ```
 
+---
+
 ## Setup
 
 ### Add an aws profile
@@ -204,7 +206,7 @@ eks_auth_accounts = []
 
 ### create a lock table
 
-Create a lock table for terraform on DynamoDB.
+At first time only, Create a lock table for terraform on DynamoDB.
 
 ```shell
 akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
@@ -212,7 +214,7 @@ akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
 
 ### create a s3 bucket for tfstate
 
-Create an s3 bucket to store tfstate.
+At first time only, Create an s3 bucket to store tfstate.
 
 ```shell
 akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-tf-bucket.sh
@@ -260,7 +262,7 @@ $ DASHBOARD_NS=kubernetes-dashboard
 $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret | grep kubernetes-dashboard-token | awk '{print $1}') | awk '$1=="token:"{print $2}'
 ```
 
-## How to debug
+## How to debug on local machine
 
 ### Debug by using IntelliJ IDEA
 
