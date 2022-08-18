@@ -149,13 +149,38 @@ $ asdf local helmfile 0.144.0
 
 edit `~/.aws/credentials` as follows.
 
+#### If AWS SSO is not used
+
+Define just one entry.
+
 ```
 # ...
 [adceet]
 aws_access_key_id=xxxxx
 aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
+```
+
+#### If AWS SSO is used.
+
+Define one for terraform and one for SSO separately.
+
+```
 # ...
+[adceet-terraform]
+aws_access_key_id=xxxxx
+aws_secret_access_key=xxxxx
+aws_session_token=xxxxx
+# ...
+[adceet-sso]
+aws_access_key_id=xxxxx
+aws_secret_access_key=xxxxx
+aws_session_token=xxxxx
+sso_start_url = https://d-95671bd3b6.awsapps.com/start
+sso_region = ap-northeast-1
+sso_account_id = 234188972441
+sso_role_name = SagradaOwnerAccess
+region = us-east-1
 ```
 
 ### copy env.sh.default as env.sh, and edit it
@@ -166,6 +191,38 @@ $ cp env.sh.default env.sh
 
 Modify PREFIX, APPLICATION_NAME as appropriate.
 If you want to create a personal environment, change PREFIX.
+
+#### If AWS SSO is not used
+
+```shell
+export AWS_PROFILE_TERRAFORM=adceet
+export AWS_PROFILE_SSO=adceet
+export AWS_REGION=us-east-1
+export AWS_ACCOUNT_ID=1234567890
+
+export PREFIX=om2eep1k
+export APPLICATION_NAME=adceet
+
+export MODE=scala
+
+if [[ "$OUTPUT_ENV" == 1 ]]; then
+echo "--- Using Environments -----------------"
+echo "AWS_PROFILE_TERRAFORM  = $AWS_PROFILE_TERRAFORM"
+echo "AWS_PROFILE_SSO        = $AWS_PROFILE_SSO"
+echo "AWS_REGION             = $AWS_REGION"
+echo "PREFIX                 = $PREFIX"
+echo "APPLICATION_NAME       = $APPLICATION_NAME"
+echo "MODE                   = $MODE"
+echo "----------------------------------------"
+fi
+```
+
+#### If AWS SSO is used
+
+```shell
+export AWS_PROFILE_TERRAFORM=adceet-terraform
+export AWS_PROFILE_SSO=adceet-sso
+```
 
 ## Building an AWS environment with terraform 
 
