@@ -10,7 +10,7 @@ environments:
 ---
 releases:
   - name: write-api-server-frontend
-    namespace: '{{ .Namespace | default "sagrada" }}'
+    namespace: '{{ .Namespace | default "adceet" }}'
     labels:
       subsystem: write-api
       group: write-api-server

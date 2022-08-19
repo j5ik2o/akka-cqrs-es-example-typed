@@ -55,8 +55,6 @@ writeApi:
           value: "off"
         - name: CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members
           value: "1"
-        - name: CONFIG_FORCE_j5ik2o_dynamo__db__state_table__name
-          value: "sandbox-sagrada-write-api-state"
       ingress:
         enabled: true
         alb:

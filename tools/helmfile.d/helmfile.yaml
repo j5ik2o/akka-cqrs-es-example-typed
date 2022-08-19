@@ -4,5 +4,6 @@ environments:
 helmDefaults:
   wait: false
 helmfiles:
-  - path: ./addceet-write-api-server-frontend
-  - path: ./addceet-write-api-server-backend
+  - 'regcred/helmfile.yaml'
+  - 'write-api-server-frontend/helmfile.yaml'
+  - 'write-api-server-backend/helmfile.yaml'

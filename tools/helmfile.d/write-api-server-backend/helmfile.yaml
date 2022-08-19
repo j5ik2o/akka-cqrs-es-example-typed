@@ -7,7 +7,7 @@ environments:
       - '../../config/environments/{{ .Environment.Name }}.yaml'
 ---
 releases:
-  - name: write-api-server
+  - name: write-api-server-backend
     namespace: '{{ .Namespace | default "adceet" }}'
     labels:
       subsystem: write-api
