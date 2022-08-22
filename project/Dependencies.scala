@@ -67,6 +67,7 @@ object Dependencies {
       "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % Version.akkaManagement
     val akkaDiscoveryAwsApiAsync =
       "com.lightbend.akka.discovery" %% "akka-discovery-aws-api-async" % Version.akkaManagement
+    val discoveryK8sApi = "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % Version.akkaManagement
   }
 
   object iheart {
