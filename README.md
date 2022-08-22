@@ -165,6 +165,19 @@ aws_session_token=xxxxx
 
 Define one for terraform and one for SSO separately.
 
+`~/.aws/config`
+
+```
+[profile adceet-sso]
+sso_start_url = https://d-95671bd3b6.awsapps.com/start
+sso_region = us-east-1
+sso_account_id = 1234567890
+sso_role_name = SagradaOwnerAccess
+region = us-east-1
+```
+
+`~/.aws/credentials`
+
 ```
 # ...
 [adceet-terraform]
@@ -176,11 +189,6 @@ aws_session_token=xxxxx
 aws_access_key_id=xxxxx
 aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
-sso_start_url = https://d-95671bd3b6.awsapps.com/start
-sso_region = ap-northeast-1
-sso_account_id = 234188972441
-sso_role_name = SagradaOwnerAccess
-region = us-east-1
 ```
 
 ### copy env.sh.default as env.sh, and edit it
