@@ -5,7 +5,7 @@ regcred:
   password:
 ecrCred:
   enabled: true
-  server:
+  server: 234188972441.dkr.ecr.us-east-1.amazonaws.com
   password:
 writeApi:
   akkaClusterName: write-api
@@ -32,7 +32,7 @@ writeApi:
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-f4488ef0368708c1709c09c7968a4a9766ce82e5-1660795290388
+        tag: dev-518fc2c03bdff2cf80e5e7fc90db156de927fac7-1661138414184
         pullPolicy: Always
       resources:
         limits:
@@ -56,7 +56,7 @@ writeApi:
         create: true
         name: write-api-server-frontend-akka
       command:
-        - /opt/docker/bin/write-api-server-scala
+        - /opt/docker/bin/adceet-write-api-server-scala
         - -Dconfig.resource=application-cluster-frontend.conf
         - -Dconfig.override_with_env_vars=true
       env:
@@ -73,7 +73,7 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-f4488ef0368708c1709c09c7968a4a9766ce82e5-1660795290388
+        tag: dev-518fc2c03bdff2cf80e5e7fc90db156de927fac7-1661138414184
         pullPolicy: Always
       resources:
         limits:
@@ -90,7 +90,7 @@ writeApi:
         create: true
         name: write-api-server-backend-akka
       command:
-        - /opt/docker/bin/write-api-server-scala
+        - /opt/docker/bin/adceet-write-api-server-scala
         - -Dconfig.resource=application-cluster-backend.conf
         - -Dconfig.override_with_env_vars=true
       env:

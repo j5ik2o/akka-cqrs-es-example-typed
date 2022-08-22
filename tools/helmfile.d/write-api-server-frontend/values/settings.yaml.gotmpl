@@ -50,6 +50,9 @@ akka:
     enabled: true
     service:
       enabled: true
+    healthChecks:
+      livenessPath: health/alive
+      readinessPath: health/ready
 
   remote:
     enabled: true
@@ -75,7 +78,7 @@ lifecycle:
       command: [ "sh", "-c", "sleep {{ .Values.writeApi.writeApiServer.frontend.processTimeoutInSec}}" ]
 
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 1
@@ -91,7 +94,7 @@ startupProbe:
   enabled: false
 
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 1

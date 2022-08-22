@@ -21,7 +21,8 @@ akka:
     service:
       enabled: false
     healthChecks:
-      livenessPath: /health/ready
+      livenessPath: health/alive
+      readinessPath: health/ready
   http:
     enabled: false
   remote:
@@ -51,7 +52,7 @@ startupProbe:
   enabled: false
 
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 1
@@ -69,7 +70,7 @@ podSecurityContext:
   fsGroup: 0
 
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 1
