@@ -2,4 +2,4 @@
 
 export TARGET_AMD64=1
 
-./sbt.sh ecr:push
+./sbt.sh write-api-server-scala/ecr:push
