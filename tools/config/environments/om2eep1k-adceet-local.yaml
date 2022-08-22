@@ -28,11 +28,11 @@ writeApi:
       logs:
         enabled: false
     frontend:
-      enabled: false
+      enabled: true
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-c3dd9e26bacd6db60acbd4f70a4ce2c4974953de-1661152194444
+        tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
         pullPolicy: Always
       resources:
         limits:
@@ -81,7 +81,7 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-c3dd9e26bacd6db60acbd4f70a4ce2c4974953de-1661152194444
+        tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
         pullPolicy: Always
       resources:
         limits:
