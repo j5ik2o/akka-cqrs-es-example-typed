@@ -10,7 +10,7 @@ import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
-import kamon.Kamon
+// import kamon.Kamon
 import org.slf4j.{ Logger, LoggerFactory }
 import wvlet.airframe.{ DISupport, Session }
 
@@ -32,8 +32,8 @@ class MainActor(val session: Session) extends DISupport {
 
   def create(args: Args): Behavior[Command] = {
     Behaviors.setup { ctx =>
-      if (args.environment == Environments.Production)
-        Kamon.init()
+//      if (args.environment == Environments.Production)
+//        Kamon.init()
 
       val cluster    = Cluster(ctx.system)
       val selfMember = cluster.selfMember
@@ -82,8 +82,8 @@ class MainActor(val session: Session) extends DISupport {
           .receiveMessage[Command] { case MeUp =>
             Behaviors.same
           }.receiveSignal { case (_, PostStop) =>
-            if (args.environment == Environments.Production)
-              Kamon.stop()
+//            if (args.environment == Environments.Production)
+//              Kamon.stop()
             Behaviors.same
           }
       }
