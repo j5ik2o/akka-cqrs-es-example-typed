@@ -47,7 +47,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       lightbend.akkaManagement,
       lightbend.akkaManagementClusterHttp,
       lightbend.akkaManagementClusterBootstrap,
-      lightbend.akkaDiscoveryAwsApiAsync,
+      lightbend.discoveryK8sApi,
       fasterXmlJackson.scala,
       kamon.statusPage,
       kamon.akka,
