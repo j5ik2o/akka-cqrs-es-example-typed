@@ -71,7 +71,15 @@ env:
   {{- end }}
   - name: CONFIG_FORCE_kamon_environment_tags_version
     value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.frontend.image.tag}}'
-
+  - name: CONFIG_FORCE_akka_remote_artery_canonical_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  - name: CONFIG_FORCE_akka_management_http_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  
 lifecycle:
   preStop:
     exec:

@@ -28,11 +28,11 @@ writeApi:
       logs:
         enabled: false
     frontend:
-      enabled: true
+      enabled: false
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-518fc2c03bdff2cf80e5e7fc90db156de927fac7-1661138414184
+        tag: dev-c3dd9e26bacd6db60acbd4f70a4ce2c4974953de-1661152194444
         pullPolicy: Always
       resources:
         limits:
@@ -62,8 +62,16 @@ writeApi:
       env:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
-        - name: "CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members"
-          value: "1"
+
+        - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
+          value: "30"
+
+        - name: "CONFIG_FORCE_akka_management_http_bind__hostname"
+          value: "0.0.0.0"
+        - name: "CONFIG_FORCE_akka_management_http_bind__port"
+          value: "8558"
+        - name: "CONFIG_FORCE_akka_management_contract__point_fallback__ports"
+          value: "8558"
       ingress:
         enabled: false
         alb:
@@ -73,7 +81,7 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-518fc2c03bdff2cf80e5e7fc90db156de927fac7-1661138414184
+        tag: dev-c3dd9e26bacd6db60acbd4f70a4ce2c4974953de-1661152194444
         pullPolicy: Always
       resources:
         limits:
@@ -94,13 +102,12 @@ writeApi:
         - -Dconfig.resource=application-cluster-backend.conf
         - -Dconfig.override_with_env_vars=true
       env:
+        - name: CONFIG_FORCE_akka_log__config__on__start
+          value: "off"
+
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
 
-        - name: "CONFIG_FORCE_akka_management_http_hostname"
-          value: ""
-        - name: "CONFIG_FORCE_akka_management_http_port"
-          value: "8558"
         - name: "CONFIG_FORCE_akka_management_http_bind__hostname"
           value: "0.0.0.0"
         - name: "CONFIG_FORCE_akka_management_http_bind__port"
