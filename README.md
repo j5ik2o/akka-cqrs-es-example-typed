@@ -245,6 +245,7 @@ export AWS_PROFILE_SSO=adceet-sso
 
 Create a new file `akka-dddcqrs-es-example-typed/tools/terraform/${PREFIX}-${APPLICATION_NAME}-terraform.tfvars` with the following.
 Changes defined in variables.tf can be overridden in this tfvars file.
+You can create only the resources you need. For example, just set `ecr_enabled = true` if you only need ecr.
 
 ```
 akka_persistence_enabled = true
