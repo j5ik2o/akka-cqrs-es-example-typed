@@ -460,4 +460,51 @@ Next deploy the frontend roles.
 $ helmfile-apply-local-frontend.sh
 ```
 
+After frontend is started, check the operation with the following commands.
+
+```shell
+curl -X GET http://localhost:30030/hello
+```
+
+---
+
+## Debug on Minikube(on Docker)
+
+First, check the resource settings for Docker for Mac. You must give it sufficient resources.
+
+```shell
+$ minikube-start.sh
+```
+
+First deploy the backend roles.
+
+```shell
+$ cd tools/scripts
+
+$ helmfile-apply-local-backend.sh
+```
+
+Wait a few moments for the cluster to form. Make sure there are no errors in the log.
+
+```shell
+$ stern 'write-api-server-*' -n adceet
+```
+
+Next deploy the frontend roles.
+
+```shell
+$ helmfile-apply-local-frontend.sh
+```
+
+```shell
+$ minikube-service-url.sh
+http://127.0.0.1:61391
+...
+```
+
+After frontend is started, check the operation with the following commands.
+
+```shell
+curl -X GET http://127.0.0.1:61391/hello
+```
 
