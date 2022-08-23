@@ -47,7 +47,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       lightbend.akkaManagement,
       lightbend.akkaManagementClusterHttp,
       lightbend.akkaManagementClusterBootstrap,
-      lightbend.akkaDiscoveryAwsApiAsync,
+      lightbend.discoveryK8sApi,
       fasterXmlJackson.scala,
       kamon.statusPage,
       kamon.akka,
@@ -111,8 +111,8 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
     Test / parallelExecution := false,
     Global / cancelable := false,
     libraryDependencies ++= Seq(
-      "com.github.scopt" %% "scopt" % "4.0.1",
-      "com.beachape" %% "enumeratum" % "1.7.0"
+      "com.github.scopt" %% "scopt"      % "4.0.1",
+      "com.beachape"     %% "enumeratum" % "1.7.0"
     )
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
 

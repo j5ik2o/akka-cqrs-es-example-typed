@@ -1,0 +1,9 @@
+---
+environments:
+  {{ .Environment.Name }}:
+helmDefaults:
+  wait: false
+helmfiles:
+  - 'regcred/helmfile.yaml'
+  - 'write-api-server-frontend/helmfile.yaml'
+  - 'write-api-server-backend/helmfile.yaml'

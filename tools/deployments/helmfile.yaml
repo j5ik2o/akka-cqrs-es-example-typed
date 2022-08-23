@@ -1,5 +1,0 @@
----
-environments:
-  {{ .Environment.Name }}:
-helmfiles:
-  - path: ./addceet-write-api-server

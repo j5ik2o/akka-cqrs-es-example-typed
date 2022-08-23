@@ -1,10 +1,10 @@
 resource "aws_ecr_repository" "this" {
-  name = "${var.prefix}-ecr-${var.name}"
+  name = "${var.prefix}-ecr-${var.application_name}-${var.name}"
   lifecycle {
     create_before_destroy = true
   }
   tags = {
-    Name  = "${var.prefix}-ecr-${var.name}"
+    Name  = "${var.prefix}-ecr-${var.application_name}-${var.name}"
     Owner = var.owner
   }
 }

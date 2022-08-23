@@ -1,0 +1,22 @@
+repositories:
+  - name: chatwork
+    url: https://chatwork.github.io/charts
+
+environments:
+  '{{ .Environment.Name }}':
+    values:
+      - '../../config/environments/{{ .Environment.Name }}.yaml'
+
+---
+releases:
+  - name: write-api-server-frontend
+    namespace: '{{ .Namespace | default "adceet" }}'
+    labels:
+      subsystem: write-api
+      group: write-api-server
+      role: frontend
+    chart: chatwork/akka
+    version: '{{ .Values.writeApi.writeApiServer.frontend.version }}'
+    installedTemplate: '{{ .Values.writeApi.writeApiServer.frontend.enabled }}'
+    values:
+      - values/settings.yaml.gotmpl

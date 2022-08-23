@@ -141,11 +141,17 @@ $ asdf install helmfile 0.144.0
 $ asdf local helmfile 0.144.0
 ```
 
-## Setup
+---
+
+## Setup for AWS
 
 ### Add an aws profile
 
 edit `~/.aws/credentials` as follows.
+
+#### If AWS SSO is not used
+
+Define just one entry.
 
 ```
 # ...
@@ -153,7 +159,36 @@ edit `~/.aws/credentials` as follows.
 aws_access_key_id=xxxxx
 aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
+```
+
+#### If AWS SSO is used.
+
+Define one for terraform and one for SSO separately.
+
+`~/.aws/config`
+
+```
+[profile adceet-sso]
+sso_start_url = https://d-95671bd3b6.awsapps.com/start
+sso_region = us-east-1
+sso_account_id = 1234567890
+sso_role_name = SagradaOwnerAccess
+region = us-east-1
+```
+
+`~/.aws/credentials`
+
+```
 # ...
+[adceet-terraform]
+aws_access_key_id=xxxxx
+aws_secret_access_key=xxxxx
+aws_session_token=xxxxx
+# ...
+[adceet-sso]
+aws_access_key_id=xxxxx
+aws_secret_access_key=xxxxx
+aws_session_token=xxxxx
 ```
 
 ### copy env.sh.default as env.sh, and edit it
@@ -164,6 +199,38 @@ $ cp env.sh.default env.sh
 
 Modify PREFIX, APPLICATION_NAME as appropriate.
 If you want to create a personal environment, change PREFIX.
+
+#### If AWS SSO is not used
+
+```shell
+export AWS_PROFILE_TERRAFORM=adceet
+export AWS_PROFILE_SSO=adceet
+export AWS_REGION=us-east-1
+export AWS_ACCOUNT_ID=1234567890
+
+export PREFIX=om2eep1k
+export APPLICATION_NAME=adceet
+
+export MODE=scala
+
+if [[ "$OUTPUT_ENV" == 1 ]]; then
+echo "--- Using Environments -----------------"
+echo "AWS_PROFILE_TERRAFORM  = $AWS_PROFILE_TERRAFORM"
+echo "AWS_PROFILE_SSO        = $AWS_PROFILE_SSO"
+echo "AWS_REGION             = $AWS_REGION"
+echo "PREFIX                 = $PREFIX"
+echo "APPLICATION_NAME       = $APPLICATION_NAME"
+echo "MODE                   = $MODE"
+echo "----------------------------------------"
+fi
+```
+
+#### If AWS SSO is used
+
+```shell
+export AWS_PROFILE_TERRAFORM=adceet-terraform
+export AWS_PROFILE_SSO=adceet-sso
+```
 
 ## Building an AWS environment with terraform 
 
@@ -204,7 +271,7 @@ eks_auth_accounts = []
 
 ### create a lock table
 
-Create a lock table for terraform on DynamoDB.
+At first time only, Create a lock table for terraform on DynamoDB.
 
 ```shell
 akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
@@ -212,7 +279,7 @@ akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
 
 ### create a s3 bucket for tfstate
 
-Create an s3 bucket to store tfstate.
+At first time only, Create an s3 bucket to store tfstate.
 
 ```shell
 akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-tf-bucket.sh
@@ -260,7 +327,99 @@ $ DASHBOARD_NS=kubernetes-dashboard
 $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret | grep kubernetes-dashboard-token | awk '{print $1}') | awk '$1=="token:"{print $2}'
 ```
 
-## How to debug
+---
+
+## Debug on Docker Compose
+
+### Build image
+
+```shell
+$ ./build-image.sh
+--- Using Environments -----------------
+AWS_PROFILE      = adceet
+AWS_REGION       = us-east-1
+PREFIX           = om2eep1k
+APPLICATION_NAME = adceet
+MODE             = scala
+----------------------------------------
+[info] welcome to sbt 1.7.1 (Eclipse Adoptium Java 11.0.15)
+# ...
+[info] Built image adceet-write-api-server-scala with tags [1b3bac6c3fddc41c134b9e4bafc2579211c16996, latest]
+[success] Total time: 10 s, completed 2022/08/18 10:32:04
+```
+
+The image name is `adceet-write-api-server-${MODE}` as fixed.
+
+### Run the Docker Compose
+
+```shell
+$ ./docker-compose-up.sh
+```
+
+## Operation verification
+
+### Akka Management
+
+Make sure there are no unreachable nodes.
+
+```shell
+$ curl -s -X GET http://localhost:8558/cluster/members | jq .
+{
+  "leader": "akka://adceet@172.31.0.4:44431",
+  "members": [
+    {
+      "node": "akka://adceet@172.31.0.4:44431",
+      "nodeUid": "6606923497015772855",
+      "roles": [
+        "frontend",
+        "backend",
+        "dc-default"
+      ],
+      "status": "Up"
+    },
+    {
+      "node": "akka://adceet@172.31.0.5:35433",
+      "nodeUid": "-188067320620564535",
+      "roles": [
+        "frontend",
+        "backend",
+        "dc-default"
+      ],
+      "status": "Up"
+    },
+    {
+      "node": "akka://adceet@172.31.0.6:35163",
+      "nodeUid": "8133025084706588976",
+      "roles": [
+        "frontend",
+        "backend",
+        "dc-default"
+      ],
+      "status": "Up"
+    }
+  ],
+  "oldest": "akka://adceet@172.31.0.4:44431",
+  "oldestPerRole": {
+    "frontend": "akka://adceet@172.31.0.4:44431",
+    "backend": "akka://adceet@172.31.0.4:44431",
+    "dc-default": "akka://adceet@172.31.0.4:44431"
+  },
+  "selfNode": "akka://adceet@172.31.0.4:44431",
+  "unreachable": []
+}
+```
+
+### Testing endpoints
+
+- hello
+
+```shell
+$ curl -s -X GET http://localhost:18080/hello
+```
+
+---
+
+## Debug on local machine
 
 ### Debug by using IntelliJ IDEA
 
@@ -273,3 +432,96 @@ com.github.j5ik2o.api.write.Main
 3. PORT=8083;AKKA_MANAGEMENT_HTTP_PORT=8560;JMX_PORT=8102
 
 Create a configuration for all three and run it in IntelliJ IDEA. If you want to debug, run any one of the projects in debug.
+
+---
+
+## Debug on Local Kubernetes(on Docker)
+
+First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
+Also check the resource settings for Docker for Mac. You must give it sufficient resources.
+
+```shell
+$ ./ecr-push.sh
+```
+
+```shell
+$ vi tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+```
+
+Please set the following items in the yaml file appropriately
+
+- writeApi.writeApiServer.frontend.image.repository
+- writeApi.writeApiServer.frontend.image.tag 
+- writeApi.writeApiServer.backend.image.repository
+- writeApi.writeApiServer.backend.image.tag 
+
+
+
+First deploy the backend roles.
+
+```shell
+$ cd tools/scripts
+
+$ helmfile-apply-local-backend.sh
+```
+
+Wait a few moments for the cluster to form. Make sure there are no errors in the log.
+
+```shell
+$ stern 'write-api-server-*' -n adceet
+```
+
+Next deploy the frontend roles.
+
+```shell
+$ helmfile-apply-local-frontend.sh
+```
+
+After frontend is started, check the operation with the following commands.
+
+```shell
+curl -X GET http://localhost:30030/hello
+```
+
+---
+
+## Debug on Minikube(on Docker)
+
+First, check the resource settings for Docker for Mac. You must give it sufficient resources.
+
+```shell
+$ minikube-start.sh
+```
+
+First deploy the backend roles.
+
+```shell
+$ cd tools/scripts
+
+$ helmfile-apply-local-backend.sh
+```
+
+Wait a few moments for the cluster to form. Make sure there are no errors in the log.
+
+```shell
+$ stern 'write-api-server-*' -n adceet
+```
+
+Next deploy the frontend roles.
+
+```shell
+$ helmfile-apply-local-frontend.sh
+```
+
+```shell
+$ minikube-service-url.sh
+http://127.0.0.1:61391
+...
+```
+
+After frontend is started, check the operation with the following commands.
+
+```shell
+curl -X GET http://127.0.0.1:61391/hello
+```
+
