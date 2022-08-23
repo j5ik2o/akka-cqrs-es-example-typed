@@ -1,3 +1,5 @@
+localstack:
+  enabled: true
 regcred:
   enabled: false
   server:
