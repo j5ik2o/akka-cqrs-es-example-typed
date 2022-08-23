@@ -45,25 +45,6 @@ variable "aws_subnet_database" {
     "10.0.21.0/24"]
 }
 
-variable "health_check_port" {
-  type = number
-}
-
-variable "health_check_path" {
-  type = string
-}
-
-variable "container_port" {
-  type = number
-}
-
-variable "akka_management_port" {
-  type = number
-}
-
-variable "akka_remote_port" {
-  type = number
-}
 variable "akka_persistence_enabled" {
   type = bool
 }
@@ -84,8 +65,8 @@ variable "akka_persistence_snapshot_gsi_name" {
   type = string
 }
 
-variable "number_of_shards" {
-  type = number
+variable "datadog-api-key" {
+  type = string
 }
 
 variable "alb_enabled" {
@@ -100,29 +81,9 @@ variable "eks_version" {
   default = "1.22"
 }
 
-variable "image_tag" {
-  type = string
-  default = ""
+variable "ecr_enabled" {
+  default = false
 }
-
-variable "jvm_heap_min" {
-  type = string
-}
-
-variable "jvm_heap_max" {
-  type = string
-}
-
-variable "jvm_meta_max" {
-  type = string
-}
-
-variable "datadog-agent-key" {
-  type = string
-  default = ""
-}
-
-variable "datadog-api-key" {}
 
 variable "eks_node_instance_type" {
   default = "t2.medium"

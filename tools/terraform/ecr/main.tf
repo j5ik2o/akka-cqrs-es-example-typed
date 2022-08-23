@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "this" {
   name = "${var.prefix}-ecr-${var.application_name}-${var.name}"
+  count = var.enabled ? 1 : 0
   lifecycle {
     create_before_destroy = true
   }
@@ -10,12 +11,13 @@ resource "aws_ecr_repository" "this" {
 }
 
 resource "aws_ecr_repository_policy" "this" {
+  count = var.enabled ? 1 : 0
   policy = <<EOF
 {
     "Version": "2008-10-17",
     "Statement": [
         {
-            "Sid": "${aws_ecr_repository.this.name}-policy",
+            "Sid": "${aws_ecr_repository.this.0.name}-policy",
             "Effect": "Allow",
             "Principal": "*",
             "Action": [
@@ -39,5 +41,5 @@ resource "aws_ecr_repository_policy" "this" {
 }
 EOF
 
-  repository = aws_ecr_repository.this.name
+  repository = aws_ecr_repository.this.0.name
 }
