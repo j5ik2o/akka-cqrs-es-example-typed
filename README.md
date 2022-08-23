@@ -7,18 +7,18 @@ Status: WIP
 - [ ] Write API Server(on akka cluster) 
   - [x] Implementations
   - [x] Docker Compose Support
-  - [ ] Deployment to EKS (WIP)
-  - [ ] Deployment to minikube
+  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
+  - [ ] Deployment to AWS EKS (WIP)
 - [ ] Read Model Updater(without akka cluster) 
   - [ ] Implementations
   - [ ] Docker Compose Support
-  - [ ] Deployment to EKS
-  - [ ] Deployment to minikube
+  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
+  - [ ] Deployment to AWS EKS
 - [ ] Read API Server(without akka cluster)
   - [ ] Implementations
   - [ ] Docker Compose Support
-  - [ ] Deployment to EKS
-  - [ ] Deployment to minikube
+  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
+  - [ ] Deployment to AWS EKS
 
 ## Tools
 
