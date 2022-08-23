@@ -1,8 +1,8 @@
-# DDD, CQRS+ES Example by using akka-typed
-
-This is a example for CQRS / Event Sourcing.
+# DDD, CQRS+ES Example by using akka-cluster-typed
 
 Status: WIP
+
+This is a example for CQRS / Event Sourcing.
 
 ## TODO
 
