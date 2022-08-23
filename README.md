@@ -324,7 +324,7 @@ $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret
 
 ---
 
-## Debug on Docker Compose
+## Debug on Docker Compose(on Docker for Mac)
 
 ### Build image
 
