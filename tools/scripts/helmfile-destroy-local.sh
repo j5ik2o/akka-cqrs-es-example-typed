@@ -10,6 +10,7 @@ if [[ ! -e ../../env.sh ]]; then
     exit 1
 fi
 
+# shellcheck disable=SC2034
 OUTPUT_ENV=1
 
 source ../../env.sh
@@ -18,6 +19,6 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile -e om2eep1k-adceet-local destroy
+helmfile -e "${PREFIX}-${APPLICATION_NAME}-local" destroy
 
 popd

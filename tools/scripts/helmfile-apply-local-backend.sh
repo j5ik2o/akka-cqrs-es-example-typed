@@ -10,6 +10,7 @@ if [[ ! -e ../../env.sh ]]; then
     exit 1
 fi
 
+# shellcheck disable=SC2034
 OUTPUT_ENV=1
 
 source ../../env.sh
@@ -20,6 +21,6 @@ export ECR_DOCKER_PASSWORD=$(aws --profile "$AWS_PROFILE_TERRAFORM" ecr get-logi
 
 pushd ../helmfile.d
 
-helmfile --namespace adceet --selector role=backend --selector group=regcred -e om2eep1k-adceet-local apply
+helmfile --namespace adceet --selector role=backend --selector group=regcred -e "${PREFIX}-${APPLICATION_NAME}-local" apply
 
 popd
