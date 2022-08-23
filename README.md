@@ -1,4 +1,4 @@
-# DDD, CQRS+ES by using akka-typed
+# DDD, CQRS+ES Example by using akka-typed
 
 This is a example for CQRS / Event Sourcing.
 
