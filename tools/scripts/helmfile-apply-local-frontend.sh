@@ -20,6 +20,6 @@ export ECR_DOCKER_PASSWORD=$(aws --profile "$AWS_PROFILE_TERRAFORM" ecr get-logi
 
 pushd ../helmfile.d
 
-helmfile -e om2eep1k-adceet-local apply
+helmfile --namespace adceet --selector role=frontend --selector group=regcred -e om2eep1k-adceet-local apply
 
 popd

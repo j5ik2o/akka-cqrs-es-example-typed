@@ -35,17 +35,17 @@ writeApi:
         tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
         pullPolicy: Always
       resources:
-        limits:
-          cpu: "1000m" #=1 core
-          memory: "1280Mi"
+#        limits:
+#          cpu: "1000m" #=1 core
+#          memory: "1280Mi"
         requests:
-          cpu: "1"
+          cpu: "0.5"
           memory: "1280Mi"
       service:
         type: ClusterIP
-        port: 8080
+        port: 8081
         nodePort:
-      replicaCount: 3
+      replicaCount: 1
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
@@ -84,11 +84,11 @@ writeApi:
         tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
         pullPolicy: Always
       resources:
-        limits:
-          cpu: "1000m" #=1 core
-          memory: "1280Mi"
+#        limits:
+#          cpu: "500m" #=1 core
+#          memory: "1000Mi"
         requests:
-          cpu: "1"
+          cpu: "0.5"
           memory: "1280Mi"
       replicaCount: 3
       autoscaling:

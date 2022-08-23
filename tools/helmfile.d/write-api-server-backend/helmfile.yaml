@@ -12,6 +12,7 @@ releases:
     labels:
       subsystem: write-api
       group: write-api-server
+      role: backend
     chart: chatwork/akka
     version: '{{ .Values.writeApi.writeApiServer.backend.version }}'
     installedTemplate: '{{ .Values.writeApi.writeApiServer.backend.enabled }}'
