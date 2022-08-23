@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # shellcheck disable=SC2046
 cd $(dirname "$0") && pwd

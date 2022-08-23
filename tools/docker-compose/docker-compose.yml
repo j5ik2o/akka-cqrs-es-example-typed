@@ -16,7 +16,7 @@ services:
       AWS_DEFAULT_REGION: ap-northeast-1
       DYNAMODB_ENDPOINT: dynamodb-local:8000
     volumes:
-      - ./tools/dynamodb-setup:/setup
+      - ../dynamodb-setup:/setup
     entrypoint: [""]
     command: ["/setup/create-table.sh", "-e", "dev"]
     depends_on:
