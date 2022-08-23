@@ -430,7 +430,7 @@ Create a configuration for all three and run it in IntelliJ IDEA. If you want to
 
 ---
 
-## Debug on Local Kubernetes(on Docker)
+## Debug on Local Kubernetes(on Docker for Mac)
 
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
@@ -484,7 +484,7 @@ curl -X GET http://localhost:30030/hello
 
 ---
 
-## Debug on Minikube(on Docker)
+## Debug on Minikube(on Docker for Mac)
 
 First, check the resource settings for Docker for Mac. You must give it sufficient resources.
 
