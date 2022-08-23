@@ -1,8 +1,13 @@
-# DDD, CQRS+ES Example by using akka-cluster-typed
+# CQRS+ES Example by using akka-cluster-typed
 
 Status: WIP
 
-This is a example for CQRS / Event Sourcing.
+This is a example for CQRS+ES(Event Sourcing).
+
+## Concepts
+
+- DDD-based: The Write API Server has aggregate actors in the domain module.
+- CQRS+ES(Event Sourcing): The Write API Server supports the Command side, The Read API Server supports the Query side.
 
 ## TODO
 
