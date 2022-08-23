@@ -329,11 +329,9 @@ $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret
 
 ---
 
-## Setup for local machine
+## Debug on Docker Compose
 
-### Docker Compose
-
-#### Build image
+### Build image
 
 ```shell
 $ ./build-image.sh
@@ -352,15 +350,15 @@ MODE             = scala
 
 The image name is `adceet-write-api-server-${MODE}` as fixed.
 
-#### Run the Docker Compose
+### Run the Docker Compose
 
 ```shell
 $ ./docker-compose-up.sh
 ```
 
-### Operation verification
+## Operation verification
 
-#### Akka Management
+### Akka Management
 
 Make sure there are no unreachable nodes.
 
@@ -411,7 +409,7 @@ $ curl -s -X GET http://localhost:8558/cluster/members | jq .
 }
 ```
 
-#### Testing endpoints
+### Testing endpoints
 
 - hello
 
@@ -419,9 +417,11 @@ $ curl -s -X GET http://localhost:8558/cluster/members | jq .
 $ curl -s -X GET http://localhost:18080/hello
 ```
 
-### How to debug on local machine
+---
 
-#### Debug by using IntelliJ IDEA
+## Debug on local machine
+
+### Debug by using IntelliJ IDEA
 
 Edit Configurations
 
@@ -432,3 +432,32 @@ com.github.j5ik2o.api.write.Main
 3. PORT=8083;AKKA_MANAGEMENT_HTTP_PORT=8560;JMX_PORT=8102
 
 Create a configuration for all three and run it in IntelliJ IDEA. If you want to debug, run any one of the projects in debug.
+
+---
+
+## Debug on Local Kubernetes(on Docker)
+
+First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
+Also check the resource settings for Docker for Mac. You must give it sufficient resources.
+
+First deploy the backend roles.
+
+```shell
+$ cd tools/scripts
+
+$ helmfile-apply-local-backend.sh
+```
+
+Wait a few moments for the cluster to form. Make sure there are no errors in the log.
+
+```shell
+$ stern 'write-api-server-*' -n adceet
+```
+
+Next deploy the frontend roles.
+
+```shell
+$ helmfile-apply-local-frontend.sh
+```
+
+
