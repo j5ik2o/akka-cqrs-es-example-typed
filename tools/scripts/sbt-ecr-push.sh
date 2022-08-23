@@ -7,7 +7,7 @@ set -eu
 # shellcheck disable=SC2046
 cd $(dirname "$0") || exit
 
-if [[ ! -e ./env.sh ]]; then
+if [[ ! -e ../../env.sh ]]; then
     echo "env.sh is not found."
     exit 1
 fi
@@ -15,6 +15,12 @@ fi
 # shellcheck disable=SC2034
 OUTPUT_ENV=0
 
-source ./env.sh
+source ../../env.sh
 
-./sbt.sh write-api-server-"${MODE}"/ecr:push
+export AWS_DEFAULT_PROFILE=$AWS_PROFILE_SSO
+
+pushd ../../
+
+sbt "write-api-server-${MODE}/ecr:push"
+
+popd

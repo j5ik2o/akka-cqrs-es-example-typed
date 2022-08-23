@@ -334,7 +334,7 @@ $ kubectl -n $DASHBOARD_NS describe secret $(kubectl -n $DASHBOARD_NS get secret
 ### Build image
 
 ```shell
-$ ./build-image.sh
+tools/scripts $ ./sbt-publish-local.sh
 --- Using Environments -----------------
 AWS_PROFILE      = adceet
 AWS_REGION       = us-east-1
@@ -353,7 +353,7 @@ The image name is `adceet-write-api-server-${MODE}` as fixed.
 ### Run the Docker Compose
 
 ```shell
-$ ./docker-compose-up.sh
+tools/scripts $ ./docker-compose-up.sh
 ```
 
 ## Operation verification
@@ -440,8 +440,10 @@ Create a configuration for all three and run it in IntelliJ IDEA. If you want to
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
 
+Please push the image to ECR repository.
+
 ```shell
-$ ./ecr-push.sh
+tools/scripts $ ./sbt-ecr-push.sh
 ```
 
 ```shell
@@ -455,9 +457,7 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag 
 
-
-
-First deploy the backend roles.
+Next deploy the backend roles.
 
 ```shell
 $ cd tools/scripts
@@ -493,12 +493,27 @@ First, check the resource settings for Docker for Mac. You must give it sufficie
 $ minikube-start.sh
 ```
 
+Please push the image to ECR repository.
+
+```shell
+tools/scripts $ ./sbt-ecr-push.sh
+```
+
+```shell
+$ vi tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+```
+
+Please set the following items in the yaml file appropriately
+
+- writeApi.writeApiServer.frontend.image.repository
+- writeApi.writeApiServer.frontend.image.tag
+- writeApi.writeApiServer.backend.image.repository
+- writeApi.writeApiServer.backend.image.tag
+
 First deploy the backend roles.
 
 ```shell
-$ cd tools/scripts
-
-$ helmfile-apply-local-backend.sh
+tools/scripts $ helmfile-apply-local-backend.sh
 ```
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
