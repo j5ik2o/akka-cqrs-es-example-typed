@@ -240,33 +240,19 @@ Create a new file `akka-dddcqrs-es-example-typed/tools/terraform/${PREFIX}-${APP
 Changes defined in variables.tf can be overridden in this tfvars file.
 
 ```
+akka_persistence_enabled = true
 akka_persistence_journal_name      = "Journal"
 akka_persistence_journal_gsi_name  = "GetJournalRowsIndex"
 akka_persistence_snapshot_name     = "Snapshot"
 akka_persistence_snapshot_gsi_name = "GetSnapshotRowsIndex"
 
-container_port       = 8081
-akka_management_port = 8558
-akka_remote_port     = 25520
-number_of_shards     = 30
-
-health_check_port = 8558
-health_check_path = "/health/ready"
-
-akka_persistence_enabled = true
-
+eks_enabled = true
 eks_version = "1.22"
-eks_enabled      = true
-
-jvm_heap_min = "1024m"
-jvm_heap_max = "1024m"
-jvm_meta_max = "512m"
-
-datadog-api-key = "xxxx"
-
 eks_auth_roles = []
 eks_auth_users = []
 eks_auth_accounts = []
+
+datadog-api-key = "xxxx"
 ```
 
 ### create a lock table
@@ -457,12 +443,16 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag 
 
+Next deploy the dynamodb local.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-dynamodb.sh
+```
+
 Next deploy the backend roles.
 
 ```shell
-$ cd tools/scripts
-
-$ helmfile-apply-local-backend.sh
+tools/scripts $ ./helmfile-apply-local-backend.sh
 ```
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
@@ -474,7 +464,7 @@ $ stern 'write-api-server-*' -n adceet
 Next deploy the frontend roles.
 
 ```shell
-$ helmfile-apply-local-frontend.sh
+tools/scripts $ ./helmfile-apply-local-frontend.sh
 ```
 
 After frontend is started, check the operation with the following commands.
@@ -510,10 +500,16 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag
 
-First deploy the backend roles.
+Next deploy the dynamodb local.
 
 ```shell
-tools/scripts $ helmfile-apply-local-backend.sh
+tools/scripts $ ./helmfile-apply-local-dynamodb.sh
+```
+
+Next deploy the backend roles.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-backend.sh
 ```
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
@@ -525,13 +521,12 @@ $ stern 'write-api-server-*' -n adceet
 Next deploy the frontend roles.
 
 ```shell
-$ helmfile-apply-local-frontend.sh
+tools/scripts $ ./helmfile-apply-local-frontend.sh
 ```
 
 ```shell
 $ minikube-service-url.sh
 http://127.0.0.1:61391
-...
 ```
 
 After frontend is started, check the operation with the following commands.
