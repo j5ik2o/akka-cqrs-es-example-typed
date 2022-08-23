@@ -169,10 +169,10 @@ Define one for terraform and one for SSO separately.
 
 ```
 [profile adceet-sso]
-sso_start_url = https://d-95671bd3b6.awsapps.com/start
+sso_start_url = https://xxxxx.awsapps.com/start
 sso_region = us-east-1
 sso_account_id = 1234567890
-sso_role_name = SagradaOwnerAccess
+sso_role_name = XxxxOwnerAccess
 region = us-east-1
 ```
 
@@ -184,6 +184,8 @@ region = us-east-1
 aws_access_key_id=xxxxx
 aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
+# ...
+# ...
 # ...
 [adceet-sso]
 aws_access_key_id=xxxxx
