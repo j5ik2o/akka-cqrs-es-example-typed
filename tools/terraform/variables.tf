@@ -88,10 +88,6 @@ variable "number_of_shards" {
   type = number
 }
 
-variable "ecs_enabled" {
-  default = false
-}
-
 variable "alb_enabled" {
   default = false
 }
@@ -107,14 +103,6 @@ variable "eks_version" {
 variable "image_tag" {
   type = string
   default = ""
-}
-
-variable "ecs_task_cpu" {
-  type = string
-}
-
-variable "ecs_task_memory" {
-  type = string
 }
 
 variable "jvm_heap_min" {
