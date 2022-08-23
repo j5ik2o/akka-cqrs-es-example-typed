@@ -13,8 +13,8 @@ if [[ ! -e ./env.sh ]]; then
 fi
 
 # shellcheck disable=SC2034
-OUTPUT_ENV=1
+OUTPUT_ENV=0
 
-. ./env.sh
+source ./env.sh
 
 ./sbt.sh write-api-server-"${MODE}"/ecr:push
