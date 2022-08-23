@@ -440,6 +440,23 @@ Create a configuration for all three and run it in IntelliJ IDEA. If you want to
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
 
+```shell
+$ ./ecr-push.sh
+```
+
+```shell
+$ vi tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+```
+
+Please set the following items in the yaml file appropriately
+
+- writeApi.writeApiServer.frontend.image.repository
+- writeApi.writeApiServer.frontend.image.tag 
+- writeApi.writeApiServer.backend.image.repository
+- writeApi.writeApiServer.backend.image.tag 
+
+
+
 First deploy the backend roles.
 
 ```shell
