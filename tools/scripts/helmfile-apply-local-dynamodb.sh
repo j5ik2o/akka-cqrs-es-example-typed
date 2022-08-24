@@ -21,7 +21,11 @@ pushd ../helmfile.d
 
 helmfile --namespace adceet --selector group=localstack -e "${PREFIX}-${APPLICATION_NAME}-local" apply
 
-DYNAMODB_ENDPOINT=localhost:31566 ../dynamodb-setup/create-table.sh -e dev
+DYNAMODB_ENDPOINT=localhost:31566 \
+JOURNAL_TABLE_NAME="${PREFIX}-Journal" \
+JOURNAL_GSI_NAME="${PREFIX}-GetJournalRowsIndex" \
+SNAPSHOT_TABLE_NAME="${PREFIX}-Snapshot" \
+../dynamodb-setup/create-table.sh -e dev
 
 # npm install -g dynamodb-admin
 # DYNAMO_ENDPOINT=http://localhost:31566 dynamodb-admin
