@@ -15,7 +15,7 @@ releases:
       subsystem: write-api
       group: write-api-server
       role: frontend
-    chart: chatwork/akka
+    chart: ../../charts/akka
     version: '{{ .Values.writeApi.writeApiServer.frontend.version }}'
     installedTemplate: '{{ .Values.writeApi.writeApiServer.frontend.enabled }}'
     values:
