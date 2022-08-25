@@ -12,6 +12,20 @@ ecrCred:
 writeApi:
   akkaClusterName: write-api
   env:
+    - name: "ROOT_LOG_LEVEL"
+      value: "DEBUG"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_stable__margin"
+#      value: "30 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_interval"
+#      value: "5 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_resolve__timeout"
+#      value: "10 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probing__failure__timeout"
+#      value: "10 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval"
+#      value: "5 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval__jitter"
+#      value: "0.8"
     - name: "CONFIG_FORCE_akka_discovery_kubernetes__api_pod__namespace"
       value: "adceet"
     - name: "CONFIG_FORCE_akka_discovery_kubernetes__api_pod__label__selector"
@@ -30,24 +44,24 @@ writeApi:
       logs:
         enabled: false
     frontend:
-      enabled: true
+      enabled: false
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
+        tag: dev-470b906bce8e4c6e7da44436f54c9582f2176856-1661413481535
         pullPolicy: Always
       resources:
-#        limits:
-#          cpu: "1000m" #=1 core
-#          memory: "1280Mi"
+        limits:
+          cpu: "1"
+          memory: "500Mi"
         requests:
           cpu: "0.5"
-          memory: "1280Mi"
+          memory: "500Mi"
       service:
         type: ClusterIP
         port: 8081
-        nodePort:
-      replicaCount: 1
+        nodePort: 30030
+      replicaCount: 3
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
@@ -65,6 +79,8 @@ writeApi:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
 
+#        - name: "CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members"
+#          value: "1"
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
 
@@ -83,12 +99,12 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-a1c7e0e6629cc1de7c4ac680674930f5b79f3e74-1661154443551
+        tag: dev-470b906bce8e4c6e7da44436f54c9582f2176856-1661413481535
         pullPolicy: Always
       resources:
-#        limits:
-#          cpu: "500m" #=1 core
-#          memory: "1000Mi"
+        limits:
+          cpu: "1.5"
+          memory: "2000Mi"
         requests:
           cpu: "0.5"
           memory: "1280Mi"
@@ -104,9 +120,10 @@ writeApi:
         - -Dconfig.resource=application-cluster-backend.conf
         - -Dconfig.override_with_env_vars=true
       env:
-        - name: CONFIG_FORCE_akka_log__config__on__start
+        - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
-
+#        - name: "CONFIG_FORCE_akka_cluster_role_backend_min__nr__of__members"
+#          value: "2"
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
 
@@ -126,29 +143,51 @@ writeApi:
           value: "om2eep1k-GetJournalRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_shard__count"
           value: "64"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__enable"
-          value: "true"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__buffer__size"
-          value: "64"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__overflow__strategy"
-          value: "Fail"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__parallelism"
-          value: "1024"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_write__parallelism"
-          value: "1024"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_query__batch__size"
-          value: "32"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_scan__batch__size"
-          value: "512"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_replay__batch__size"
-          value: "512"
+
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__enable"
+#          value: "true"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__buffer__size"
+#          value: "64"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__overflow__strategy"
+#          value: "Fail"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__parallelism"
+#          value: "1024"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_write__parallelism"
+#          value: "1024"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_query__batch__size"
+#          value: "32"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_scan__batch__size"
+#          value: "512"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_replay__batch__size"
+#          value: "512"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_consistent__read"
           value: "false"
 
-        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__min"
-          value: "4"
-        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__max"
-          value: "16"
-        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__factor"
-          value: "2.0"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_access__key__id"
+          value: "x"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_secret__access__key"
+          value: "x"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_endpoint"
+          value: "http://localstack.adceet.svc.cluster.local:31566"
+
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
+          value: "om2eep1k-Snapshot"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
+          value: "om2eep1k-GetSnapshotRowsIndex"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_shard__count"
+          value: "64"
+
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_access__key__id"
+          value: "x"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_secret__access__key"
+          value: "x"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_endpoint"
+          value: "http://localstack.adceet.svc.cluster.local:31566"
+
+#        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__min"
+#          value: 4
+#        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__max"
+#          value: 16
+#        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__factor"
+#          value: 2.0

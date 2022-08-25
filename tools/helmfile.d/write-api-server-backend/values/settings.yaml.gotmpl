@@ -19,12 +19,32 @@ akka:
   management:
     enabled: true
     service:
-      enabled: false
+      enabled: true
+      type: NodePort
+      ports:
+        - targetPort: management
+          name: management
+          port: 8558
+          nodePort: 30034
+          protocol: TCP
     healthChecks:
       livenessPath: health/alive
       readinessPath: health/ready
   http:
-    enabled: false
+    enabled: true
+    port: 8081
+    portName: http
+    service:
+      enabled: true
+      annotations: {}
+      labels: {}
+      type: NodePort
+      ports:
+        - targetPort: http
+          name: http
+          port: 8081
+          nodePort: 30031
+          protocol: TCP
   remote:
     enabled: true
 
@@ -42,14 +62,14 @@ env:
   {{- end }}
   - name: CONFIG_FORCE_kamon_environment_tags_version
     value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
-#  - name: CONFIG_FORCE_akka_remote_artery_canonical_hostname
-#    valueFrom:
-#      fieldRef:
-#        fieldPath: status.podIP
-#  - name: CONFIG_FORCE_akka_management_http_hostname
-#    valueFrom:
-#      fieldRef:
-#        fieldPath: status.podIP
+  - name: CONFIG_FORCE_akka_remote_artery_canonical_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  - name: CONFIG_FORCE_akka_management_http_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
 
 lifecycle:
   preStop:
