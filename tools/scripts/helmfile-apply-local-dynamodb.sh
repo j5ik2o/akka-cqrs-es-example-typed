@@ -25,6 +25,7 @@ DYNAMODB_ENDPOINT=localhost:31566 \
 JOURNAL_TABLE_NAME="${PREFIX}-Journal" \
 JOURNAL_GSI_NAME="${PREFIX}-GetJournalRowsIndex" \
 SNAPSHOT_TABLE_NAME="${PREFIX}-Snapshot" \
+SNAPSHOT_GSI_NAME="${PREFIX}-GetSnapshotRowsIndex" \
 ../dynamodb-setup/create-table.sh -e dev
 
 # npm install -g dynamodb-admin
