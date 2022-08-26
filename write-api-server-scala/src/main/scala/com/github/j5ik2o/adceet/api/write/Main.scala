@@ -4,6 +4,7 @@ import enumeratum._
 import akka.actor.typed.ActorSystem
 import org.slf4j.LoggerFactory
 import wvlet.airframe.{DISupport, DesignWithContext, Session}
+import wvlet.log.io.StopWatch
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -24,13 +25,14 @@ object Environments extends Enum[Environment] {
 final case class Args(environment: Environment = Environments.Production)
 
 object Main extends App with DISupport {
+  val stopWatch = new StopWatch()
 
   import Environments._
   import scopt._
 
   val logger = LoggerFactory.getLogger(getClass)
 
-  logger.info("Main: start")
+  logger.info(s"[${stopWatch.reportElapsedTime}] start")
 
   val builder = OParser.builder[Args]
   val parser = {
@@ -47,13 +49,13 @@ object Main extends App with DISupport {
 
   val parsedArgs = OParser.parse(parser, args, Args()).get
 
-  val design: DesignWithContext[_] = DISettings.di(parsedArgs)
+  val design: DesignWithContext[_] = DISettings.di(parsedArgs, stopWatch)
   val session: Session = design.newSession
   try {
     val system = session.build[ActorSystem[MainActor.Command]]
     Await.result(system.whenTerminated, Duration.Inf)
   } finally {
     session.shutdown
-    logger.info("Main: finish")
+    logger.info("finish")
   }
 }

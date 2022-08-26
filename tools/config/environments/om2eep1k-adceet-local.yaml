@@ -12,6 +12,8 @@ ecrCred:
 writeApi:
   akkaClusterName: write-api
   env:
+    - name: AWS_REGION
+      value: us-east-1
     - name: "ROOT_LOG_LEVEL"
       value: "DEBUG"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_stable__margin"
@@ -20,8 +22,8 @@ writeApi:
 #      value: "5 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_resolve__timeout"
 #      value: "10 seconds"
-    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probing__failure__timeout"
-      value: "30 seconds"
+#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probing__failure__timeout"
+#      value: "30 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval"
 #      value: "5 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval__jitter"
@@ -48,7 +50,7 @@ writeApi:
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-01419989816fda351b48ea1b9f6cdcfa302abcaf-1661416034578
+        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
         pullPolicy: Always
       resources:
         limits:
@@ -99,7 +101,7 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-01419989816fda351b48ea1b9f6cdcfa302abcaf-1661416034578
+        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
         pullPolicy: Always
       resources:
         limits:
@@ -108,7 +110,7 @@ writeApi:
         requests:
           cpu: "0.5"
           memory: "1280Mi"
-      replicaCount: 3
+      replicaCount: 1
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
@@ -121,11 +123,13 @@ writeApi:
         - -Dconfig.override_with_env_vars=true
       env:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
-          value: "off"
-#        - name: "CONFIG_FORCE_akka_cluster_min__nr__of__members"
-#          value: "1"
-#        - name: "CONFIG_FORCE_akka_cluster_role_backend_min__nr__of__members"
-#          value: "2"
+          value: "on"
+        - name: "CONFIG_FORCE_akka_cluster_min__nr__of__members"
+          value: "1"
+        - name: "CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members"
+          value: "1"
+        - name: "CONFIG_FORCE_akka_cluster_role_backend_min__nr__of__members"
+          value: "1"
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
 
@@ -171,12 +175,12 @@ writeApi:
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_secret__access__key"
           value: "x"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_endpoint"
-          value: "http://localstack.adceet.svc.cluster.local:31566"
+          value: "http://localstack:4566"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
           value: "om2eep1k-Snapshot"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
-          value: "om2eep1k-GetSnapshotRowsIndex"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
+#          value: "om2eep1k-GetSnapshotRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_shard__count"
           value: "64"
 
@@ -185,7 +189,7 @@ writeApi:
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_secret__access__key"
           value: "x"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_endpoint"
-          value: "http://localstack.adceet.svc.cluster.local:31566"
+          value: "http://localstack:4566"
 
 #        - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__min"
 #          value: 4

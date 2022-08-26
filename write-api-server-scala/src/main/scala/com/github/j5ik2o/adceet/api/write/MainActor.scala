@@ -2,14 +2,15 @@ package com.github.j5ik2o.adceet.api.write
 
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorRef, ActorSystem, Behavior, PostStop }
-import akka.actor.{ ClassicActorSystemProvider, CoordinatedShutdown }
-import akka.cluster.typed.{ Cluster, SelfUp }
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
+import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
+import akka.cluster.typed.{Cluster, SelfUp}
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
+import wvlet.log.io.StopWatch
 // import kamon.Kamon
 import org.slf4j.{ Logger, LoggerFactory }
 import wvlet.airframe.{ DISupport, Session }
@@ -26,7 +27,7 @@ object MainActor {
   val logger: Logger = LoggerFactory.getLogger(classOf[MainActor])
 }
 
-class MainActor(val session: Session) extends DISupport {
+class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
 
   import MainActor._
 
@@ -34,10 +35,10 @@ class MainActor(val session: Session) extends DISupport {
     Behaviors.setup { ctx =>
 //      if (args.environment == Environments.Production)
 //        Kamon.init()
-      logger.info("MainActor: create")
+      logger.info(s"[${stopWatch.reportElapsedTime}] create")
       val cluster    = Cluster(ctx.system)
       val selfMember = cluster.selfMember
-      logger.info(s"Specified role(s) = ${selfMember.roles.mkString(", ")}")
+      logger.info(s"[${stopWatch.reportElapsedTime}] Specified role(s) = ${selfMember.roles.mkString(", ")}")
 
       val roleNames = (
         if (selfMember.hasRole(RoleNames.Frontend.toString.toLowerCase))
@@ -97,7 +98,7 @@ class MainActor(val session: Session) extends DISupport {
       port: Int,
       terminationHardDeadLine: FiniteDuration
   )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
-    logger.info("MainActor: startHttpServer: start")
+    logger.info(s"[${stopWatch.reportElapsedTime}] startHttpServer: start")
 
     val threadController: ThreadController = session.build[ThreadController]
 
@@ -110,13 +111,13 @@ class MainActor(val session: Session) extends DISupport {
     http.onComplete {
       case Success(serverBinding) =>
         val address = serverBinding.localAddress
-        logger.info(s"server bound to http://${address.getHostString}:${address.getPort}")
+        logger.info(s"[${stopWatch.reportElapsedTime}] server bound to http://${address.getHostString}:${address.getPort}")
       case Failure(ex) =>
-        logger.error(s"Failed to bind endpoint, terminating system: $ex")
+        logger.error(s"[${stopWatch.reportElapsedTime}] Failed to bind endpoint, terminating system: $ex")
         system.terminate()
     }
     val result = http.map(_ => Done)
-    logger.info("MainActor: startHttpServer: finish")
+    logger.info(s"[${stopWatch.reportElapsedTime}] startHttpServer: finish")
     result
   }
 
@@ -124,7 +125,7 @@ class MainActor(val session: Session) extends DISupport {
       system: ActorSystem[_],
       loadBalancerDetachWaitDuration: FiniteDuration
   )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
-    logger.info("MainActor: startHealthCheckServer: start")
+    logger.info(s"[${stopWatch.reportElapsedTime}] startHealthCheckServer: start")
 
     val typeName            = "akka-management"
     val coordinatedShutdown = CoordinatedShutdown(system)
@@ -132,7 +133,7 @@ class MainActor(val session: Session) extends DISupport {
     val result = akkaManagement.start().map { _ =>
       logger
         .info(
-          s"[$typeName] Server(${akkaManagement.settings.getHttpHostname}:${akkaManagement.settings.getHttpPort}) has started."
+          s"[${stopWatch.reportElapsedTime}] [$typeName] Server(${akkaManagement.settings.getHttpHostname}:${akkaManagement.settings.getHttpPort}) has started."
         )
       coordinatedShutdown.addTask(CoordinatedShutdown.PhaseBeforeServiceUnbind, "management-terminate") { () =>
         for {
@@ -152,7 +153,7 @@ class MainActor(val session: Session) extends DISupport {
       }
       Done
     }
-    logger.info("MainActor: startHealthCheckServer: finish")
+    logger.info(s"[${stopWatch.reportElapsedTime}] startHealthCheckServer: finish")
     result
   }
 }

@@ -82,7 +82,7 @@ startupProbe:
 livenessProbe:
   enabled: true
   initialDelaySeconds: 120
-  periodSeconds: 10
+  periodSeconds: 5
   timeoutSeconds: 3
   successThreshold: 1
   failureThreshold: 3
@@ -100,7 +100,7 @@ podSecurityContext:
 readinessProbe:
   enabled: true
   initialDelaySeconds: 120
-  periodSeconds: 10
+  periodSeconds: 5
   timeoutSeconds: 3
   successThreshold: 1
   failureThreshold: 3

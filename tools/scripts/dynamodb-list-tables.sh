@@ -16,12 +16,12 @@ OUTPUT_ENV=1
 source ../../env.sh
 
 export AWS_DEFAULT_REGION=$AWS_REGION
+export AWS_ACCESS_KEY_ID=x
+export AWS_SECRET_ACCESS_KEY=x
+export AWS_PAGER=""
 
-pushd ../helmfile.d
+DYNAMODB_ENDPOINT=localhost:31566
 
-helmfile --namespace adceet --selector group=localstack -e "${PREFIX}-${APPLICATION_NAME}-local" apply
+echo "ENDPOINT = ${DYNAMODB_ENDPOINT}"
 
-# npm install -g dynamodb-admin
-# DYNAMO_ENDPOINT=http://localhost:31566 dynamodb-admin
-
-popd
+aws dynamodb list-tables --endpoint-url "http://$DYNAMODB_ENDPOINT"

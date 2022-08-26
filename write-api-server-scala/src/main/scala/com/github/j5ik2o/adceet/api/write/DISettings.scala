@@ -1,28 +1,22 @@
 package com.github.j5ik2o.adceet.api.write
 
 import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.{ ActorRef, ActorSystem, Scheduler }
+import akka.actor.typed.{ActorRef, ActorSystem, Scheduler}
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.typed.SelfUp
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import com.github.j5ik2o.adceet.api.write.aggregate._
-import com.github.j5ik2o.adceet.api.write.use.`case`.{
-  AddMemberUseCase,
-  AddMemberUseCaseImpl,
-  AddMessageUseCase,
-  AddMessageUseCaseImpl,
-  CreateThreadUseCase,
-  CreateThreadUseCaseImpl
-}
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.github.j5ik2o.adceet.api.write.use.`case`.{AddMemberUseCase, AddMemberUseCaseImpl, AddMessageUseCase, AddMessageUseCaseImpl, CreateThreadUseCase, CreateThreadUseCaseImpl}
+import com.typesafe.config.{Config, ConfigFactory}
 import wvlet.airframe._
+import wvlet.log.io.StopWatch
 
 object DISettings {
 
-  def di(args: Args): DesignWithContext[_] = newDesign
+  def di(args: Args, stopWatch: StopWatch): DesignWithContext[_] = newDesign
     .bind[Config].toInstance(ConfigFactory.load())
     .bind[ActorSystem[MainActor.Command]].toProvider[Session, Config] { (session, config) =>
-      ActorSystem(new MainActor(session).create(args), "adceet", config)
+      ActorSystem(new MainActor(session, stopWatch).create(args), "adceet", config)
     }
     .bind[Scheduler].toProvider[ActorSystem[MainActor.Command]] { system =>
       system.scheduler

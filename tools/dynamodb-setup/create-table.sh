@@ -106,10 +106,6 @@ else
     ]" \
     --stream-specification StreamEnabled=true,StreamViewType=NEW_IMAGE
 
-#  aws dynamodb create-table \
-#    --endpoint-url "http://$DYNAMODB_ENDPOINT" \
-#    --cli-input-json file://./journal-table.json
-
   aws dynamodb create-table \
     --endpoint-url "http://$DYNAMODB_ENDPOINT" \
     --table-name "${SNAPSHOT_TABLE_NAME}" \
@@ -137,9 +133,6 @@ else
           \"WriteCapacityUnits\": 10
         }
       }
-    ]" \
-#aws dynamodb create-table \
-#  --endpoint-url "http://$DYNAMODB_ENDPOINT" \
-#  --cli-input-json file://./account-table.json
+    ]"
 
 fi

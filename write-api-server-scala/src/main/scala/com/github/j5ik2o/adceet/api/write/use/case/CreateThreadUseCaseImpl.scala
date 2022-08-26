@@ -13,7 +13,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 final class CreateThreadUseCaseImpl(
     private val system: ActorSystem[_],
     private val threadAggregateRef: ActorRef[ThreadAggregateProtocol.CommandRequest],
-    private val askTimeout: FiniteDuration = 30.seconds
+    private val askTimeout: FiniteDuration = 120.seconds
 ) extends CreateThreadUseCase {
 
   override def execute(threadId: ThreadId, accountId: AccountId)(implicit ec: ExecutionContext): Future[ThreadId] = {
