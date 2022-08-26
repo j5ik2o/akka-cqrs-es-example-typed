@@ -14,7 +14,7 @@ This is a example for CQRS+ES(Event Sourcing).
 - [ ] Write API Server(on akka cluster) 
   - [x] Implementations
   - [x] Docker Compose Support
-  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
+  - [x] Deployment to Local Kubernetes(k8s for mac/minikube)
   - [ ] Deployment to AWS EKS (WIP)
 - [ ] Read Model Updater(without akka cluster) 
   - [ ] Implementations
