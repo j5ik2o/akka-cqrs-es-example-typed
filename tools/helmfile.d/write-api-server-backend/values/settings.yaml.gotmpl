@@ -80,10 +80,10 @@ startupProbe:
   enabled: false
 
 livenessProbe:
-  enabled: false
-  initialDelaySeconds: 15
-  periodSeconds: 5
-  timeoutSeconds: 1
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 3
   successThreshold: 1
   failureThreshold: 3
 
@@ -98,10 +98,10 @@ podSecurityContext:
   fsGroup: 0
 
 readinessProbe:
-  enabled: false
-  initialDelaySeconds: 15
-  periodSeconds: 5
-  timeoutSeconds: 1
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 3
   successThreshold: 1
   failureThreshold: 3
 

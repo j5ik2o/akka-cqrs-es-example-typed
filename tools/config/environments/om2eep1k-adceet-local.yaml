@@ -20,8 +20,8 @@ writeApi:
 #      value: "5 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point__discovery_resolve__timeout"
 #      value: "10 seconds"
-#    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probing__failure__timeout"
-#      value: "10 seconds"
+    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probing__failure__timeout"
+      value: "30 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval"
 #      value: "5 seconds"
 #    - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact__point_probe__interval__jitter"
@@ -48,7 +48,7 @@ writeApi:
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-470b906bce8e4c6e7da44436f54c9582f2176856-1661413481535
+        tag: dev-01419989816fda351b48ea1b9f6cdcfa302abcaf-1661416034578
         pullPolicy: Always
       resources:
         limits:
@@ -99,7 +99,7 @@ writeApi:
       version: 0.2.5
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-470b906bce8e4c6e7da44436f54c9582f2176856-1661413481535
+        tag: dev-01419989816fda351b48ea1b9f6cdcfa302abcaf-1661416034578
         pullPolicy: Always
       resources:
         limits:
@@ -122,6 +122,8 @@ writeApi:
       env:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
+#        - name: "CONFIG_FORCE_akka_cluster_min__nr__of__members"
+#          value: "1"
 #        - name: "CONFIG_FORCE_akka_cluster_role_backend_min__nr__of__members"
 #          value: "2"
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"

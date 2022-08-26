@@ -23,7 +23,9 @@ export AWS_PAGER=""
 JOURNAL_TABLE_NAME=${JOURNAL_TABLE_NAME:-Journal}
 JOURNAL_GSI_NAME=${JOURNAL_GSI_NAME:-GetJournalRowsIndex}
 SNAPSHOT_TABLE_NAME=${SNAPSHOT_TABLE_NAME:-Snapshot}
+SNAPSHOT_GSI_NAME=${JOURNAL_GSI_NAME:-GetJournalRowsIndex}
 
+# shellcheck disable=SC2039
 if [[ $ENV_NAME = "prod" ]]; then
 
 aws dynamodb create-table \
@@ -112,14 +114,30 @@ else
     --endpoint-url "http://$DYNAMODB_ENDPOINT" \
     --table-name "${SNAPSHOT_TABLE_NAME}" \
     --attribute-definitions \
+      AttributeName=pkey,AttributeType=S \
+      AttributeName=skey,AttributeType=S \
       AttributeName=persistence-id,AttributeType=S \
       AttributeName=sequence-nr,AttributeType=N \
     --key-schema \
-      AttributeName=persistence-id,KeyType=HASH \
-      AttributeName=sequence-nr,KeyType=RANGE \
+      AttributeName=pkey,KeyType=HASH \
+      AttributeName=skey,KeyType=RANGE \
     --provisioned-throughput \
-      ReadCapacityUnits=10,WriteCapacityUnits=10
-
+      ReadCapacityUnits=10,WriteCapacityUnits=10 \
+    --global-secondary-indexes \
+    "[
+      {
+        \"IndexName\": \"${SNAPSHOT_GSI_NAME}\",
+        \"KeySchema\": [{\"AttributeName\":\"persistence-id\",\"KeyType\":\"HASH\"},
+                        {\"AttributeName\":\"sequence-nr\",\"KeyType\":\"RANGE\"}],
+        \"Projection\":{
+          \"ProjectionType\":\"ALL\"
+        },
+        \"ProvisionedThroughput\": {
+          \"ReadCapacityUnits\": 10,
+          \"WriteCapacityUnits\": 10
+        }
+      }
+    ]" \
 #aws dynamodb create-table \
 #  --endpoint-url "http://$DYNAMODB_ENDPOINT" \
 #  --cli-input-json file://./account-table.json

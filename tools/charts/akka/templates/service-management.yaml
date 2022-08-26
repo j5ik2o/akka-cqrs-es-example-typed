@@ -16,10 +16,13 @@ spec:
   {{- end }}
   publishNotReadyAddresses: {{ .Values.akka.management.service.publishNotReadyAddresses }}
   ports:
-    - port: {{ .Values.akka.management.port }}
-      targetPort: management
-      protocol: TCP
+    - targetPort: management
       name: management
+      port: {{ .Values.akka.management.port }}
+      {{- if and (eq .Values.akka.management.service.type "NodePort") .Values.akka.management.nodePort }}
+      nodePort: {{ .Values.akka.management.nodePort }}
+      {{- end }}
+      protocol: TCP
   selector:
     {{- include "akka.selectorLabels" . | nindent 4 }}
   type: "{{ .Values.akka.management.service.type }}"
