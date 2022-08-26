@@ -186,8 +186,8 @@ writeApi:
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
           value: "om2eep1k-Snapshot"
-#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
-#          value: "om2eep1k-GetSnapshotRowsIndex"
+        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
+          value: "om2eep1k-GetSnapshotRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_shard__count"
           value: "64"
 
