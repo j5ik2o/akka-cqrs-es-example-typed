@@ -1,5 +1,12 @@
 localstack:
   enabled: true
+  resources:
+    limits:
+      cpu: "2"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.5"
+      memory: "500Mi"
 regcred:
   enabled: false
   server:
@@ -105,12 +112,12 @@ writeApi:
         pullPolicy: Always
       resources:
         limits:
-          cpu: "1.5"
+          cpu: "3"
           memory: "2000Mi"
         requests:
           cpu: "0.5"
           memory: "1280Mi"
-      replicaCount: 1
+      replicaCount: 3
       autoscaling:
         enabled: false
       processTimeoutInSec: 10

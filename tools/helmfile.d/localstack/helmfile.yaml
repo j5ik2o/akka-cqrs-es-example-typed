@@ -16,4 +16,4 @@ releases:
     version: 0.4.1
     installedTemplate: '{{ .Values.localstack.enabled }}'
     values:
-      - startServices: "dynamodb"
+      - localstack/settings.yaml.gotmpl
