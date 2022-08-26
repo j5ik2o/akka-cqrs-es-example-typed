@@ -2,7 +2,8 @@ package com.github.j5ik2o.adceet.api.write
 
 import enumeratum._
 import akka.actor.typed.ActorSystem
-import wvlet.airframe.{ DISupport, Session }
+import org.slf4j.LoggerFactory
+import wvlet.airframe.{DISupport, DesignWithContext, Session}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -23,8 +24,13 @@ object Environments extends Enum[Environment] {
 final case class Args(environment: Environment = Environments.Production)
 
 object Main extends App with DISupport {
+
   import Environments._
   import scopt._
+
+  val logger = LoggerFactory.getLogger(getClass)
+
+  logger.info("Main: start")
 
   val builder = OParser.builder[Args]
   val parser = {
@@ -41,12 +47,13 @@ object Main extends App with DISupport {
 
   val parsedArgs = OParser.parse(parser, args, Args()).get
 
-  val design           = DISettings.di(parsedArgs)
+  val design: DesignWithContext[_] = DISettings.di(parsedArgs)
   val session: Session = design.newSession
   try {
     val system = session.build[ActorSystem[MainActor.Command]]
     Await.result(system.whenTerminated, Duration.Inf)
   } finally {
     session.shutdown
+    logger.info("Main: finish")
   }
 }

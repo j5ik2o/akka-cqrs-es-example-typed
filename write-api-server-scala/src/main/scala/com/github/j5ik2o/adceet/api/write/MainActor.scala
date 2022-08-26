@@ -34,7 +34,7 @@ class MainActor(val session: Session) extends DISupport {
     Behaviors.setup { ctx =>
 //      if (args.environment == Environments.Production)
 //        Kamon.init()
-
+      logger.info("MainActor: create")
       val cluster    = Cluster(ctx.system)
       val selfMember = cluster.selfMember
       logger.info(s"Specified role(s) = ${selfMember.roles.mkString(", ")}")
@@ -71,21 +71,21 @@ class MainActor(val session: Session) extends DISupport {
           _ <- startHealthCheckServer(ctx.system, loadBalancerDetachWaitDuration)
         } yield ()
 
-        Await.result(future, Duration.Inf)
+        Await.result(future, 10.seconds)
 
         val clusterBootstrap: ClusterBootstrap = childSession.build[ClusterBootstrap]
         clusterBootstrap.start()
 
-        childSession.build[ActorRef[SelfUp]]
+        // childSession.build[ActorRef[SelfUp]]
 
-        Behaviors
-          .receiveMessage[Command] { case MeUp =>
+//        Behaviors
+//          .receiveMessage[Command] { case MeUp =>
+//            Behaviors.same
+//          }.receiveSignal { case (_, PostStop) =>
+////            if (args.environment == Environments.Production)
+////              Kamon.stop()
             Behaviors.same
-          }.receiveSignal { case (_, PostStop) =>
-//            if (args.environment == Environments.Production)
-//              Kamon.stop()
-            Behaviors.same
-          }
+          //}
       }
     }
   }
@@ -97,6 +97,7 @@ class MainActor(val session: Session) extends DISupport {
       port: Int,
       terminationHardDeadLine: FiniteDuration
   )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
+    logger.info("MainActor: startHttpServer: start")
 
     val threadController: ThreadController = session.build[ThreadController]
 
@@ -114,17 +115,21 @@ class MainActor(val session: Session) extends DISupport {
         logger.error(s"Failed to bind endpoint, terminating system: $ex")
         system.terminate()
     }
-    http.map(_ => Done)
+    val result = http.map(_ => Done)
+    logger.info("MainActor: startHttpServer: finish")
+    result
   }
 
   private def startHealthCheckServer(
       system: ActorSystem[_],
       loadBalancerDetachWaitDuration: FiniteDuration
   )(implicit classic: ClassicActorSystemProvider, ec: ExecutionContext): Future[Done] = {
+    logger.info("MainActor: startHealthCheckServer: start")
+
     val typeName            = "akka-management"
     val coordinatedShutdown = CoordinatedShutdown(system)
     val akkaManagement      = AkkaManagement(system)
-    akkaManagement.start().map { _ =>
+    val result = akkaManagement.start().map { _ =>
       logger
         .info(
           s"[$typeName] Server(${akkaManagement.settings.getHttpHostname}:${akkaManagement.settings.getHttpPort}) has started."
@@ -147,5 +152,7 @@ class MainActor(val session: Session) extends DISupport {
       }
       Done
     }
+    logger.info("MainActor: startHealthCheckServer: finish")
+    result
   }
 }
