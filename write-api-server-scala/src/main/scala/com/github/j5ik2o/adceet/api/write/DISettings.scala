@@ -1,13 +1,20 @@
 package com.github.j5ik2o.adceet.api.write
 
 import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.{ActorRef, ActorSystem, Scheduler}
+import akka.actor.typed.{ ActorRef, ActorSystem, Scheduler }
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.typed.SelfUp
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import com.github.j5ik2o.adceet.api.write.aggregate._
-import com.github.j5ik2o.adceet.api.write.use.`case`.{AddMemberUseCase, AddMemberUseCaseImpl, AddMessageUseCase, AddMessageUseCaseImpl, CreateThreadUseCase, CreateThreadUseCaseImpl}
-import com.typesafe.config.{Config, ConfigFactory}
+import com.github.j5ik2o.adceet.api.write.use.`case`.{
+  AddMemberUseCase,
+  AddMemberUseCaseImpl,
+  AddMessageUseCase,
+  AddMessageUseCaseImpl,
+  CreateThreadUseCase,
+  CreateThreadUseCaseImpl
+}
+import com.typesafe.config.{ Config, ConfigFactory }
 import wvlet.airframe._
 import wvlet.log.io.StopWatch
 

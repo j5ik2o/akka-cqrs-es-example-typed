@@ -13,7 +13,6 @@ class ExampleArgs(parser: ArgParser) {
   val runModeFor by parser.storing("-e", "--env", help = "what to run mode for") {
     RunMode.valueOf(uppercase())
   }
-
 }
 
 fun main(args: Array<String>): Unit = mainBody {

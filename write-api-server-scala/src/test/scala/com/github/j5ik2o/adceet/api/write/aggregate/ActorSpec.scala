@@ -6,17 +6,12 @@ import akka.actor.testkit.typed.scaladsl.{ ActorTestKit, ActorTestKitBase, Scala
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.adapter._
 import com.typesafe.config.{ Config, ConfigFactory }
-import org.scalatest.concurrent.{ ScalaFutures, Waiters }
-import org.scalatest.diagrams.Diagrams
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.time.{ Millis, Seconds, Span }
 
 import scala.concurrent.duration.FiniteDuration
 
-abstract class ActorSpec(testKit: ActorTestKit)
-    extends ScalaTestWithActorTestKit(testKit)
-    with AnyFreeSpecLike
-     {
+abstract class ActorSpec(testKit: ActorTestKit) extends ScalaTestWithActorTestKit(testKit) with AnyFreeSpecLike {
 
   def testTimeFactor: Double = testKit.testKitSettings.TestTimeFactor
 

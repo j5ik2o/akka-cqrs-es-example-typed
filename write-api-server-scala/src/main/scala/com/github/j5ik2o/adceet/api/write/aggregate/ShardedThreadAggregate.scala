@@ -1,9 +1,9 @@
 package com.github.j5ik2o.adceet.api.write.aggregate
 
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.{ ActorRef, Behavior }
 import akka.actor.typed.scaladsl.Behaviors
-import akka.cluster.sharding.typed.{ClusterShardingSettings, ShardingEnvelope}
-import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, Entity, EntityContext, EntityTypeKey}
+import akka.cluster.sharding.typed.ShardingEnvelope
+import akka.cluster.sharding.typed.scaladsl.{ ClusterSharding, Entity, EntityContext, EntityTypeKey }
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -12,9 +12,9 @@ object ShardedThreadAggregate {
   private val TypeKey: EntityTypeKey[ThreadAggregateProtocol.CommandRequest] = EntityTypeKey("Thread")
 
   private def entityBehavior(
-                              childBehavior: Behavior[ThreadAggregateProtocol.CommandRequest],
-                              receiveTimeout: Option[FiniteDuration] = None
-                            ): EntityContext[ThreadAggregateProtocol.CommandRequest] => Behavior[ThreadAggregateProtocol.CommandRequest] = {
+      childBehavior: Behavior[ThreadAggregateProtocol.CommandRequest],
+      receiveTimeout: Option[FiniteDuration] = None
+  ): EntityContext[ThreadAggregateProtocol.CommandRequest] => Behavior[ThreadAggregateProtocol.CommandRequest] = {
     entityContext =>
       Behaviors.setup { ctx =>
         val childRef = ctx.spawn(childBehavior, ThreadAggregates.name)
@@ -36,10 +36,11 @@ object ShardedThreadAggregate {
       }
   }
 
-  def initClusterSharding(clusterSharding: ClusterSharding,
-                          childBehavior: Option[Behavior[ThreadAggregateProtocol.CommandRequest]],
-                          receiveTimeout: Option[FiniteDuration] = None
-                         ): ActorRef[ShardingEnvelope[ThreadAggregateProtocol.CommandRequest]] = {
+  def initClusterSharding(
+      clusterSharding: ClusterSharding,
+      childBehavior: Option[Behavior[ThreadAggregateProtocol.CommandRequest]],
+      receiveTimeout: Option[FiniteDuration] = None
+  ): ActorRef[ShardingEnvelope[ThreadAggregateProtocol.CommandRequest]] = {
     val entity = Entity(TypeKey)(
       entityBehavior(
         childBehavior.getOrElse(Behaviors.empty),

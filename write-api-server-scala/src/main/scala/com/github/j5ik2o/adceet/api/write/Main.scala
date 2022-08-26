@@ -3,11 +3,12 @@ package com.github.j5ik2o.adceet.api.write
 import enumeratum._
 import akka.actor.typed.ActorSystem
 import org.slf4j.LoggerFactory
-import wvlet.airframe.{DISupport, DesignWithContext, Session}
+import wvlet.airframe.{ DISupport, DesignWithContext, Session }
 import wvlet.log.io.StopWatch
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import org.slf4j.Logger
 
 sealed trait Environment extends EnumEntry
 
@@ -30,12 +31,12 @@ object Main extends App with DISupport {
   import Environments._
   import scopt._
 
-  val logger = LoggerFactory.getLogger(getClass)
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   logger.info(s"[${stopWatch.reportElapsedTime}] start")
 
-  val builder = OParser.builder[Args]
-  val parser = {
+  val builder: OParserBuilder[Args] = OParser.builder[Args]
+  val parser: OParser[Unit, Args] = {
     import builder._
     OParser.sequence(
       programName("write-api-server"),
@@ -47,10 +48,10 @@ object Main extends App with DISupport {
     )
   }
 
-  val parsedArgs = OParser.parse(parser, args, Args()).get
+  val parsedArgs: Args = OParser.parse(parser, args, Args()).get
 
   val design: DesignWithContext[_] = DISettings.di(parsedArgs, stopWatch)
-  val session: Session = design.newSession
+  val session: Session             = design.newSession
   try {
     val system = session.build[ActorSystem[MainActor.Command]]
     Await.result(system.whenTerminated, Duration.Inf)

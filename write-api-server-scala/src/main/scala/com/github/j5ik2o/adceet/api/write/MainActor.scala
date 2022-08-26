@@ -2,9 +2,9 @@ package com.github.j5ik2o.adceet.api.write
 
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
-import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
-import akka.cluster.typed.{Cluster, SelfUp}
+import akka.actor.typed.{ ActorSystem, Behavior }
+import akka.actor.{ ClassicActorSystemProvider, CoordinatedShutdown }
+import akka.cluster.typed.Cluster
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
@@ -85,8 +85,8 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
 //          }.receiveSignal { case (_, PostStop) =>
 ////            if (args.environment == Environments.Production)
 ////              Kamon.stop()
-            Behaviors.same
-          //}
+        Behaviors.same
+      // }
       }
     }
   }
@@ -111,7 +111,9 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
     http.onComplete {
       case Success(serverBinding) =>
         val address = serverBinding.localAddress
-        logger.info(s"[${stopWatch.reportElapsedTime}] server bound to http://${address.getHostString}:${address.getPort}")
+        logger.info(
+          s"[${stopWatch.reportElapsedTime}] server bound to http://${address.getHostString}:${address.getPort}"
+        )
       case Failure(ex) =>
         logger.error(s"[${stopWatch.reportElapsedTime}] Failed to bind endpoint, terminating system: $ex")
         system.terminate()
