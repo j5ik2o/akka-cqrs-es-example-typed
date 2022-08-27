@@ -3,7 +3,7 @@
 First, check the resource settings for Docker for Mac. You must give it sufficient resources.
 
 ```shell
-$ minikube-start.sh
+tools/scripts $ minikube-start.sh
 ```
 
 Please push the image to ECR repository.
@@ -13,7 +13,7 @@ tools/scripts $ ./sbt-ecr-push.sh
 ```
 
 ```shell
-$ vi tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
 ```
 
 Please set the following items in the yaml file appropriately
@@ -42,21 +42,16 @@ Wait a few moments for the cluster to form. Make sure there are no errors in the
 $ stern 'write-api-server-*' -n adceet
 ```
 
-```shell
-$ minikube-service-url.sh
-http://127.0.0.1:61391
-```
-
 After frontend is started, check the operation with the following commands.
 
 ```shell
-curl -X GET http://127.0.0.1:61391/hello
+curl -X GET http://127.0.0.1:30031/hello
 ```
 
 Call API to check operation.
 
 ```shell
-$ curl -v -X POST -H "Content-Type: application/json" -d "{ \"accountId\": \"01G41J1A2GVT5HE45AH7GP711P\" }" http://127.0.0.1:61391/threads
+$ curl -v -X POST -H "Content-Type: application/json" -d "{ \"accountId\": \"01G41J1A2GVT5HE45AH7GP711P\" }" http://127.0.0.1:30031/threads
 Note: Unnecessary use of -X or --request, POST is already inferred.
 *   Trying 127.0.0.1:30031...
 * Connected to localhost (127.0.0.1) port 30031 (#0)
