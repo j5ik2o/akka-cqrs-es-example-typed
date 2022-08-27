@@ -117,7 +117,7 @@ writeApi:
         requests:
           cpu: "0.5"
           memory: "1280Mi"
-      replicaCount: 3
+      replicaCount: 2
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
@@ -131,6 +131,8 @@ writeApi:
       env:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "on"
+#        - name: "CONFIG_FORCE_akka_management_cluster_bootstrap_contact_point_discovery_required__contact__point__nr"
+#          value: "1"
         - name: "CONFIG_FORCE_akka_cluster_min__nr__of__members"
           value: "1"
         - name: "CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members"
