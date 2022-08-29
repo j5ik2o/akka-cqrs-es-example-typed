@@ -10,7 +10,7 @@ tools/scripts $ ./sbt-ecr-push.sh
 ```
 
 ```shell
-$ vi tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
 ```
 
 Please set the following items in the yaml file appropriately
