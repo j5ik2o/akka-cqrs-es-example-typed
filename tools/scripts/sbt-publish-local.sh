@@ -17,6 +17,6 @@ source ../../env.sh
 
 pushd ../../
 
-sbt "write-api-server-${MODE}/docker:publishLocal"
+sbt clean "write-api-server-${MODE}/docker:publishLocal"
 
 popd

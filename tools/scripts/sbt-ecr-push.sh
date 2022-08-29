@@ -21,6 +21,6 @@ export AWS_DEFAULT_PROFILE=$AWS_PROFILE_SSO
 
 pushd ../../
 
-sbt "write-api-server-${MODE}/ecr:push"
+sbt clean "write-api-server-${MODE}/ecr:push"
 
 popd

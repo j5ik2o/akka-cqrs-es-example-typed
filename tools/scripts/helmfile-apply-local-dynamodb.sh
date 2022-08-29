@@ -21,7 +21,8 @@ pushd ../helmfile.d
 
 helmfile --namespace adceet --selector group=localstack -e "${PREFIX}-${APPLICATION_NAME}-local" apply
 
+popd
+
 # npm install -g dynamodb-admin
 # DYNAMO_ENDPOINT=http://localhost:31566 dynamodb-admin
 
-popd
