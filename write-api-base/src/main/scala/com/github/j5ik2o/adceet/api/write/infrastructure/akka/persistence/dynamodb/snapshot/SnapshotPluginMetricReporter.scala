@@ -10,7 +10,7 @@ import kamon.metric.MeasurementUnit
 
 class SnapshotPluginMetricReporter(
     pluginConfig: PluginConfig
-) extends MetricsReporter(pluginConfig) {
+) extends MetricsReporter {
 
   import SnapshotPluginMetricNames._
 

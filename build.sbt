@@ -17,6 +17,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
     libraryDependencies ++= Seq(
       iheart.ficus,
       airframe.di,
+      typesafeAkka.akkaSlf4j,
       typesafeAkka.akkaPersistenceTyped,
       awssdk.v1.sts,
       awssdk.v2.sts,

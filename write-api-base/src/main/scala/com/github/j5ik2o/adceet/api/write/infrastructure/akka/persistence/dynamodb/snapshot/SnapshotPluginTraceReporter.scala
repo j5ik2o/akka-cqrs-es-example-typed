@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 class SnapshotPluginTraceReporter(
     pluginConfig: PluginConfig
-) extends TraceReporter(pluginConfig) {
+) extends TraceReporter {
 
   override def traceSnapshotStoreLoadAsync[T](context: Context)(f: => Future[T]): Future[T] =
     KamonSupport.span("snapshotStoreLoadAsync")(f)
