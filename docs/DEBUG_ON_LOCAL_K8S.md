@@ -3,7 +3,7 @@
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
 
-Please push the image to ECR repository.
+Please push the image to docker local repository.
 
 ```shell
 tools/scripts $ ./sbt-publish-local.sh
