@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 class JournalPluginTraceReporter(
     pluginConfig: PluginConfig
-) extends TraceReporter(pluginConfig) {
+) extends TraceReporter {
   override def traceJournalAsyncWriteMessages[T](context: Context)(f: => Future[T]): Future[T] =
     KamonSupport.span("journalAsyncWriteMessages")(f)
 
