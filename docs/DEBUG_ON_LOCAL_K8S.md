@@ -6,7 +6,7 @@ Also check the resource settings for Docker for Mac. You must give it sufficient
 Please push the image to ECR repository.
 
 ```shell
-tools/scripts $ ./sbt-ecr-push.sh
+tools/scripts $ ./sbt-publish-local.sh
 ```
 
 ```shell
