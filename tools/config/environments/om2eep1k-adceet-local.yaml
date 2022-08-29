@@ -2,7 +2,7 @@ localstack:
   enabled: true
   resources:
     limits:
-      cpu: "2"
+      cpu: "1"
       memory: "1000Mi"
     requests:
       cpu: "0.5"
@@ -13,7 +13,7 @@ regcred:
   username:
   password:
 ecrCred:
-  enabled: true
+  enabled: false
   server: 234188972441.dkr.ecr.us-east-1.amazonaws.com
   password:
 writeApi:
@@ -56,9 +56,11 @@ writeApi:
       enabled: false
       version: 0.2.8
       image:
-        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
-        pullPolicy: Always
+#        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
+#        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
+        repository: adceet-write-api-server-scala
+        tag: 7a101a5a3b12491ea4b501faa5c05487f8e5812b
+        pullPolicy: IfNotPresent
       resources:
         limits:
           cpu: "1"
@@ -107,16 +109,18 @@ writeApi:
       enabled: true
       version: 0.2.5
       image:
-        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
-        pullPolicy: Always
+#        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
+#        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
+        repository: adceet-write-api-server-scala
+        tag: 7a101a5a3b12491ea4b501faa5c05487f8e5812b
+        pullPolicy: IfNotPresent
       resources:
         limits:
-          cpu: "3"
-          memory: "2000Mi"
+          cpu: "1"
+          memory: "2Gi"
         requests:
           cpu: "0.5"
-          memory: "1280Mi"
+          memory: "1Gi"
       replicaCount: 2
       autoscaling:
         enabled: false
@@ -176,8 +180,8 @@ writeApi:
 #        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_replay__batch__size"
 #          value: "512"
 
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_consistent__read"
-          value: "false"
+#        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_consistent__read"
+#          value: "false"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_access__key__id"
           value: "x"
