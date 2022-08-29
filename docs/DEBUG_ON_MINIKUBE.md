@@ -6,10 +6,10 @@ First, check the resource settings for Docker for Mac. You must give it sufficie
 tools/scripts $ minikube-start.sh
 ```
 
-Please push the image to ECR repository.
+Please push the image to docker local repository.
 
 ```shell
-tools/scripts $ ./sbt-ecr-push.sh
+tools/scripts $ ./sbt-publish-local.sh
 ```
 
 ```shell
