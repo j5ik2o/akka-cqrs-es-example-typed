@@ -49,7 +49,7 @@ The following two akka-cluster roles are defined for write-api-server.
 There are two ways to launch applications that take these roles into account
 
 1. Launch two roles (Frontend, Backend) in each k8s deployments
-2. Launch ｋ8ｓ deployment for Backend that also serves as Frontend(Frontend-only deployment/pods do not need to be launched)
+2. Launch k8ｓ deployment for Backend that also serves as Frontend(Frontend-only deployment/pods do not need to be launched)
 
 1 is a configuration similar to a production environment, but requires a minimum of 5 pods, so system resources must be reasonable.
 2 is a different configuration from the production environment, but can be started in 3 pods, which minimizes system resource consumption.
