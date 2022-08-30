@@ -22,6 +22,7 @@ tools/scripts $ ./sbt-publish-local.sh
 tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
 ```
 
+Notice the tag value displayed in the console; reflect it in xxx.image.tag.
 Please set the following items in the yaml file appropriately
 
 - writeApi.writeApiServer.frontend.image.repository
