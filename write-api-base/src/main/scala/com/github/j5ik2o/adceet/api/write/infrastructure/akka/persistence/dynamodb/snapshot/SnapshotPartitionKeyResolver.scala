@@ -3,7 +3,7 @@ package com.github.j5ik2o.adceet.api.write.infrastructure.akka.persistence.dynam
 import com.github.j5ik2o.akka.persistence.dynamodb.model.{ PersistenceId, SequenceNumber }
 import com.github.j5ik2o.akka.persistence.dynamodb.snapshot.config.SnapshotPluginConfig
 import com.github.j5ik2o.akka.persistence.dynamodb.snapshot.{ PartitionKey, PartitionKeyResolver, ToPersistenceIdOps }
-import com.github.j5ik2o.akka.persistence.dynamodb.utils.ConfigOps.ConfigOperations
+import net.ceedubs.ficus.Ficus._
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -14,7 +14,7 @@ class SnapshotPartitionKeyResolver(snapshotPluginConfig: SnapshotPluginConfig)
     with ToPersistenceIdOps {
 
   override def separator: String =
-    snapshotPluginConfig.sourceConfig.valueAs[String]("persistence-id-separator", PersistenceId.Separator)
+    snapshotPluginConfig.sourceConfig.getAs[String]("persistence-id-separator").getOrElse(PersistenceId.Separator)
 
   // ${persistenceId.prefix}-${md5(persistenceId.reverse) % shardCount}
   override def resolve(persistenceId: PersistenceId, sequenceNumber: SequenceNumber): PartitionKey = {

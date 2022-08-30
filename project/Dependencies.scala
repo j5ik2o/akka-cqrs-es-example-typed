@@ -8,10 +8,11 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.1"
 
-  val akkaPersistenceDynamoDB = "1.14.13+1-be568bbe-SNAPSHOT"
+  val akkaPersistenceDynamoDB = "1.14.16"
 }
 
 object Dependencies {
+
   object mockito {
     val mocktioScala = "org.mockito" %% "mockito-scala" % "1.17.5"
   }
