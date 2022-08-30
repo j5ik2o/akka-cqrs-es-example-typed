@@ -6,6 +6,12 @@ First, check the resource settings for Docker for Mac. You must give it sufficie
 tools/scripts $ minikube-start.sh
 ```
 
+Change the Docker client connection to minikube.
+
+```shell
+tools/scripts $ eval $(minikube docker-env default)
+```
+
 Please push the image to docker local repository.
 
 ```shell
