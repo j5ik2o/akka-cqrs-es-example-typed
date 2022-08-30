@@ -3,11 +3,15 @@
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
 
+## Push the Docker Image
+
 Please push the image to docker local repository.
 
 ```shell
 tools/scripts $ ./sbt-publish-local.sh
 ```
+
+## Edit the Configuration file of Helmfile
 
 ```shell
 tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
@@ -21,6 +25,8 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag
 
+## Prepare DynamoDB tabels
+
 Next deploy the dynamodb local.
 
 ```shell
@@ -32,6 +38,8 @@ Create the necessary tables.
 ```shell
 tools/scripts $ ./dynamodb-create-tables.sh
 ```
+
+## Abount akka-cluster roles
 
 The following two akka-cluster roles are defined for write-api-server.
 
@@ -61,18 +69,24 @@ writeApi.writeApiServer.frontend.enabled = false
 writeApi.writeApiServer.backend.withFrontend = true
 ```
 
-Next deploy the backend roles.
+## Deploy Backend role
+
+Next deploy the backend role.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-backend.sh
 ```
 
-if choose the configuration 1, deploy the frontend roles.(if choose the configuration 2, Do not run this command)
+## Deploy Frontend role
+
+if choose the configuration 1, deploy the frontend role.(if choose the configuration 2, Do not run this command)
 
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-frontend.sh
 ```
+
+## Check the applications
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
 
