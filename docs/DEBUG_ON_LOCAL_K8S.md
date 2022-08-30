@@ -39,7 +39,7 @@ Create the necessary tables.
 tools/scripts $ ./dynamodb-create-tables.sh
 ```
 
-## Abount akka-cluster roles
+## About akka-cluster roles
 
 The following two akka-cluster roles are defined for write-api-server.
 
