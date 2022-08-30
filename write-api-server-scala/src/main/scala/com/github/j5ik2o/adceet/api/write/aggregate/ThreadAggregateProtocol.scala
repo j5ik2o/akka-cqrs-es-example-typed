@@ -5,9 +5,10 @@ import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, Message, ThreadErr
 import wvlet.airframe.ulid.ULID
 
 object ThreadAggregateProtocol {
-  sealed trait CommandRequest extends CborSerializable {
+  sealed trait CommandRequest extends CborSerializable with AggregateIdValueExtractable {
     def id: ULID
     def threadId: ThreadId
+    def aggregateIdValue: String = threadId.asString
   }
 
   final case class CreateThread(

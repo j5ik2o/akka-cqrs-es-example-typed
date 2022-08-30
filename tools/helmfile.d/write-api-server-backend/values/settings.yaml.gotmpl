@@ -18,20 +18,16 @@ akka:
     enabled: true
   management:
     enabled: true
+    port: 8558
+    nodePort: 30131
     service:
-      enabled: true
       type: NodePort
-      ports:
-        - targetPort: management
-          name: management
-          port: 8558
-          nodePort: 30034
-          protocol: TCP
+      enabled: true
     healthChecks:
       livenessPath: health/alive
       readinessPath: health/ready
   http:
-    enabled: true
+    enabled: {{ .Values.writeApi.writeApiServer.backend.frontend.enabled }}
     port: 8081
     portName: http
     service:
@@ -59,6 +55,10 @@ env:
   {{- end }}
   {{- with .Values.writeApi.env }}
   {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- if .Values.writeApi.writeApiServer.backend.frontend.enabled }}
+  - name: "AKKA_CLUSTER_ROLE_OPTION"
+    value: "frontend"
   {{- end }}
   - name: CONFIG_FORCE_kamon_environment_tags_version
     value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'

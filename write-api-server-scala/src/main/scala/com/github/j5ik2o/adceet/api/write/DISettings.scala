@@ -1,24 +1,20 @@
 package com.github.j5ik2o.adceet.api.write
 
 import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.{ ActorRef, ActorSystem, Scheduler }
+import akka.actor.typed.{ActorRef, ActorSystem, Scheduler}
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.typed.SelfUp
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import com.github.j5ik2o.adceet.api.write.aggregate._
-import com.github.j5ik2o.adceet.api.write.use.`case`.{
-  AddMemberUseCase,
-  AddMemberUseCaseImpl,
-  AddMessageUseCase,
-  AddMessageUseCaseImpl,
-  CreateThreadUseCase,
-  CreateThreadUseCaseImpl
-}
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.github.j5ik2o.adceet.api.write.use.`case`.{AddMemberUseCase, AddMemberUseCaseImpl, AddMessageUseCase, AddMessageUseCaseImpl, CreateThreadUseCase, CreateThreadUseCaseImpl}
+import com.typesafe.config.{Config, ConfigFactory}
+import org.slf4j.{Logger, LoggerFactory}
 import wvlet.airframe._
 import wvlet.log.io.StopWatch
 
 object DISettings {
+
+  private val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def di(args: Args, stopWatch: StopWatch): DesignWithContext[_] = newDesign
     .bind[Config].toInstance(ConfigFactory.load())
@@ -38,7 +34,7 @@ object DISettings {
         ctx.spawn(SelfUpReceiver.create(ctx.self), "self-up")
       )
       .bind[ClusterSharding].toInstance(ClusterSharding(ctx.system))
-      .bind[ActorRef[ThreadAggregateProtocol.CommandRequest]].toProvider[ClusterSharding] { clusterSharding =>
+      .bind[ActorRef[ThreadAggregateProtocol.CommandRequest]].toEagerSingletonProvider[ClusterSharding] { clusterSharding =>
         val behavior = if (roleNames.contains(RoleNames.Backend)) {
           Some(ThreadAggregates.create {
             _.asString
@@ -52,10 +48,11 @@ object DISettings {
           })
         } else None
 
-        ShardedThreadAggregate.initClusterSharding(
+        val _ = ShardedThreadAggregate.initClusterSharding(
           clusterSharding,
           behavior
         )
+        logger.info(s"Starting Shard Region: $roleNames")
         ctx.spawn(ShardedThreadAggregate.ofProxy(clusterSharding), "sharded-thread")
       }
       .bind[CreateThreadUseCase].toProvider[ActorRef[ThreadAggregateProtocol.CommandRequest]] { actorRef =>

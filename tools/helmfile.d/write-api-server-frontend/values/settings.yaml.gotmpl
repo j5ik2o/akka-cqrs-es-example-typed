@@ -14,6 +14,18 @@ akka:
     enabled: true
   discovery:
     enabled: true
+
+  management:
+    enabled: true
+    port: 8558
+    nodePort: 30132
+    service:
+      type: NodePort
+      enabled: true
+    healthChecks:
+      livenessPath: health/alive
+      readinessPath: health/ready
+
   http:
     enabled: true
     port: 8081
@@ -27,9 +39,8 @@ akka:
         - targetPort: http
           name: http
           port: 8081
-          nodePort: 30030
+          nodePort: 30031
           protocol: TCP
-
     # Ingress for akka-http.
     {{- if .Values.writeApi.writeApiServer.frontend.ingress.enabled }}
     ingresses: []
@@ -45,20 +56,7 @@ akka:
     #   targetPort: 8080
     {{- end }}
 
-  management:
-    enabled: true
-    service:
-      enabled: true
-      type: NodePort
-      ports:
-        - targetPort: management
-          name: management
-          port: 8558
-          nodePort: 30033
-          protocol: TCP
-    healthChecks:
-      livenessPath: health/alive
-      readinessPath: health/ready
+
 
   remote:
     enabled: true

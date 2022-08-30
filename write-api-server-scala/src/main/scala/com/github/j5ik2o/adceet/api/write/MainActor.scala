@@ -40,6 +40,9 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
       val selfMember = cluster.selfMember
       logger.info(s"[${stopWatch.reportElapsedTime}] Specified role(s) = ${selfMember.roles.mkString(", ")}")
 
+      logger.info(s"selfMember.roles = ${selfMember.roles}")
+      require(selfMember.roles.nonEmpty, "akka.cluster.roles are empty")
+
       val roleNames = (
         if (selfMember.hasRole(RoleNames.Frontend.toString.toLowerCase))
           Seq(RoleNames.Frontend)
@@ -49,6 +52,8 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
           Seq(RoleNames.Backend)
         else Seq.empty
       )
+
+      logger.info(s"roleNames = $roleNames")
 
       session.withChildSession(DISettings.mainActor(ctx, roleNames)) { childSession =>
         val config       = ctx.system.settings.config
