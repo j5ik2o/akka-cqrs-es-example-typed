@@ -33,6 +33,11 @@ Next deploy the dynamodb local.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-dynamodb.sh
+```
+
+Create the necessary tables.
+
+```shell
 tools/scripts $ ./dynamodb-create-tables.sh
 ```
 
