@@ -16,6 +16,8 @@ akka:
     enabled: true
   discovery:
     enabled: true
+  remote:
+    enabled: true
   management:
     enabled: true
     port: 8558
@@ -27,7 +29,7 @@ akka:
       livenessPath: health/alive
       readinessPath: health/ready
   http:
-    enabled: {{ .Values.writeApi.writeApiServer.backend.frontend.enabled }}
+    enabled: {{ .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
     port: 8081
     portName: http
     service:
@@ -41,8 +43,6 @@ akka:
           port: 8081
           nodePort: 30031
           protocol: TCP
-  remote:
-    enabled: true
 
 affinity: {}
 
@@ -56,7 +56,7 @@ env:
   {{- with .Values.writeApi.env }}
   {{- toYaml . | nindent 2 }}
   {{- end }}
-  {{- if .Values.writeApi.writeApiServer.backend.frontend.enabled }}
+  {{- if .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
   - name: "AKKA_CLUSTER_ROLE_OPTION"
     value: "frontend"
   {{- end }}

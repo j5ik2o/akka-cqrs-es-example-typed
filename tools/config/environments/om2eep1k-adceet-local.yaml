@@ -22,7 +22,7 @@ writeApi:
     - name: "AWS_REGION"
       value: "us-east-1"
     - name: "ROOT_LOG_LEVEL"
-      value: "DEBUG"
+      value: "INFO"
     - name: "CONFIG_FORCE_akka_discovery_kubernetes__api_pod__namespace"
       value: "adceet"
     - name: "CONFIG_FORCE_akka_discovery_kubernetes__api_pod__label__selector"
@@ -47,7 +47,7 @@ writeApi:
 #        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
 #        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
         repository: adceet-write-api-server-scala
-        tag: 657c4964da615ae3e467cb4d1452dbf1027a8308
+        tag: 6559d37779bb97e926f3e2c5a64d17756a0b8ec8
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -97,11 +97,13 @@ writeApi:
     backend:
       enabled: true
       version: 0.2.6
+      withFrontend:
+        enabled: false
       image:
 #        repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
 #        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
         repository: adceet-write-api-server-scala
-        tag: 657c4964da615ae3e467cb4d1452dbf1027a8308
+        tag: 6559d37779bb97e926f3e2c5a64d17756a0b8ec8
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -117,8 +119,6 @@ writeApi:
       serviceAccount:
         create: true
         name: write-api-server-backend-akka
-      frontend:
-        enabled: false
       command:
         - /opt/docker/bin/adceet-write-api-server-scala
         - -Dconfig.resource=application-cluster-backend.conf

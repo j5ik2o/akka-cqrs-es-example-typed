@@ -14,14 +14,15 @@ akka:
     enabled: true
   discovery:
     enabled: true
-
+  remote:
+    enabled: true
   management:
     enabled: true
     port: 8558
     nodePort: 30132
     service:
-      type: NodePort
       enabled: true
+      type: NodePort
     healthChecks:
       livenessPath: health/alive
       readinessPath: health/ready
@@ -58,8 +59,6 @@ akka:
 
 
 
-  remote:
-    enabled: true
 
 affinity: {}
 
