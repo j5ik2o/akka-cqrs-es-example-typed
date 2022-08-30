@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths:
-      - '**.scala'
       - '**.java'
+      - '**.scala'
+      - '**.kt'
       - '**.sbt'
       - '.scalafmt.conf'
       - 'project/build.properties'
@@ -15,8 +16,9 @@ on:
     branches:
       - main
     paths:
-      - '**.scala'
       - '**.java'
+      - '**.scala'
+      - '**.kt'
       - '**.sbt'
       - '.scalafmt.conf'
       - 'project/build.properties'
@@ -35,7 +37,7 @@ jobs:
           fetch-depth: 0
       - uses: olafurpg/setup-scala@v13
         with:
-          java-version: "adopt@1.11"
+          java-version: adopt@1.11
       - uses: coursier/cache-action@v6
       - run: sbt -v lint
       - name: clean up
@@ -54,7 +56,7 @@ jobs:
           fetch-depth: 0
       - uses: olafurpg/setup-scala@v13
         with:
-          java-version: "adopt@1.11"
+          java-version: adopt@1.11
       - uses: coursier/cache-action@v6
       - name: sbt test
         run: sbt -v test

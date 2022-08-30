@@ -122,9 +122,9 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
+    Settings.javaSettings,
     Settings.scalaSettings,
     Settings.kotlinSettings,
-    Settings.javaSettings,
     Settings.multiJvmSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
