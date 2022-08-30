@@ -2,7 +2,8 @@ resolvers ++= Seq(
   "Sonatype OSS Snapshot Repository" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Sonatype OSS Release Repository" at "https://oss.sonatype.org/content/repositories/releases/",
   Resolver.bintrayRepo("kamon-io", "sbt-plugins"),
-  Resolver.jcenterRepo
+  Resolver.jcenterRepo,
+  "jitpack" at "https://jitpack.io"
 )
 
 libraryDependencies ++= {
@@ -13,7 +14,8 @@ libraryDependencies ++= {
     "com.amazonaws"          % "aws-java-sdk-sts" % amazonSdkV,
     "com.amazonaws"          % "aws-java-sdk-ecr" % amazonSdkV,
     "software.amazon.awssdk" % "sso"              % awsSsoSdkV,
-    "org.scalatest"         %% "scalatest"        % scalaTestV % "test"
+    "org.scalatest"         %% "scalatest"        % scalaTestV % "test",
+    "com.github.tmtsoftware" % "kotlin-plugin"    % "3.0.3"
   )
 }
 
@@ -27,7 +29,7 @@ addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.3")
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
-addSbtPlugin("com.hanhuy.sbt" % "kotlin-plugin" % "2.0.0")
+// addSbtPlugin("com.github.tmtsoftware" % "kotlin-plugin" % "3.0.3")
 
 addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.1.3")
 
