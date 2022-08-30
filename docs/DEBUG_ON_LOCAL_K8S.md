@@ -33,10 +33,45 @@ Create the necessary tables.
 tools/scripts $ ./dynamodb-create-tables.sh
 ```
 
+The following two akka-cluster roles are defined for write-api-server.
+
+- frontend: Write API server endpoints and use-cases etc
+- backend: Aggregate Actors etc.
+
+There are two ways to launch applications that take these roles into account
+
+1. Launch two roles (Frontend, Backend) in each k8s deployments
+2. Launch ｋ8ｓ deployment for Backend that also serves as Frontend(Frontend-only deployment/pods do not need to be launched)
+
+1 is a configuration similar to a production environment, but requires a minimum of 5 pods, so system resources must be reasonable.
+2 is a different configuration from the production environment, but can be started in 3 pods, which minimizes system resource consumption.
+
+
+If choose the configuration 1, set as follows:
+
+```
+writeApi.writeApiServer.frontend.enabled = true
+writeApi.writeApiServer.backend.withFrontend = false
+```
+
+Conversely, if choose the configuration 2, set as follows:
+
+```
+writeApi.writeApiServer.frontend.enabled = false
+writeApi.writeApiServer.backend.withFrontend = true
+```
+
 Next deploy the backend roles.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-backend.sh
+```
+
+if choose the configuration 1, deploy the frontend roles.(if choose the configuration 2, Do not run this command)
+
+
+```shell
+tools/scripts $ ./helmfile-apply-local-frontend.sh
 ```
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
