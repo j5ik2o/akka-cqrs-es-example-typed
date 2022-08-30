@@ -16,8 +16,6 @@ OUTPUT_ENV=1
 source ../../env.sh
 
 export AWS_DEFAULT_REGION=$AWS_REGION
-# shellcheck disable=SC2155
-# export ECR_DOCKER_PASSWORD=$(aws --profile "$AWS_PROFILE_TERRAFORM" ecr get-login-password --region "$AWS_REGION")
 
 pushd ../helmfile.d
 
