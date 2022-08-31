@@ -1,6 +1,6 @@
 # Debug on Minikube
 
-First, check the resource settings for Docker for Mac. You must give it sufficient resources.
+First, Give minikube driver(docker, virtualbox, ...) enough resources.
 
 ## Launch Minikube
 
