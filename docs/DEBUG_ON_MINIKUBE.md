@@ -1,4 +1,4 @@
-# Debug on Minikube(on Docker for Mac)
+# Debug on Minikube
 
 First, check the resource settings for Docker for Mac. You must give it sufficient resources.
 
