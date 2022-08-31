@@ -56,7 +56,7 @@ There are two ways to launch applications that take these roles into account
 2 is a different configuration from the production environment, but can be started in 3 pods, which minimizes system resource consumption.
 
 
-If choose the configuration 1, set as follows:
+If choose the configuration 1, set the values in the helmfile configuration file(`tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml`) as follows:
 
 ```
 writeApi.writeApiServer.frontend.enabled = true
