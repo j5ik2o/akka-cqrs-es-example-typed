@@ -2,6 +2,8 @@
 
 First, check the resource settings for Docker for Mac. You must give it sufficient resources.
 
+## Launch Minikube
+
 ```shell
 tools/scripts $ minikube-start.sh
 ```
@@ -12,11 +14,15 @@ Change the Docker client connection to minikube.
 tools/scripts $ eval $(minikube docker-env default)
 ```
 
-Please push the image to docker local repository.
+## Push the Docker Image
+
+Please push the image to docker registry on minikube.
 
 ```shell
 tools/scripts $ ./sbt-publish-local.sh
 ```
+
+## Edit the Configuration file of Helmfile
 
 ```shell
 tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
@@ -30,6 +36,8 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag
 
+## Prepare DynamoDB tabels
+
 Next deploy the dynamodb local.
 
 ```shell
@@ -42,10 +50,22 @@ Create the necessary tables.
 tools/scripts $ ./dynamodb-create-tables.sh
 ```
 
+## [About akka-cluster roles](DEBUG_ON_LOCAL_K8S.md#about-akka-cluster-roles)
+
+## Deploy the Backend role
+
 Next deploy the backend roles.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-backend.sh
+```
+
+## Deploy the Frontend role
+
+if choose the configuration 1, deploy the frontend role.(if choose the configuration 2, Do not run this command)
+
+```shell
+tools/scripts $ ./helmfile-apply-local-frontend.sh
 ```
 
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
@@ -53,6 +73,8 @@ Wait a few moments for the cluster to form. Make sure there are no errors in the
 ```shell
 $ stern 'write-api-server-*' -n adceet
 ```
+
+## Check the applications
 
 After frontend is started, check the operation with the following commands.
 
