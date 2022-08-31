@@ -69,7 +69,7 @@ writeApi.writeApiServer.frontend.enabled = false
 writeApi.writeApiServer.backend.withFrontend = true
 ```
 
-## Deploy Backend role
+## Deploy the Backend role
 
 Next deploy the backend role.
 
@@ -77,7 +77,7 @@ Next deploy the backend role.
 tools/scripts $ ./helmfile-apply-local-backend.sh
 ```
 
-## Deploy Frontend role
+## Deploy the Frontend role
 
 if choose the configuration 1, deploy the frontend role.(if choose the configuration 2, Do not run this command)
 
