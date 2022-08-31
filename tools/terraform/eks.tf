@@ -218,6 +218,16 @@ module "aws-load-balancer-controller" {
   ]
 }
 
+module "external-dns" {
+  source = "./eks-external-dns"
+  eks_cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  zone_name                   = var.zone_name
+
+  depends_on = [
+    module.eks
+  ]
+}
+
 module "adceet-write-api-server" {
   source = "./adceet"
   create = var.eks_enabled
