@@ -15,6 +15,7 @@ tools/scripts $ ./sbt-publish-local.sh
 
 ```shell
 tools/scripts $ vi ../config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
+adceet-root # tools/config/environments/${PREFIX}-${APPLICATION_NAME}-local.yaml
 ```
 
 Notice the tag value displayed in the console; reflect it in xxx.image.tag.
