@@ -22,7 +22,7 @@ The image name is `adceet-write-api-server-${MODE}` as fixed.
 ## Run the Docker Compose
 
 ```shell
-tools/scripts $ ./docker-compose-up.sh
+tools/docker-compose $ ./docker-compose-up.sh
 ```
 
 ## Operation verification
