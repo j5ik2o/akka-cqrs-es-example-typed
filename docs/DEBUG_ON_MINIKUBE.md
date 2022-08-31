@@ -61,6 +61,15 @@ Next deploy the backend roles.
 tools/scripts $ ./helmfile-apply-local-backend.sh
 ```
 
+Wait a few moments for the cluster to form. Make sure there are no errors in the log.
+
+```shell
+$ stern 'write-api-server-backend-*' -n adceet
+```
+
+Make sure all pods are in Ready status.
+
+
 ## Deploy the Frontend role
 
 if choose the configuration 1, deploy the frontend role.(if choose the configuration 2, Do not run this command)
@@ -72,8 +81,11 @@ tools/scripts $ ./helmfile-apply-local-frontend.sh
 Wait a few moments for the cluster to form. Make sure there are no errors in the log.
 
 ```shell
-$ stern 'write-api-server-*' -n adceet
+$ stern 'write-api-server-frontend-*' -n adceet
 ```
+
+Make sure all pods are in Ready status.
+
 
 ## Check the applications
 
