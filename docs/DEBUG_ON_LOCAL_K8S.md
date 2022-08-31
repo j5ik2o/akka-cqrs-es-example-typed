@@ -97,7 +97,7 @@ $ stern 'write-api-server-*' -n adceet
 After frontend is started, check the operation with the following commands.
 
 ```shell
-$ curl -X GET http://localhost:30030/hello
+$ curl -X GET http://localhost:30031/hello
 Say hello to akka-http
 ```
 
