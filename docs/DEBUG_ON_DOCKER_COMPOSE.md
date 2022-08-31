@@ -1,4 +1,4 @@
-# Debug on Docker Compose(on Docker for Mac)
+# Debug on Docker Compose
 
 ## Build image
 
