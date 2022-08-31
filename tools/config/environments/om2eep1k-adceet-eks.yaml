@@ -62,7 +62,7 @@ writeApi:
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
-      hostname: xxxx
+      hostname: j5ik2o-write-api.us-east-1.sandbox-sagrada.cwtest.info
       externalDNS:
         awsWeight: 100
       serviceAccount:
@@ -89,7 +89,7 @@ writeApi:
         - name: "CONFIG_FORCE_akka_management_contract__point_fallback__ports"
           value: "8558"
       ingress:
-        enabled: false
+        enabled: true
         alb:
           scheme: internet-facing
     backend:

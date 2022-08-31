@@ -33,7 +33,11 @@ akka:
     portName: http
     service:
       enabled: true
-      annotations: {}
+      annotations:
+{{- if eq .Values.writeApi.writeApiServer.frontend.service.type "LoadBalancer" }}
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+        external-dns.alpha.kubernetes.io/hostname: '{{ .Values.writeApi.writeApiServer.frontend.hostname }}'
+{{- end }}
       labels: {}
       type: NodePort
       ports:
@@ -44,21 +48,31 @@ akka:
           protocol: TCP
     # Ingress for akka-http.
     {{- if .Values.writeApi.writeApiServer.frontend.ingress.enabled }}
-    ingresses: []
-      # - annotations: {}
-      #   labels: {}
-      #   name: "your-ingress-name"
-      #   tls: []
-      #     - hosts: []
-      #       secretName: ""
-      #   hosts: []
-      #     - host:
-    #       paths: []
-    #   targetPort: 8080
+    ingresses:
+      - annotations:
+          alb.ingress.kubernetes.io/target-type: ip
+          alb.ingress.kubernetes.io/backend-protocol-version: HTTP1 # GRPC
+          # alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true
+          alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+          alb.ingress.kubernetes.io/healthcheck-interval-seconds: "10"
+          alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+          alb.ingress.kubernetes.io/healthy-threshold-count: "5"
+          alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
+          alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+          alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+          # alb.ingress.kubernetes.io/healthcheck-path: /chatwork.protobuf.writeApi.internalApi.healthCheck.HealthCheckService/Check
+          # alb.ingress.kubernetes.io/success-codes: '0'
+          alb.ingress.kubernetes.io/scheme: {{ .Values.writeApi.writeApiServer.frontend.ingress.alb.scheme }}
+          external-dns.alpha.kubernetes.io/hostname: {{ .Values.writeApi.writeApiServer.frontend.hostname }}
+          external-dns.alpha.kubernetes.io/set-identifier: {{ .Environment.Name }}
+          external-dns.alpha.kubernetes.io/aws-weight: {{ .Values.writeApi.writeApiServer.frontend.externalDNS.awsWeight | quote }}
+        ingressClassName: alb
+        hosts:
+          - host: {{ .Values.writeApi.writeApiServer.frontend.hostname }}
+            paths:
+              - "/*"
+        targetPort: {{ .Values.writeApi.writeApiServer.frontend.service.port }}
     {{- end }}
-
-
-
 
 affinity: {}
 
