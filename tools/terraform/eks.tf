@@ -78,7 +78,7 @@ module "eks" {
       instance_types = [var.eks_node_instance_type]
 
       min_size     = 1
-      max_size     = 3
+      max_size     = 5
       desired_size = 1
 
       labels         = {
