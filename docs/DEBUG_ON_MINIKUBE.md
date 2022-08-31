@@ -52,7 +52,7 @@ tools/scripts $ ./helmfile-apply-local-dynamodb.sh
 Create the necessary tables.
 
 ```shell
-tools/scripts $ ./dynamodb-create-tables.sh
+tools/scripts $ ./dynamodb-create-tables.sh -e dev
 ```
 
 ## [About akka-cluster roles](DEBUG_ON_LOCAL_K8S.md#about-akka-cluster-roles)

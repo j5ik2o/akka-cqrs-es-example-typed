@@ -1,5 +1,13 @@
 # Debug on local machine
 
+## Run the Docker Compose for DynamoDB Local
+
+Launch dynamodb-local & dynamodb admin as docker-compose.
+
+```shell
+tools/scripts $ ./docker-compose-up.sh -d
+```
+
 ## Debug by using IntelliJ IDEA
 
 Edit Configurations
