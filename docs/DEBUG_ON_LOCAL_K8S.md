@@ -60,14 +60,14 @@ If choose the configuration 1, set the values in the helmfile configuration file
 
 ```
 writeApi.writeApiServer.frontend.enabled = true
-writeApi.writeApiServer.backend.withFrontend = false
+writeApi.writeApiServer.backend.withFrontend.enabled = false
 ```
 
 Conversely, if choose the configuration 2, set as follows:
 
 ```
 writeApi.writeApiServer.frontend.enabled = false
-writeApi.writeApiServer.backend.withFrontend = true
+writeApi.writeApiServer.backend.withFrontend.enabled = true
 ```
 
 ## Deploy the Backend role
