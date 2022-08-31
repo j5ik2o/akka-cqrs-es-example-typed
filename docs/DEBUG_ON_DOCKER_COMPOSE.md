@@ -34,11 +34,11 @@ Make sure there are no unreachable nodes.
 ```shell
 $ curl -s -X GET http://localhost:8558/cluster/members | jq .
 {
-  "leader": "akka://adceet@172.31.0.4:44431",
+  "leader": "akka://adceet@172.25.0.5:46693",
   "members": [
     {
-      "node": "akka://adceet@172.31.0.4:44431",
-      "nodeUid": "6606923497015772855",
+      "node": "akka://adceet@172.25.0.5:46693",
+      "nodeUid": "6449282681366255574",
       "roles": [
         "frontend",
         "backend",
@@ -47,8 +47,8 @@ $ curl -s -X GET http://localhost:8558/cluster/members | jq .
       "status": "Up"
     },
     {
-      "node": "akka://adceet@172.31.0.5:35433",
-      "nodeUid": "-188067320620564535",
+      "node": "akka://adceet@172.25.0.6:36927",
+      "nodeUid": "929922260930827876",
       "roles": [
         "frontend",
         "backend",
@@ -57,8 +57,8 @@ $ curl -s -X GET http://localhost:8558/cluster/members | jq .
       "status": "Up"
     },
     {
-      "node": "akka://adceet@172.31.0.6:35163",
-      "nodeUid": "8133025084706588976",
+      "node": "akka://adceet@172.25.0.7:40933",
+      "nodeUid": "-9123478749678732860",
       "roles": [
         "frontend",
         "backend",
@@ -67,21 +67,49 @@ $ curl -s -X GET http://localhost:8558/cluster/members | jq .
       "status": "Up"
     }
   ],
-  "oldest": "akka://adceet@172.31.0.4:44431",
+  "oldest": "akka://adceet@172.25.0.5:46693",
   "oldestPerRole": {
-    "frontend": "akka://adceet@172.31.0.4:44431",
-    "backend": "akka://adceet@172.31.0.4:44431",
-    "dc-default": "akka://adceet@172.31.0.4:44431"
+    "frontend": "akka://adceet@172.25.0.5:46693",
+    "backend": "akka://adceet@172.25.0.5:46693",
+    "dc-default": "akka://adceet@172.25.0.5:46693"
   },
-  "selfNode": "akka://adceet@172.31.0.4:44431",
+  "selfNode": "akka://adceet@172.25.0.5:46693",
   "unreachable": []
 }
 ```
 
-### Testing endpoints
+### Check the applications
 
-- hello
+Check the operation with the following commands.
 
 ```shell
 $ curl -s -X GET http://localhost:18080/hello
+Say hello to akka-http
 ```
+
+Call API to check operation.
+
+```shell
+$ curl -v -X POST -H "Content-Type: application/json" -d "{ \"accountId\": \"01G41J1A2GVT5HE45AH7GP711P\" }" http://127.0.0.1:18080/threads
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 127.0.0.1:18080...
+* Connected to 127.0.0.1 (127.0.0.1) port 18080 (#0)
+> POST /threads HTTP/1.1
+> Host: 127.0.0.1:18080
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 45
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: akka-http/10.2.9
+< Date: Wed, 31 Aug 2022 02:46:42 GMT
+< Content-Type: application/json
+< Content-Length: 41
+<
+* Connection #0 to host 127.0.0.1 left intact
+{"threadId":"01GBRWPCHEZKHX8QCR3226AGAM"}
+```
+
+
