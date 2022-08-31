@@ -40,7 +40,7 @@ This is a example for CQRS+ES(Event Sourcing).
 
 ## [AWS Setup](docs/AWS_SETUP.md)
 
-## [Debug on Docker Compose(on Docker for Mac)](docs/DEBUG_ON_DOCKER_COMPOSE.md)
+## [Debug on Docker Compose](docs/DEBUG_ON_DOCKER_COMPOSE.md)
 
 ## [Debug on Local Machine](docs/DEBUG_ON_LOCAL_MACHINE.md)
 
