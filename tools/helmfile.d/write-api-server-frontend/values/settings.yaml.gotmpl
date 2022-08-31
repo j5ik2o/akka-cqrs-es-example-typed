@@ -31,6 +31,7 @@ akka:
     enabled: true
     port: 8081
     portName: http
+
     service:
       enabled: true
       annotations:
@@ -39,14 +40,15 @@ akka:
         external-dns.alpha.kubernetes.io/hostname: '{{ .Values.writeApi.writeApiServer.frontend.hostname }}'
 {{- end }}
       labels: {}
-      type: NodePort
+      type: {{ .Values.writeApi.writeApiServer.frontend.service.type }}
       ports:
         - targetPort: http
           name: http
-          port: 8081
-          nodePort: 30031
+          port: {{ .Values.writeApi.writeApiServer.frontend.service.port }}
+          {{- if (and (eq .Values.writeApi.writeApiServer.frontend.service.type "NodePort") ( .Values.writeApi.writeApiServer.frontend.service.nodePort)) }}
+          nodePort: {{ .Values.writeApi.writeApiServer.frontend.service.nodePort }}
+          {{- end }}
           protocol: TCP
-    # Ingress for akka-http.
     {{- if .Values.writeApi.writeApiServer.frontend.ingress.enabled }}
     ingresses:
       - annotations:

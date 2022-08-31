@@ -55,7 +55,7 @@ writeApi:
           cpu: "0.5"
           memory: "1Gi"
       service:
-        type: ClusterIP
+        type: NodePort
         port: 8081
         nodePort: 30031
       replicaCount: 2

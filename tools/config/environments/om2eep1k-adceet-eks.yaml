@@ -45,7 +45,7 @@ writeApi:
       version: 0.2.8
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
+        tag: dev-8179260caf377e319a1de3566e3a307a03fbfe39-1661924897295
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -58,6 +58,10 @@ writeApi:
         type: ClusterIP
         port: 8081
         nodePort: 30031
+      ingress:
+        enabled: true
+        alb:
+          scheme: internet-facing
       replicaCount: 2
       autoscaling:
         enabled: false
@@ -66,8 +70,8 @@ writeApi:
       externalDNS:
         awsWeight: 100
       serviceAccount:
-        create: true
-        name: write-api-server-frontend-akka
+        create: false
+        name: adceet
       command:
         - /opt/docker/bin/adceet-write-api-server-scala
         - -Dconfig.resource=application-cluster-frontend.conf
@@ -88,10 +92,6 @@ writeApi:
           value: "8558"
         - name: "CONFIG_FORCE_akka_management_contract__point_fallback__ports"
           value: "8558"
-      ingress:
-        enabled: true
-        alb:
-          scheme: internet-facing
     backend:
       enabled: true
       version: 0.2.6
@@ -99,7 +99,7 @@ writeApi:
         enabled: false
       image:
         repository: 234188972441.dkr.ecr.us-east-1.amazonaws.com/om2eep1k-ecr-adceet-write-api-server-scala
-        tag: dev-d3df642aea3a1f9c4052d095807b0273d20b3097-1661487120398
+        tag: dev-8179260caf377e319a1de3566e3a307a03fbfe39-1661924897295
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -113,8 +113,8 @@ writeApi:
         enabled: false
       processTimeoutInSec: 10
       serviceAccount:
-        create: true
-        name: write-api-server-backend-akka
+        create: false
+        name: adceet
       command:
         - /opt/docker/bin/adceet-write-api-server-scala
         - -Dconfig.resource=application-cluster-backend.conf
