@@ -4,9 +4,13 @@ First, Give minikube driver(docker, virtualbox, ...) enough resources.
 
 ## Launch Minikube
 
+Run the following script to start minikube.
+
 ```shell
 tools/scripts $ minikube-start.sh
 ```
+
+The dirver, system resources, etc. are specified in `minikube-start.sh`, so modify them to suit your preferences (but be sure to reserve the resources required by Deployment).
 
 Change the Docker client connection to minikube.
 
