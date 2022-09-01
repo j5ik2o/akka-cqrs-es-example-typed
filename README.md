@@ -11,11 +11,11 @@ This is a example for CQRS+ES(Event Sourcing).
 
 ## TODO
 
-- [ ] Write API Server(on akka cluster) 
+- [x] Write API Server(on akka cluster) 
   - [x] Implementations
   - [x] Docker Compose Support
   - [x] Deployment to Local Kubernetes(k8s for mac/minikube)
-  - [ ] Deployment to AWS EKS (WIP)
+  - [x] Deployment to AWS EKS
 - [ ] Read Model Updater(without akka cluster) 
   - [ ] Implementations
   - [ ] Docker Compose Support
