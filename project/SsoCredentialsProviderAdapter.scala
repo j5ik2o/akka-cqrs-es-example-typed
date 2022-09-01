@@ -3,33 +3,28 @@ package adceet_sbtecr
 import java.time.format.DateTimeParseException
 import com.amazonaws.auth._
 import sbt.Logger
-import software.amazon.awssdk.auth.credentials.{
-  AwsBasicCredentials,
-  AwsCredentialsProvider,
-  AwsSessionCredentials => AwsSessionCredentialsV2
-}
+import software.amazon.awssdk.auth.credentials.{AwsBasicCredentials, AwsCredentialsProvider, AwsSessionCredentials => AwsSessionCredentialsV2}
 import software.amazon.awssdk.profiles.{Profile, ProfileFile}
 import software.amazon.awssdk.services.sso.auth.SsoProfileCredentialsProviderFactory
 
-class SsoCredentialsProviderAdapter(delegateCredentialsProvider: AwsCredentialsProvider)(implicit logger: Logger) extends com.amazonaws.auth.AWSCredentialsProvider {
+final class SsoCredentialsProviderAdapter(delegateCredentialsProvider: AwsCredentialsProvider)(implicit logger: Logger) extends com.amazonaws.auth.AWSCredentialsProvider {
 
   private val profile: Profile = {
     val profileName: String = sys.env.getOrElse("AWS_PROFILE_SSO", "default")
     logger.info(s"profileName = $profileName")
-    val result = ProfileFile
+    ProfileFile
       .defaultProfileFile().profile(profileName)
       .orElseGet(() => throw new IllegalStateException(s"AWS profile $profileName does not exists."))
-    logger.info(s"result = $result")
-    result
   }
 
   private val ssoCredentialsProviderAdapter: AwsCredentialsProvider = {
-    try
+    val ssoAccountId = profile.properties().containsKey("sso_account_id")
+    val ssoRoleName = profile.properties().containsKey("sso_role_name")
+    val ssoRegion = profile.properties().containsKey("sso_region")
+    if (ssoAccountId && ssoRoleName && ssoRegion)
       new SsoProfileCredentialsProviderFactory().create(profile)
-    catch {
-      case _: Exception =>
-        delegateCredentialsProvider
-    }
+    else
+      delegateCredentialsProvider
   }
 
   override def getCredentials: AWSCredentials = {
