@@ -5,6 +5,11 @@ resource "helm_release" "cluster-autoscaler" {
   chart = "https://github.com/kubernetes/autoscaler/releases/download/cluster-autoscaler-chart-9.19.1/cluster-autoscaler-9.19.1.tgz"
 
   set {
+    name = "awsRegion"
+    value = var.aws_region
+  }
+
+  set {
     name = "rbac.create"
     value = true
   }
