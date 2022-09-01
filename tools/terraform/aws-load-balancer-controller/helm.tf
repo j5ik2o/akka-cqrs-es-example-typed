@@ -24,6 +24,11 @@ resource "helm_release" "aws-load-balancer-controller" {
   }
 
   set {
+    name = "serviceAccount.create"
+    value = true
+  }
+
+  set {
     name  = "serviceAccount.name"
     value = local.k8s_service_account_name
   }
