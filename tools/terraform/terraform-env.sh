@@ -17,7 +17,7 @@ TF_STATE_NAME=$PREFIX-$APPLICATION_NAME-terraform.tfstate
 TF_LOCK_TABLE_NAME=$PREFIX-$APPLICATION_NAME-terraform-lock
 TF_VAR_FILE=$PREFIX-$APPLICATION_NAME-terraform.tfvars
 
-export TF_VAR_aws_profile=$AWS_PROFILE_TERRAFORM
+export TF_VAR_aws_profile=$AWS_PROFILE
 export TF_VAR_aws_region=$AWS_REGION
 export TF_VAR_prefix=$PREFIX
 export TF_VAR_name=$APPLICATION_NAME

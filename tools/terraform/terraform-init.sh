@@ -17,7 +17,7 @@ OUTPUT_ENV=1
 
 terraform init -backend=true \
   -backend-config="region=${AWS_REGION}" \
-  -backend-config="profile=${AWS_PROFILE_TERRAFORM}" \
+  -backend-config="profile=${AWS_PROFILE}" \
   -backend-config="bucket=${TF_BUCKET_NAME}" \
   -backend-config="key=${TF_STATE_NAME}" \
   -backend-config="dynamodb_table=${TF_LOCK_TABLE_NAME}" \
