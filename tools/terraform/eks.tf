@@ -81,7 +81,7 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    initial = {
+    node-group-main = {
       capacity_type = "ON_DEMAND"
       instance_types = [var.eks_node_instance_type]
 
