@@ -1,4 +1,4 @@
-# Debug on Minikube
+# Deploy to Minikube
 
 First, Give minikube driver(docker, virtualbox, ...) enough resources.
 
