@@ -35,8 +35,8 @@ This is a example for CQRS+ES(Event Sourcing).
 
 ## [Debug on Docker Compose](docs/DEBUG_ON_DOCKER_COMPOSE.md)
 
-## [Debug on Local Kubernetes(on Docker for Mac)](docs/DEBUG_ON_LOCAL_K8S.md)
+## [Deploy to Local Kubernetes(on Docker for Mac)](docs/DEPLOY_TO_LOCAL_K8S.md)
 
-## [Debug on Minikube](docs/DEBUG_ON_MINIKUBE.md)
+## [Deploy to Minikube](docs/DEPLOY_TO_MINIKUBE.md)
 
 ## [Deploy to EKS](docs/DEPLOY_TO_EKS.md)
