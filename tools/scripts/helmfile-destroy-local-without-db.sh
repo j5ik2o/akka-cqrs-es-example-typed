@@ -19,6 +19,6 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile -e "${PREFIX}-${APPLICATION_NAME}-local" --selector subsystem=write-api destroy
+helmfile -e "${PREFIX}-${APPLICATION_NAME}-local-${MODE}" --selector subsystem=write-api destroy
 
 popd

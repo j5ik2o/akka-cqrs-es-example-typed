@@ -19,6 +19,6 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile --namespace adceet --selector role=backend -e "${PREFIX}-${APPLICATION_NAME}-eks" apply
+helmfile --namespace adceet --selector role=backend -e "${PREFIX}-${APPLICATION_NAME}-eks-${MODE}" apply
 
 popd

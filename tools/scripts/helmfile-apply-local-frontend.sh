@@ -19,6 +19,6 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile --namespace adceet --selector role=frontend --selector group=regcred -e "${PREFIX}-${APPLICATION_NAME}-local" apply
+helmfile --namespace adceet --selector role=frontend --selector group=regcred -e "${PREFIX}-${APPLICATION_NAME}-local-${MODE}" apply
 
 popd

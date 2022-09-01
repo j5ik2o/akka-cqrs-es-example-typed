@@ -19,6 +19,6 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile -e "${PREFIX}-${APPLICATION_NAME}-local" destroy
+helmfile -e "${PREFIX}-${APPLICATION_NAME}-local-${MODE}" destroy
 
 popd

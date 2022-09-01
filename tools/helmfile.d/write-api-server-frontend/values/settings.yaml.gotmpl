@@ -80,10 +80,9 @@ akka:
 affinity: {}
 
 command:
-  - /opt/docker/bin/adceet-write-api-server-'{{ env "MODE" }}'
+  - /opt/docker/bin/adceet-write-api-server-{{ env "MODE" | default "scala" }}
   - -Dconfig.resource=application-cluster-frontend.conf
   - -Dconfig.override_with_env_vars=true
-#  {{- toYaml .Values.writeApi.writeApiServer.frontend.command | nindent 2 }}
 
 env:
   {{- with .Values.writeApi.writeApiServer.frontend.env }}
@@ -92,6 +91,8 @@ env:
   {{- with .Values.writeApi.env }}
   {{- toYaml . | nindent 2 }}
   {{- end }}
+  - name: "AWS_REGION"
+    value: {{ env "AWS_REGION" | default "ap-northeast-1" }}
   - name: CONFIG_FORCE_kamon_environment_tags_version
     value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.frontend.image.tag}}'
   - name: CONFIG_FORCE_akka_remote_artery_canonical_hostname

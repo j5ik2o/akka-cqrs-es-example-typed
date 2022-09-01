@@ -47,10 +47,10 @@ akka:
 affinity: {}
 
 command:
-  - /opt/docker/bin/adceet-write-api-server-'{{ env "MODE" }}'
+  - /opt/docker/bin/adceet-write-api-server-{{ env "MODE" | default "scala" }}
   - -Dconfig.resource=application-cluster-backend.conf
   - -Dconfig.override_with_env_vars=true
-  # {{- toYaml .Values.writeApi.writeApiServer.backend.command | nindent 2 }}
+
 
 env:
   {{- with .Values.writeApi.writeApiServer.backend.env }}
@@ -59,6 +59,8 @@ env:
   {{- with .Values.writeApi.env }}
   {{- toYaml . | nindent 2 }}
   {{- end }}
+  - name: "AWS_REGION"
+    value: {{ env "AWS_REGION" | default "ap-northeast-1" }}
   {{- if .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
   - name: "AKKA_CLUSTER_ROLE_OPTION"
     value: "frontend"
