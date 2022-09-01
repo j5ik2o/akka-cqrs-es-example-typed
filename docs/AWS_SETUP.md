@@ -60,7 +60,7 @@ If you want to create a personal environment, change PREFIX.
 ### If AWS SSO is not used
 
 ```shell
-export AWS_PROFILE_TERRAFORM=adceet
+export AWS_PROFILE=adceet
 export AWS_PROFILE_SSO=adceet
 export AWS_REGION=us-east-1
 export AWS_ACCOUNT_ID=1234567890
@@ -72,7 +72,7 @@ export MODE=scala
 
 if [[ "$OUTPUT_ENV" == 1 ]]; then
 echo "--- Using Environments -----------------"
-echo "AWS_PROFILE_TERRAFORM  = $AWS_PROFILE_TERRAFORM"
+echo "AWS_PROFILE  = $AWS_PROFILE"
 echo "AWS_PROFILE_SSO        = $AWS_PROFILE_SSO"
 echo "AWS_REGION             = $AWS_REGION"
 echo "PREFIX                 = $PREFIX"
@@ -85,7 +85,7 @@ fi
 ### If AWS SSO is used
 
 ```shell
-export AWS_PROFILE_TERRAFORM=adceet-terraform
+export AWS_PROFILE=adceet-terraform
 export AWS_PROFILE_SSO=adceet-sso
 ```
 
