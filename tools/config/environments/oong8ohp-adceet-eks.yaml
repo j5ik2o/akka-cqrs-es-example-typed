@@ -32,7 +32,7 @@ writeApi:
     - name: "CONFIG_FORCE_akka_remote_artery_canonical_port"
       value: "25520"
     - name: "CONFIG_FORCE_kamon_environment_tags_env"
-      value: "om2eep1k-addceet"
+      value: "oong8ohp-addceet"
     - name: "CONFIG_FORCE_kamon_datadog_agent_hostname"
       value: "datadog-agent.kube-system"
   # Write API Server
@@ -62,11 +62,12 @@ writeApi:
         enabled: true
         alb:
           scheme: internet-facing
+          certificateArn: arn:aws:acm:ap-northeast-1:234188972441:certificate/c77019be-ef36-4c53-a5c9-01dc54a3ed17
       replicaCount: 2
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
-      hostname: write-api.j5ik2o.dev
+      hostname: write-api.ap-northeast-1.sandbox-sagrada.cwtest.info
       externalDNS:
         awsWeight: 100
       serviceAccount:
@@ -137,9 +138,9 @@ writeApi:
           value: "8558"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_table__name"
-          value: "om2eep1k-Journal"
+          value: "oong8ohp-Journal"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_get__journal__rows__index__name"
-          value: "om2eep1k-GetJournalRowsIndex"
+          value: "oong8ohp-GetJournalRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_shard__count"
           value: "64"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__enable"
@@ -163,9 +164,9 @@ writeApi:
           value: "false"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
-          value: "om2eep1k-Snapshot"
+          value: "oong8ohp-Snapshot"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
-          value: "om2eep1k-GetSnapshotRowsIndex"
+          value: "oong8ohp-GetSnapshotRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_shard__count"
           value: "64"
 
