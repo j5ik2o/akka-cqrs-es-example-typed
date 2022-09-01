@@ -158,4 +158,6 @@ variable "eks_root_volume_type" {
   default = "gp2"
 }
 
+
+variable "zone_id" {}
 variable "zone_name" {}
