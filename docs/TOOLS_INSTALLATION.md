@@ -26,7 +26,7 @@ $ aws --version
 aws-cli/2.7.6 Python/3.9.11 Darwin/21.5.0 exe/x86_64 prompt/off
 ```
 
-## Terraform
+## terraform
 
 https://github.com/hashicorp/terraform
 
@@ -42,7 +42,7 @@ Your version of Terraform is out of date! The latest version
 is 1.2.2. You can update by downloading from https://www.terraform.io/downloads.html
 ```
 
-## Terraformer
+## terraformer
 
 https://github.com/GoogleCloudPlatform/terraformer
 
@@ -76,7 +76,7 @@ $ asdf install sbt 1.6.2
 $ asdf local sbt 1.6.2
 ```
 
-## EKS
+## Kubernetes
 
 ### kubectl
 
@@ -108,4 +108,12 @@ $ helm plugin install https://github.com/databus23/helm-diff
 $ asdf plugin-add helmfile https://github.com/feniix/asdf-helmfile.git
 $ asdf install helmfile 0.144.0
 $ asdf local helmfile 0.144.0
+```
+
+### minikube (optional)
+
+```shell
+$ asdf plugin-add minikube https://github.com/alvarobp/asdf-minikube.git
+$ asdf install minikube 1.26.1
+$ asdf local minikube 1.26.1
 ```
