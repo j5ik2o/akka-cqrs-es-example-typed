@@ -8,16 +8,14 @@ resource "helm_release" "external-dns" {
     create_before_destroy = true
   }
 
+  set {
+    name = "serviceAccount.create"
+    value = false
+  }
 
   set {
     name  = "serviceAccount.name"
     value = local.k8s_service_account_name
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${local.iam_role_name}"
-    type  = "string"
   }
 
   set {
@@ -31,8 +29,18 @@ resource "helm_release" "external-dns" {
   }
 
   set {
+    name = "aws.zoneType"
+    value = "public"
+  }
+
+  set {
+    name = "domainFilters[0]"
+    value = var.zone_name
+  }
+
+  set {
     name = "txtOwnerId"
-    value = aws_route53_zone.main.zone_id
+    value = var.zone_id
     type = "string"
   }
 
