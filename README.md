@@ -27,15 +27,6 @@ This is a example for CQRS+ES(Event Sourcing).
   - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
   - [ ] Deployment to AWS EKS
 
-## Tools
-
-- awscli
-- asdf
-- jq
-- java
-- sbt
-- terraform
-
 ## [The Tools Installation](docs/TOOLS_INSTALLATION.md)
 
 ## [AWS Setup](docs/AWS_SETUP.md)
