@@ -35,7 +35,7 @@ region = us-east-1
 
 ```
 # ...
-[adceet-terraform]
+[adceet]
 aws_access_key_id=xxxxx
 aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
@@ -72,12 +72,12 @@ export MODE=scala
 
 if [[ "$OUTPUT_ENV" == 1 ]]; then
 echo "--- Using Environments -----------------"
-echo "AWS_PROFILE  = $AWS_PROFILE"
-echo "AWS_PROFILE_SSO        = $AWS_PROFILE_SSO"
-echo "AWS_REGION             = $AWS_REGION"
-echo "PREFIX                 = $PREFIX"
-echo "APPLICATION_NAME       = $APPLICATION_NAME"
-echo "MODE                   = $MODE"
+echo "AWS_PROFILE      = $AWS_PROFILE"
+echo "AWS_PROFILE_SSO  = $AWS_PROFILE_SSO"
+echo "AWS_REGION       = $AWS_REGION"
+echo "PREFIX           = $PREFIX"
+echo "APPLICATION_NAME = $APPLICATION_NAME"
+echo "MODE             = $MODE"
 echo "----------------------------------------"
 fi
 ```
@@ -85,7 +85,7 @@ fi
 ### If AWS SSO is used
 
 ```shell
-export AWS_PROFILE=adceet-terraform
+export AWS_PROFILE=adceet
 export AWS_PROFILE_SSO=adceet-sso
 ```
 
@@ -118,7 +118,7 @@ datadog-api-key = "xxxx"
 At first time only, Create a lock table for terraform on DynamoDB.
 
 ```shell
-akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
+tools/terraform $ ./create-lock-table.sh
 ```
 
 ## create a s3 bucket for tfstate
@@ -126,25 +126,44 @@ akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-lock-table.sh
 At first time only, Create an s3 bucket to store tfstate.
 
 ```shell
-akka-ddd-cqrs-es-example-typed/tools/terraform $ ./create-tf-bucket.sh
+tools/terraform $ ./create-tf-bucket.sh
 ```
 
 ## terraform init
 
 ```shell
-akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-init.sh
+tools/terraform $ ./terraform-init.sh
 ```
 
 ## terraform plan
 
 ```shell
-akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-plan.sh
+tools/terraform $ ./terraform-plan.sh
 ```
 
 ## terraform apply
 
 ```shell
-akka-ddd-cqrs-es-example-typed/tools/terraform $ ./terraform-apply.sh
+tools/terraform $ ./terraform-apply.sh
+```
+
+## update kubeconfig
+
+Execute the following command to generate kubeconfig(`~/.kube/config`).
+
+```shell
+tools/terraform $ ./update-kubeconfig.sh
+```
+
+FYI: https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html
+
+Verify that the context has switched.
+
+```shell
+tools/terraform $ kubectl config get-contexts
+CURRENT   NAME                                                             CLUSTER                                                          AUTHINFO                                                         NAMESPACE
+*         arn:aws:eks:us-east-1:XXXXXXXXXXXX:cluster/oce3noy9-eks-adceet   arn:aws:eks:us-east-1:XXXXXXXXXXXX:cluster/oce3noy9-eks-adceet   arn:aws:eks:us-east-1:XXXXXXXXXXXX:cluster/oce3noy9-eks-adceet
+          docker-desktop                                                   docker-desktop                                                   docker-desktop
 ```
 
 # Confirm kubernetes-dashboard
