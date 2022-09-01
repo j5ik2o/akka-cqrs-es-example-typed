@@ -1,4 +1,4 @@
-# Debug on Local Kubernetes(on Docker for Mac)
+# Deploy to Kubernetes(on Docker for Mac)
 
 First, enable the Kubernetes option in Docker for Mac(Enable Kubernetes).
 Also check the resource settings for Docker for Mac. You must give it sufficient resources.
