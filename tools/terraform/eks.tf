@@ -1,6 +1,6 @@
 module "eks" {
   source  = "registry.terraform.io/terraform-aws-modules/eks/aws"
-  version = "18.23.0"
+  version = "18.29.0"
 
   create = var.eks_enabled
 
