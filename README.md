@@ -47,3 +47,5 @@ This is a example for CQRS+ES(Event Sourcing).
 ## [Debug on Local Kubernetes(on Docker for Mac)](docs/DEBUG_ON_LOCAL_K8S.md)
 
 ## [Debug on Minikube](docs/DEBUG_ON_MINIKUBE.md)
+
+## [Deploy to EKS](docs/DEPLOY_TO_EKS.md)
