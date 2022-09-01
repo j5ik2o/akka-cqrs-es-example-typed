@@ -47,7 +47,10 @@ akka:
 affinity: {}
 
 command:
-  {{- toYaml .Values.writeApi.writeApiServer.backend.command | nindent 2 }}
+  - /opt/docker/bin/adceet-write-api-server-'{{ env "MODE" }}'
+  - -Dconfig.resource=application-cluster-backend.conf
+  - -Dconfig.override_with_env_vars=true
+  # {{- toYaml .Values.writeApi.writeApiServer.backend.command | nindent 2 }}
 
 env:
   {{- with .Values.writeApi.writeApiServer.backend.env }}

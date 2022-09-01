@@ -14,7 +14,7 @@ regcred:
   password:
 ecrCred:
   enabled: false
-  server: 234188972441.dkr.ecr.us-east-1.amazonaws.com
+  server:
   password:
 writeApi:
   akkaClusterName: write-api
@@ -66,7 +66,7 @@ writeApi:
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
-      hostname: j5ik2o-write-api.us-east-1.sandbox-sagrada.cwtest.info
+      hostname: write-api.j5ik2o.dev
       externalDNS:
         awsWeight: 100
       serviceAccount:

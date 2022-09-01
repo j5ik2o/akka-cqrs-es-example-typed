@@ -1,5 +1,5 @@
 localstack:
-  enabled: true
+  enabled: false
   resources:
     limits:
       cpu: "1"
@@ -32,7 +32,7 @@ writeApi:
     - name: "CONFIG_FORCE_akka_remote_artery_canonical_port"
       value: "25520"
     - name: "CONFIG_FORCE_kamon_environment_tags_env"
-      value: "om2eep1k-addceet"
+      value: "oce3noy9-addceet"
     - name: "CONFIG_FORCE_kamon_datadog_agent_hostname"
       value: "datadog-agent.kube-system"
   # Write API Server
@@ -42,10 +42,10 @@ writeApi:
         enabled: false
     frontend:
       enabled: true
-      version: 0.0.1
+      version: 0.2.8
       image:
-        repository: adceet-write-api-server-scala
-        tag: 6559d37779bb97e926f3e2c5a64d17756a0b8ec8
+        repository: 389819709897.dkr.ecr.us-east-1.amazonaws.com/oce3noy9-ecr-adceet-write-api-server-scala
+        tag: dev-d8f7ce9aedd4c722cfd4adf31e7a701fa2cddb8e-1661996790824
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -55,18 +55,23 @@ writeApi:
           cpu: "0.5"
           memory: "1Gi"
       service:
-        type: NodePort
+        type: ClusterIP
         port: 8081
         nodePort: 30031
+      ingress:
+        enabled: true
+        alb:
+          scheme: internet-facing
+          certificateArn: arn:aws:acm:us-east-1:389819709897:certificate/4afed56d-5adf-4a71-98ff-d2f50bd0e2a6
       replicaCount: 2
       autoscaling:
         enabled: false
       processTimeoutInSec: 10
-      hostname: xxxx
+      hostname: write-api.j5ik2o.dev
       externalDNS:
         awsWeight: 100
       serviceAccount:
-        create: true
+        create: false
         name: adceet
 #      command:
 #        - /opt/docker/bin/adceet-write-api-server-scala
@@ -75,6 +80,9 @@ writeApi:
       env:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
+
+        #        - name: "CONFIG_FORCE_akka_cluster_role_frontend_min__nr__of__members"
+        #          value: "1"
 
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
@@ -85,18 +93,14 @@ writeApi:
           value: "8558"
         - name: "CONFIG_FORCE_akka_management_contract__point_fallback__ports"
           value: "8558"
-      ingress:
-        enabled: false
-        alb:
-          scheme: internet-facing
     backend:
       enabled: true
-      version: 0.0.1
+      version: 0.2.6
       withFrontend:
         enabled: false
       image:
-        repository: adceet-write-api-server-scala
-        tag: 6559d37779bb97e926f3e2c5a64d17756a0b8ec8
+        repository: 389819709897.dkr.ecr.us-east-1.amazonaws.com/oce3noy9-ecr-adceet-write-api-server-scala
+        tag: dev-d8f7ce9aedd4c722cfd4adf31e7a701fa2cddb8e-1661996790824
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -110,7 +114,7 @@ writeApi:
         enabled: false
       processTimeoutInSec: 10
       serviceAccount:
-        create: true
+        create: false
         name: adceet
 #      command:
 #        - /opt/docker/bin/adceet-write-api-server-scala
@@ -123,7 +127,6 @@ writeApi:
         - name: "CONFIG_FORCE_akka_log__config__on__start"
           value: "off"
 
-
         - name: "CONFIG_FORCE_akka_cluster_sharding_number__of__shards"
           value: "30"
 
@@ -135,9 +138,9 @@ writeApi:
           value: "8558"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_table__name"
-          value: "om2eep1k-Journal"
+          value: "oce3noy9-Journal"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_get__journal__rows__index__name"
-          value: "om2eep1k-GetJournalRowsIndex"
+          value: "oce3noy9-GetJournalRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_shard__count"
           value: "64"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_queue__enable"
@@ -156,27 +159,17 @@ writeApi:
           value: "512"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_replay__batch__size"
           value: "512"
+
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_consistent__read"
           value: "false"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_access__key__id"
-          value: "x"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_secret__access__key"
-          value: "x"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_endpoint"
-          value: "http://localstack:4566"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
-          value: "om2eep1k-Snapshot"
+          value: "oce3noy9-Snapshot"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_get__snapshot__rows__index__name"
-          value: "om2eep1k-GetSnapshotRowsIndex"
+          value: "oce3noy9-GetSnapshotRowsIndex"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_shard__count"
           value: "64"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_access__key__id"
-          value: "x"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_secret__access__key"
-          value: "x"
-        - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_endpoint"
-          value: "http://localstack:4566"
+
         - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__min"
           value: "4"
         - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__max"
