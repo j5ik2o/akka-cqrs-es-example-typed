@@ -69,10 +69,6 @@ variable "datadog-api-key" {
   type = string
 }
 
-variable "alb_enabled" {
-  default = false
-}
-
 variable "eks_enabled" {
   default = false
 }
