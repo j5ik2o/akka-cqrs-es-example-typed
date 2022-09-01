@@ -17,7 +17,7 @@ OUTPUT_ENV=0
 
 source ../../env.sh
 
-export AWS_DEFAULT_PROFILE=$AWS_PROFILE_SSO
+export AWS_DEFAULT_PROFILE=$AWS_PROFILE
 
 pushd ../../
 
