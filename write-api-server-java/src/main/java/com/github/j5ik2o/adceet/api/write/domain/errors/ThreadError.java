@@ -1,4 +1,4 @@
-package com.github.j5ik2o.adceet.api.wirte;/*
+/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +13,9 @@ package com.github.j5ik2o.adceet.api.wirte;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.j5ik2o.adceet.api.write.domain.errors;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Main {
-    public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
-    }
+public sealed interface ThreadError permits ExistsMemberError, NotMemberError {
+     String message();
 }
+

@@ -158,7 +158,7 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
       kotlinx.coroutinesCoreJvm,
       xenomachina.kotlinArgParser,
       arrowKt.arrowCore,
-      vavr.varKotlin,
+      vavr.vavrKotlin,
       mockk.mockk            % Test,
       kotlinx.coroutinesTest % Test
     ),
@@ -203,6 +203,7 @@ lazy val `write-api-server-java` = (project in file("write-api-server-java"))
     ),
     // for Java
     libraryDependencies ++= Seq(
+      vavr.vavr,
       "org.springframework.boot" % "spring-boot-starter" % "2.7.3",
       "org.springframework.boot" % "spring-boot-starter-test" % "2.7.3" % Test
     ),

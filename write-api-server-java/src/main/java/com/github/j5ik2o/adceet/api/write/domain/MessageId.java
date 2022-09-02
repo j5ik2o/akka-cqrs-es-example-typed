@@ -17,9 +17,9 @@ package com.github.j5ik2o.adceet.api.write.domain;
 
 import wvlet.airframe.ulid.ULID;
 
-public final class ThreadId {
+public final class MessageId {
 
-    public ThreadId(ULID value) {
+    public MessageId(ULID value) {
         this.value = value;
     }
 
@@ -28,9 +28,9 @@ public final class ThreadId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ThreadId threadId = (ThreadId) o;
+        MessageId messageId = (MessageId) o;
 
-        return value.equals(threadId.value);
+        return value.equals(messageId.value);
     }
 
     @Override
@@ -40,7 +40,7 @@ public final class ThreadId {
 
     @Override
     public String toString() {
-        return "ThreadId{" +
+        return "MessageId{" +
                 "value=" + value +
                 '}';
     }

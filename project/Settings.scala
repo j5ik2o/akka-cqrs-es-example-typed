@@ -78,7 +78,7 @@ object Settings {
   }
 
   val dockerCommonSettings: Seq[Def.Setting[_]] = Seq(
-    dockerBaseImage := "adoptopenjdk/openjdk11:jdk-11.0.12_7-slim",
+    dockerBaseImage := "eclipse-temurin:17.0.4.1_1-jdk-focal",
     packageDoc / publishArtifact := false,
     Docker / version := git.gitHeadCommit.value.get,
     // sbt docker:publishLocal でローカルにDockerイメージを作成するときも、ECRリポジトリ上のパッケージ名と同じになるようにする
