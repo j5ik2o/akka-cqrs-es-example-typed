@@ -15,15 +15,14 @@
  */
 package com.github.j5ik2o.adceet.api.write.aggregate
 
-import akka.cluster.sharding.typed.{ShardingEnvelope, ShardingMessageExtractor}
-
+import akka.cluster.sharding.typed.{ ShardingEnvelope, ShardingMessageExtractor }
 
 trait AggregateIdValueExtractable {
   def aggregateIdValue: String
 }
 
 final class DefaultShardingMessageExtractor[CMD <: AggregateIdValueExtractable](shardNum: Int)
-  extends ShardingMessageExtractor[ShardingEnvelope[CMD], CMD] {
+    extends ShardingMessageExtractor[ShardingEnvelope[CMD], CMD] {
 
   override def entityId(message: ShardingEnvelope[CMD]): String = message.message.aggregateIdValue
 

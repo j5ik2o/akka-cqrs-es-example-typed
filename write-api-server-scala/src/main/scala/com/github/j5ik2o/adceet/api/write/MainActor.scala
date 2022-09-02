@@ -2,9 +2,9 @@ package com.github.j5ik2o.adceet.api.write
 
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
-import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
-import akka.cluster.typed.{Cluster, SelfUp}
+import akka.actor.typed.{ ActorRef, ActorSystem, Behavior, PostStop }
+import akka.actor.{ ClassicActorSystemProvider, CoordinatedShutdown }
+import akka.cluster.typed.{ Cluster, SelfUp }
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
@@ -84,7 +84,7 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
         val clusterBootstrap: ClusterBootstrap = childSession.build[ClusterBootstrap]
         clusterBootstrap.start()
 
-         childSession.build[ActorRef[SelfUp]]
+        childSession.build[ActorRef[SelfUp]]
 
         Behaviors
           .receiveMessage[Command] { case MeUp =>
@@ -92,8 +92,8 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
           }.receiveSignal { case (_, PostStop) =>
             if (args.environment == Environments.Production)
               Kamon.stop()
-        Behaviors.same
-       }
+            Behaviors.same
+          }
       }
     }
   }

@@ -1,6 +1,5 @@
 package com.github.j5ik2o.adceet.api.write.adaptor.http.controller
 
-import akka.actor.typed.ActorSystem
 import akka.http.javadsl.marshallers.jackson.Jackson
 import akka.http.javadsl.model.StatusCodes
 import akka.http.javadsl.server.AllDirectives

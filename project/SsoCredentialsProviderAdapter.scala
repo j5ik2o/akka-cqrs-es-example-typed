@@ -3,11 +3,16 @@ package adceet_sbtecr
 import java.time.format.DateTimeParseException
 import com.amazonaws.auth._
 import sbt.Logger
-import software.amazon.awssdk.auth.credentials.{AwsBasicCredentials, AwsCredentialsProvider, AwsSessionCredentials => AwsSessionCredentialsV2}
-import software.amazon.awssdk.profiles.{Profile, ProfileFile}
+import software.amazon.awssdk.auth.credentials.{
+  AwsBasicCredentials,
+  AwsCredentialsProvider,
+  AwsSessionCredentials => AwsSessionCredentialsV2
+}
+import software.amazon.awssdk.profiles.{ Profile, ProfileFile }
 import software.amazon.awssdk.services.sso.auth.SsoProfileCredentialsProviderFactory
 
-final class SsoCredentialsProviderAdapter(delegateCredentialsProvider: AwsCredentialsProvider)(implicit logger: Logger) extends com.amazonaws.auth.AWSCredentialsProvider {
+final class SsoCredentialsProviderAdapter(delegateCredentialsProvider: AwsCredentialsProvider)(implicit logger: Logger)
+    extends com.amazonaws.auth.AWSCredentialsProvider {
 
   private val profile: Profile = {
     val profileName: String = sys.env.getOrElse("AWS_PROFILE_SSO", "default")
@@ -19,8 +24,8 @@ final class SsoCredentialsProviderAdapter(delegateCredentialsProvider: AwsCreden
 
   private val ssoCredentialsProviderAdapter: AwsCredentialsProvider = {
     val ssoAccountId = profile.properties().containsKey("sso_account_id")
-    val ssoRoleName = profile.properties().containsKey("sso_role_name")
-    val ssoRegion = profile.properties().containsKey("sso_region")
+    val ssoRoleName  = profile.properties().containsKey("sso_role_name")
+    val ssoRegion    = profile.properties().containsKey("sso_region")
     if (ssoAccountId && ssoRoleName && ssoRegion)
       new SsoProfileCredentialsProviderFactory().create(profile)
     else
