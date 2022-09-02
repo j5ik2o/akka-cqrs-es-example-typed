@@ -50,6 +50,9 @@ command:
   - /opt/docker/bin/adceet-write-api-server-{{ env "MODE" | default "scala" }}
   - -Dconfig.resource=application-cluster-backend.conf
   - -Dconfig.override_with_env_vars=true
+  - --
+  - -e
+  - Development
 
 
 env:
@@ -60,7 +63,7 @@ env:
   {{- toYaml . | nindent 2 }}
   {{- end }}
   - name: "AWS_REGION"
-    value: {{ env "AWS_REGION" | default "ap-northeast-1" }}
+    value: {{ requiredEnv "AWS_REGION" }}
   {{- if .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
   - name: "AKKA_CLUSTER_ROLE_OPTION"
     value: "frontend"

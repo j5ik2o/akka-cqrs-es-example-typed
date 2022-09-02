@@ -43,7 +43,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: c7bf17217098486a1e684d616d7ee78cc6a4bb1f
+        tag: b44d42af8c6a7be92e5c31d8643ae3a0ad039be7
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -90,7 +90,7 @@ writeApi:
         enabled: false
       image:
         repository: adceet-write-api-server-scala
-        tag: c7bf17217098486a1e684d616d7ee78cc6a4bb1f
+        tag: b44d42af8c6a7be92e5c31d8643ae3a0ad039be7
         pullPolicy: IfNotPresent
       resources:
         limits:
