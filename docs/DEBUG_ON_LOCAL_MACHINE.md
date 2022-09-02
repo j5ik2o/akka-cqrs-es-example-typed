@@ -1,4 +1,4 @@
-# Debug on local machine
+# Debug on Local Machine
 
 ## Run the Docker Compose for DynamoDB Local & DynamoDB Admin
 
