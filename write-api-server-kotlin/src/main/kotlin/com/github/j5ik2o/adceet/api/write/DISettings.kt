@@ -35,13 +35,14 @@ import org.kodein.di.scoped
 import org.kodein.di.singleton
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import wvlet.log.io.StopWatch
 
 object DISettings {
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
   data class CtxWithArgs(val ctx: ActorContext<MainActor.Companion.Command>, val roleNames: List<RoleName>)
 
-  fun toDI(args: ExampleArgs): DI = DI {
+  fun toDI(args: ExampleArgs, stopWatch: StopWatch): DI = DI {
     val ctxScope = WeakContextScope.of<CtxWithArgs>()
     bindSingleton<Config> {
       val config = ConfigFactory.load()
@@ -54,7 +55,7 @@ object DISettings {
           JacksonObjectMapperProviderSetup(KotlinModuleJacksonObjectMapperFactory())
         )
         ActorSystem.create(
-          MainActor.create(di, args), "kamon-example-default",
+          MainActor.create(di, args, stopWatch), "kamon-example-default",
           setup
         )
       }
