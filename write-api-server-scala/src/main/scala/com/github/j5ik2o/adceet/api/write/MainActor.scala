@@ -2,14 +2,15 @@ package com.github.j5ik2o.adceet.api.write
 
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorSystem, Behavior }
-import akka.actor.{ ClassicActorSystemProvider, CoordinatedShutdown }
-import akka.cluster.typed.Cluster
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, PostStop}
+import akka.actor.{ClassicActorSystemProvider, CoordinatedShutdown}
+import akka.cluster.typed.{Cluster, SelfUp}
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
 import com.github.j5ik2o.adceet.api.write.http.Routes
 import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
+import kamon.Kamon
 import wvlet.log.io.StopWatch
 // import kamon.Kamon
 import org.slf4j.{ Logger, LoggerFactory }
@@ -33,8 +34,9 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
 
   def create(args: Args): Behavior[Command] = {
     Behaviors.setup { ctx =>
-//      if (args.environment == Environments.Production)
-//        Kamon.init()
+      if (args.environment == Environments.Production)
+        Kamon.init()
+
       logger.info(s"[${stopWatch.reportElapsedTime}] create")
       val cluster    = Cluster(ctx.system)
       val selfMember = cluster.selfMember
@@ -82,16 +84,16 @@ class MainActor(val session: Session, stopWatch: StopWatch) extends DISupport {
         val clusterBootstrap: ClusterBootstrap = childSession.build[ClusterBootstrap]
         clusterBootstrap.start()
 
-        // childSession.build[ActorRef[SelfUp]]
+         childSession.build[ActorRef[SelfUp]]
 
-//        Behaviors
-//          .receiveMessage[Command] { case MeUp =>
-//            Behaviors.same
-//          }.receiveSignal { case (_, PostStop) =>
-////            if (args.environment == Environments.Production)
-////              Kamon.stop()
+        Behaviors
+          .receiveMessage[Command] { case MeUp =>
+            Behaviors.same
+          }.receiveSignal { case (_, PostStop) =>
+            if (args.environment == Environments.Production)
+              Kamon.stop()
         Behaviors.same
-      // }
+       }
       }
     }
   }
