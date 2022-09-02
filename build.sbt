@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
     Settings.baseSettings,
     Settings.scalaSettings,
     name := "adceet-root"
-  ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`)
+  ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
@@ -168,6 +168,49 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
     Global / cancelable := false
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
 
+lazy val `write-api-server-java` = (project in file("write-api-server-java"))
+  .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .configs(MultiJvm)
+  .settings(
+    Settings.baseSettings,
+    Settings.javaSettings,
+    Settings.scalaSettings,
+    Settings.multiJvmSettings,
+    Settings.dockerCommonSettings,
+    Settings.ecrSettings
+  )
+  .settings(
+    name := "adceet-write-api-server-java",
+    Compile / run / mainClass := Some("com.github.j5ik2o.adceet.api.write.Main"),
+    dockerEntrypoint := Seq(s"/opt/docker/bin/${name.value}"),
+    dockerExposedPorts := Seq(8081, 8558, 25520),
+    javaAgents += "io.kamon" % "kanela-agent" % "1.0.14",
+    run / javaOptions ++= Seq(
+      s"-Dcom.sun.management.jmxremote.port=${sys.env.getOrElse("JMX_PORT", "8999")}",
+      "-Dcom.sun.management.jmxremote.authenticate=false",
+      "-Dcom.sun.management.jmxremote.ssl=false",
+      "-Dcom.sun.management.jmxremote.local.only=false",
+      "-Dcom.sun.management.jmxremote",
+      "-Xms1024m",
+      "-Xmx1024m",
+      "-Djava.library.path=./target/native"
+    ),
+    Universal / javaOptions ++= Seq(
+      "-Dcom.sun.management.jmxremote",
+      "-Dcom.sun.management.jmxremote.local.only=true",
+      "-Dcom.sun.management.jmxremote.authenticate=false",
+      "-Dorg.aspectj.tracing.factory=default"
+    ),
+    // for Java
+    libraryDependencies ++= Seq(
+      "org.springframework.boot" % "spring-boot-starter" % "2.7.3",
+      "org.springframework.boot" % "spring-boot-starter-test" % "2.7.3" % Test
+    ),
+    Test / publishArtifact := false,
+    run / fork := false,
+    Test / parallelExecution := false,
+    Global / cancelable := false
+  ).dependsOn(`write-api-base` % "compile->compile;test->test")
 // --- Custom commands
 addCommandAlias(
   "lint",
