@@ -70,7 +70,7 @@ OpenJDK Runtime Environment Temurin-17.0.4.1+1 (build 17.0.4.1+1)
 OpenJDK 64-Bit Server VM Temurin-17.0.4.1+1 (build 17.0.4.1+1, mixed mode)
 ```
 
-CAUTION: If "export JAVA_OPTS='--enabled-preview'" is not set, compilation will fail.
+**CAUTION: If "export JAVA_OPTS='--enabled-preview'" is not set, compilation will fail.**
 
 ## sbt
 
