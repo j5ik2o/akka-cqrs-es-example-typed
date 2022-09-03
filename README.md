@@ -15,7 +15,7 @@ This is a example for CQRS+ES(Event Sourcing).
   - Write API Server is DONE
   - Read Model Updater is TODO
   - Read API Server is TODO
-- Kotlin 1.6.12
+- Kotlin 1.6.21
   - Write API Server is DONE
   - Read Model Updater is TODO
   - Read API Server is TODO
