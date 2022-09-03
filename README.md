@@ -32,14 +32,18 @@ Note: Akka is implemented in Scala, so even if you use Kotlin or Java, you may n
 
 ## [The Tools Installation](docs/TOOLS_INSTALLATION.md)
 
-## [AWS Setup](docs/AWS_SETUP.md)
+## Debug on Local
 
-## [Debug on Local Machine](docs/DEBUG_ON_LOCAL_MACHINE.md)
+### [Debug on Local Machine](docs/DEBUG_ON_LOCAL_MACHINE.md)
 
-## [Debug on Docker Compose](docs/DEBUG_ON_DOCKER_COMPOSE.md)
+### [Debug on Docker Compose](docs/DEBUG_ON_DOCKER_COMPOSE.md)
 
-## [Deploy to Local Kubernetes(on Docker for Mac)](docs/DEPLOY_TO_LOCAL_K8S.md)
+### [Deploy to Local Kubernetes(on Docker for Mac)](docs/DEPLOY_TO_LOCAL_K8S.md)
 
-## [Deploy to Minikube](docs/DEPLOY_TO_MINIKUBE.md)
+### [Deploy to Minikube](docs/DEPLOY_TO_MINIKUBE.md)
 
-## [Deploy to EKS](docs/DEPLOY_TO_EKS.md)
+## AWS Deployment
+
+### [AWS Setup](docs/AWS_SETUP.md)
+
+### [Deploy to EKS](docs/DEPLOY_TO_EKS.md)
