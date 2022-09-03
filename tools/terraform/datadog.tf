@@ -1,4 +1,5 @@
 resource "helm_release" "datadog" {
+  count = var.datadog_enabled ? 1 : 0
   name  = "datadog"
   namespace = "kube-system"
   chart = "https://github.com/DataDog/helm-charts/releases/download/datadog-2.35.3/datadog-2.35.3.tgz"
