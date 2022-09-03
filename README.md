@@ -30,9 +30,50 @@ Note: Akka is implemented in Scala, so even if you use Kotlin or Java, you may n
 
 - Modified JDK version from temurin-11 to temurin-17, **need to set -enable-preview in the environment variable JAVA_OPTS(`export JAVA_OPTS='--enable-prewview'`)**.
 
+
+## Architecture
+
+### Main Framework/Library
+
+- Akka
+  - "com.typesafe.akka" %% "akka-actor-typed"
+  - "com.typesafe.akka" %% "akka-cluster-typed" 
+  - "com.typesafe.akka" %% "akka-cluster-sharding-typed"
+  - "com.typesafe.akka" %% "akka-persistence-typed" 
+  - "com.typesafe.akka" %% "akka-http"
+  - "com.lightbend.akka.management" %% "akka-management"
+  - "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap"
+  - "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api"
+  - "com.github.j5ik2o" %% "akka-persistence-dynamodb-journal-v2"
+  - "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v2"
+- ULID
+  - "org.wvlet.airframe" %% "airframe-ulid"
+
+#### Scala
+
+- DI Container
+  - "org.wvlet.airframe" %% "airframe"
+
+#### Kotiln
+
+- DI Container
+  - "org.kodein.di" % "kodein-di-jvm"
+- FP
+  - "io.arrow-kt" % "arrow-core"
+- Collection Library
+  - "io.vavr" % "vavr-kotlin"
+
+#### Java
+
+- DI Container
+  - "org.springframework.boot" % "spring-boot-starter"
+- Collection Library
+  - "io.vavr" % "vavr"
+
+
 ## [The Tools Installation](docs/TOOLS_INSTALLATION.md)
 
-## Debug on Local
+## Debug on Local Environment
 
 ### [Debug on Local Machine](docs/DEBUG_ON_LOCAL_MACHINE.md)
 
