@@ -52,7 +52,7 @@ object Settings {
       "-feature",
       "-unchecked",
       "-Xlog-reflective-calls",
-      "-Xlint",
+      "-Xlint"
     ),
     ThisBuild / semanticdbEnabled := true,
     ThisBuild / semanticdbVersion := scalafixSemanticdb.revision,
@@ -68,7 +68,7 @@ object Settings {
       Resolver.jcenterRepo,
       Resolver.sonatypeRepo("snapshots"),
       Resolver.sonatypeRepo("releases")
-    ),
+    )
   )
 
   private object EcrRepositorySetting {
