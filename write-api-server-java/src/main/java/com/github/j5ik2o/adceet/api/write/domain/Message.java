@@ -65,4 +65,20 @@ public class Message {
   private final ThreadId threadId;
   private final AccountId senderId;
   private final String body;
+
+  public MessageId getId() {
+    return id;
+  }
+
+  public ThreadId getThreadId() {
+    return threadId;
+  }
+
+  public AccountId getSenderId() {
+    return senderId;
+  }
+
+  public String getBody() {
+    return body;
+  }
 }

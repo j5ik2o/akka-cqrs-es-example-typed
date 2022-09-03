@@ -23,6 +23,10 @@ public final class ThreadId {
     this.value = value;
   }
 
+  public ThreadId() {
+    this(ULID.newULID());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

@@ -14,11 +14,12 @@ package com.github.j5ik2o.adceet.api.write.domain.events;/*
  * limitations under the License.
  */
 
+import com.github.j5ik2o.adceet.api.write.CborSerializable;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 
 import java.util.UUID;
 
-public sealed interface ThreadEvent permits MemberAdd, MessageAdd, ThreadCreated {
+public sealed interface ThreadEvent extends CborSerializable permits MemberAdd, MessageAdd, ThreadCreated {
     UUID id();
     ThreadId threadId();
 }

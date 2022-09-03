@@ -30,12 +30,13 @@ import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 import com.github.j5ik2o.adceet.api.write.domain.events.ThreadEvent;
 import wvlet.airframe.ulid.ULID;
 
-public class ThreadPersist {
-  record PersistCompleted(ThreadState state) {}
+public final class ThreadPersist {
+  public record PersistCompleted(ThreadState state) {}
 
-  record Persist(ThreadEvent threadEvent, ActorRef<PersistCompleted> replyTo) {}
+  public record Persist(ThreadEvent threadEvent, ActorRef<PersistCompleted> replyTo) {}
 
-  static class PersistentActor extends EventSourcedBehavior<Persist, ThreadEvent, ThreadState> {
+  static final class PersistentActor
+      extends EventSourcedBehavior<Persist, ThreadEvent, ThreadState> {
     private final ActorContext<Persist> ctx;
     private final ThreadId id;
     private final ActorRef<ThreadAggregateProtocol.CommandRequest> parentRef;

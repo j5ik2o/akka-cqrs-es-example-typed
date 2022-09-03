@@ -23,6 +23,10 @@ public final class AccountId {
     this.value = value;
   }
 
+  public AccountId() {
+    this(ULID.newULID());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
