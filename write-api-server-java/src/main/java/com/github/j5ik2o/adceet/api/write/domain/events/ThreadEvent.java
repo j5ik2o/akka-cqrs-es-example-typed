@@ -1,4 +1,4 @@
-package com.github.j5ik2o.adceet.api.write.domain.events;/*
+/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,14 @@ package com.github.j5ik2o.adceet.api.write.domain.events;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.j5ik2o.adceet.api.write.domain.events;
 
+import com.github.j5ik2o.adceet.api.write.CborSerializable;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 
 import java.util.UUID;
 
-public sealed interface ThreadEvent permits MemberAdd, MessageAdd, ThreadCreated {
+public sealed interface ThreadEvent extends CborSerializable permits MemberAdd, MessageAdd, ThreadCreated {
     UUID id();
     ThreadId threadId();
 }

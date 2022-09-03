@@ -23,6 +23,10 @@ public final class MessageId {
     this.value = value;
   }
 
+  public MessageId() {
+    this(ULID.newULID());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
