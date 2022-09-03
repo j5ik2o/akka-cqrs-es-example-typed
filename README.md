@@ -24,6 +24,8 @@ This is a example for CQRS+ES(Event Sourcing).
   - Read Model Updater is TODO
   - Read API Server is TODO
 
+Note: Akka is implemented in Scala, so even if you use Kotlin or Java, you may need to implement Scala in some parts of your application.
+
 ## Updates
 
 - Modified JDK version from temurin-11 to temurin-17, **need to set -enable-preview in the environment variable JAVA_OPTS(`export JAVA_OPTS='--enable-prewview'`)**.
