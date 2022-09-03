@@ -1,7 +1,5 @@
 # CQRS+ES Example by using akka-cluster-typed
 
-Status: WIP
-
 This is a example for CQRS+ES(Event Sourcing).
 
 ## Concepts
@@ -9,23 +7,22 @@ This is a example for CQRS+ES(Event Sourcing).
 - DDD-based: The Write API Server has aggregate actors in the domain module.
 - CQRS+ES(Event Sourcing): The Write API Server supports the Command side, The Read API Server supports the Query side.
 
-## TODO
+## Status
 
-- [x] Write API Server(on akka cluster) 
-  - [x] Implementations
-  - [x] Docker Compose Support
-  - [x] Deployment to Local Kubernetes(k8s for mac/minikube)
-  - [x] Deployment to AWS EKS
-- [ ] Read Model Updater(without akka cluster) 
-  - [ ] Implementations
-  - [ ] Docker Compose Support
-  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
-  - [ ] Deployment to AWS EKS
-- [ ] Read API Server(without akka cluster)
-  - [ ] Implementations
-  - [ ] Docker Compose Support
-  - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
-  - [ ] Deployment to AWS EKS
+- WIP
+
+- Scala 2.13.8
+  - Write API Server is OK
+  - Read Model Updater is TODO
+  - Read API Server is TODO
+- Kotlin 1.6.12
+  - Write API Server is OK
+  - Read Model Updater is TODO
+  - Read API Server is TODO
+- Java 17
+  - Write API Server is WIP
+  - Read Model Updater is TODO
+  - Read API Server is TODO
 
 ## Updates
 
