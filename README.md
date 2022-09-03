@@ -12,11 +12,11 @@ This is a example for CQRS+ES(Event Sourcing).
 - WIP
 
 - Scala 2.13.8
-  - Write API Server is OK
+  - Write API Server is DONE
   - Read Model Updater is TODO
   - Read API Server is TODO
 - Kotlin 1.6.12
-  - Write API Server is OK
+  - Write API Server is DONE
   - Read Model Updater is TODO
   - Read API Server is TODO
 - Java 17
