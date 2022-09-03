@@ -59,6 +59,8 @@ If you want to create a personal environment, change PREFIX.
 
 ### If AWS SSO is not used
 
+Should use the same value for `AWS_PROFILE_SSO` as to `AWS_PROFILE`.
+
 ```shell
 export AWS_PROFILE=adceet
 export AWS_PROFILE_SSO=adceet
@@ -83,6 +85,8 @@ fi
 ```
 
 ### If AWS SSO is used
+
+Should specify a profile name for AWS SSO to `AWS_PROFILE_SSO`.
 
 ```shell
 export AWS_PROFILE=adceet
