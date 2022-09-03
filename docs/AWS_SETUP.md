@@ -4,7 +4,7 @@
 
 Edit `~/.aws/credentials` as follows.
 
-### If AWS SSO is not used
+### If AWS IAM Identity Center(AWS SSO) is not used
 
 Define just one entry.
 
@@ -16,7 +16,7 @@ aws_secret_access_key=xxxxx
 aws_session_token=xxxxx
 ```
 
-### If AWS SSO is used.
+### If AWS IAM Identity Center(AWS SSO) is used.
 
 Define one for terraform and one for SSO separately.
 
@@ -57,7 +57,7 @@ $ cp env.sh.default env.sh
 Modify PREFIX, APPLICATION_NAME as appropriate.
 If you want to create a personal environment, change PREFIX.
 
-### If AWS SSO is not used
+### If AWS IAM Identity Center(AWS SSO) is not used
 
 Should use the same value for `AWS_PROFILE_SSO` as to `AWS_PROFILE`.
 
@@ -84,7 +84,7 @@ echo "----------------------------------------"
 fi
 ```
 
-### If AWS SSO is used
+### If AWS IAM Identity Center(AWS SSO) is used
 
 Should specify a profile name for AWS SSO to `AWS_PROFILE_SSO`.
 
@@ -117,7 +117,7 @@ ecr_enabled = true
 datadog-api-key = "xxxx"
 ```
 
-## create a lock table
+## Create a lock table
 
 At first time only, Create a lock table for terraform on DynamoDB.
 
@@ -125,7 +125,7 @@ At first time only, Create a lock table for terraform on DynamoDB.
 tools/terraform $ ./create-lock-table.sh
 ```
 
-## create a s3 bucket for tfstate
+## Create a s3 bucket for tfstate
 
 At first time only, Create an s3 bucket to store tfstate.
 
@@ -151,7 +151,7 @@ tools/terraform $ ./terraform-plan.sh
 tools/terraform $ ./terraform-apply.sh
 ```
 
-## update kubeconfig
+## Update kubeconfig
 
 Execute the following command to generate kubeconfig(`~/.kube/config`).
 
