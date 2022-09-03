@@ -13,6 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.github.j5ik2o.adceet.api.write;
 
-public interface CborSerializable {}
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ApplicationRunnerImpl implements ApplicationRunner {
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    System.out.println("args = " + args.getSourceArgs().toString());
+  }
+}

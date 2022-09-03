@@ -1,4 +1,4 @@
-/*
+package com.github.j5ik2o.adceet.api.write.adaptor.aggregate.state;/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write;
 
-public interface CborSerializable {}
+import com.github.j5ik2o.adceet.api.write.domain.ThreadFactory;
+import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
+import com.github.j5ik2o.adceet.api.write.domain.events.ThreadCreated;
+
+public record Empty(ThreadId threadId) implements ThreadState{
+
+    public Just create(ThreadCreated event) {
+        return new Just(ThreadFactory.applyEvent(event));
+    }
+
+}

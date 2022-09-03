@@ -19,36 +19,33 @@ import wvlet.airframe.ulid.ULID;
 
 public final class MessageId {
 
-    public MessageId(ULID value) {
-        this.value = value;
-    }
+  public MessageId(ULID value) {
+    this.value = value;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
-        MessageId messageId = (MessageId) o;
+    MessageId messageId = (MessageId) o;
 
-        return value.equals(messageId.value);
-    }
+    return value.equals(messageId.value);
+  }
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
 
-    @Override
-    public String toString() {
-        return "MessageId{" +
-                "value=" + value +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "MessageId{" + "value=" + value + '}';
+  }
 
-    public String asString() {
-        return value.toString();
-    }
+  public String asString() {
+    return value.toString();
+  }
 
-    private final ULID value;
-
+  private final ULID value;
 }

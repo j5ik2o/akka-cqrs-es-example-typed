@@ -1,4 +1,4 @@
-/*
+package com.github.j5ik2o.adceet.api.write.adaptor.aggregate.state;/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write;
 
-public interface CborSerializable {}
+import com.github.j5ik2o.adceet.api.write.domain.events.ThreadEvent;
+
+public record Just(com.github.j5ik2o.adceet.api.write.domain.Thread thread) implements ThreadState {
+    public Just update(ThreadEvent threadEvent) {
+        return new Just(thread.updateEvent(threadEvent));
+    }
+}

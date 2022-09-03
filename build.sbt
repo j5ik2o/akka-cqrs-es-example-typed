@@ -204,7 +204,7 @@ lazy val `write-api-server-java` = (project in file("write-api-server-java"))
     // for Java
     libraryDependencies ++= Seq(
       vavr.vavr,
-      "org.springframework.boot" % "spring-boot-starter" % "2.7.3",
+      "org.springframework.boot" % "spring-boot-starter"      % "2.7.3",
       "org.springframework.boot" % "spring-boot-starter-test" % "2.7.3" % Test
     ),
     Test / publishArtifact := false,
@@ -215,6 +215,9 @@ lazy val `write-api-server-java` = (project in file("write-api-server-java"))
 // --- Custom commands
 addCommandAlias(
   "lint",
-  ";write-api-server-kotlin/spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalafixAll --check"
+  ";write-api-server-java/javafmtCheckAll;write-api-server-kotlin/spotlessCheck;scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck;scalafixAll --check"
 )
-addCommandAlias("fmt", ";write-api-server-kotlin/spotlessApply;scalafmtAll;scalafmtSbt;scalafix RemoveUnused")
+addCommandAlias(
+  "fmt",
+  ";write-api-server-java/javafmtAll;write-api-server-kotlin/spotlessApply;scalafmtAll;scalafmtSbt;scalafix RemoveUnused"
+)

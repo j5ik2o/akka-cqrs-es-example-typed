@@ -18,7 +18,7 @@ object Settings {
 
   val kotlinSettings: Seq[Def.Setting[_]] = Seq(
     kotlinVersion := "1.6.21",
-    kotlincOptions ++= Seq("-jvm-target", "11"),
+    kotlincOptions ++= Seq("-jvm-target", "17"),
     kotlinLib("stdlib-jdk8"),
     kotlinLib("reflect"),
     spotlessKotlin := KotlinConfig(
@@ -33,14 +33,18 @@ object Settings {
       "UTF-8",
       "-parameters",
       "-Xlint:unchecked",
-      "-Xlint:deprecation"
+      "-Xlint:deprecation",
+      "-Xlint:preview",
+      "--enable-preview",
+      "--release",
+      "17"
     )
   )
 
   val scalaSettings: Seq[Def.Setting[_]] = Seq(
     scalaVersion := "2.13.8",
     Compile / scalacOptions ++= Seq(
-      "-target:jvm-11",
+      "-target:jvm-17",
       "-encoding",
       "UTF-8",
       "-language:_",
@@ -48,7 +52,7 @@ object Settings {
       "-feature",
       "-unchecked",
       "-Xlog-reflective-calls",
-      "-Xlint"
+      "-Xlint",
     ),
     ThisBuild / semanticdbEnabled := true,
     ThisBuild / semanticdbVersion := scalafixSemanticdb.revision,
@@ -64,7 +68,7 @@ object Settings {
       Resolver.jcenterRepo,
       Resolver.sonatypeRepo("snapshots"),
       Resolver.sonatypeRepo("releases")
-    )
+    ),
   )
 
   private object EcrRepositorySetting {

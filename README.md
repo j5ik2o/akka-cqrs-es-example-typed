@@ -27,6 +27,10 @@ This is a example for CQRS+ES(Event Sourcing).
   - [ ] Deployment to Local Kubernetes(k8s for mac/minikube)
   - [ ] Deployment to AWS EKS
 
+## Updates
+
+- Modified JDK version from temurin-11 to temurin-17, need to set -enable-preview in the environment variable JAVA_OPTS(`export JAVA_OPTS='--enable-prewview'`).
+
 ## [The Tools Installation](docs/TOOLS_INSTALLATION.md)
 
 ## [AWS Setup](docs/AWS_SETUP.md)
