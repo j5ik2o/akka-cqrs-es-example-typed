@@ -60,20 +60,26 @@ adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer impor
 ```sh
 $ asdf plugin add java
 $ asdf list all java
-$ asdf instal java temurin-11.0.14+101
-$ asdf local java temurin-11.0.14+101
+$ asdf instal java temurin-17.0.4+101
+$ asdf local java temurin-17.0.4+101
+# Set the appropriate settings for your environment.
+$ echo "export JAVA_OPTS='--enable-preiview'" >> ~/.bashrc
 $ java -version
-openjdk version "11.0.15" 2022-04-19
-OpenJDK Runtime Environment Temurin-11.0.15+10 (build 11.0.15+10)
-OpenJDK 64-Bit Server VM Temurin-11.0.15+10 (build 11.0.15+10, mixed mode)
+openjdk version "17.0.4.1" 2022-08-12
+OpenJDK Runtime Environment Temurin-17.0.4.1+1 (build 17.0.4.1+1)
+OpenJDK 64-Bit Server VM Temurin-17.0.4.1+1 (build 17.0.4.1+1, mixed mode)
 ```
+
+**CAUTION: If "export JAVA_OPTS='--enabled-preview'" is not set, compilation will fail.**
 
 ## sbt
 
-```sh
+```shell
 $ asdf plugin add sbt
 $ asdf install sbt 1.6.2
 $ asdf local sbt 1.6.2
+# Set the appropriate settings for your environment.
+$ echo "export SBT_OPTS='-Xms8g -Xmx12g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=1000m'" >> ~/.bashrc
 ```
 
 ## Kubernetes

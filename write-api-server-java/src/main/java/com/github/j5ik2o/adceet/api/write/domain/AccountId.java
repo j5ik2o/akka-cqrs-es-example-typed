@@ -19,36 +19,33 @@ import wvlet.airframe.ulid.ULID;
 
 public final class AccountId {
 
-    public AccountId(ULID value) {
-        this.value = value;
-    }
+  public AccountId(ULID value) {
+    this.value = value;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
-        AccountId accountId = (AccountId) o;
+    AccountId accountId = (AccountId) o;
 
-        return value.equals(accountId.value);
-    }
+    return value.equals(accountId.value);
+  }
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
 
-    public String asString() {
-        return value.toString();
-    }
+  public String asString() {
+    return value.toString();
+  }
 
-    @Override
-    public String toString() {
-        return "AccountId{" +
-                "value=" + value +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "AccountId{" + "value=" + value + '}';
+  }
 
-    private final ULID value;
-
+  private final ULID value;
 }

@@ -13,6 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write;
+package com.github.j5ik2o.adceet.api.write.adaptor.aggregate.state;
 
-public interface CborSerializable {}
+import com.github.j5ik2o.adceet.api.write.domain.ThreadFactory;
+import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
+import com.github.j5ik2o.adceet.api.write.domain.events.ThreadCreated;
+
+public record Empty(ThreadId threadId) implements ThreadState{
+
+    public Just create(ThreadCreated event) {
+        return new Just(ThreadFactory.applyEvent(event));
+    }
+
+}

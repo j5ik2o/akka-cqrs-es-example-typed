@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.domain;
+package com.github.j5ik2o.adceet.api.write.adaptor.aggregate.state;
 
-import com.github.j5ik2o.adceet.api.write.domain.errors.ThreadError;
 import com.github.j5ik2o.adceet.api.write.domain.events.ThreadCreated;
-import io.vavr.collection.Vector;
-import io.vavr.control.Either;
+import com.github.j5ik2o.adceet.api.write.domain.events.ThreadEvent;
 
-import java.util.UUID;
+public sealed interface ThreadState permits Empty, Just {
 
-public final class ThreadFactory {
+    default ThreadState applyEvent(ThreadEvent threadEvent) {
+        return switch (this) {
+            case Empty empty -> switch (threadEvent) {
+                case ThreadCreated threadCreated -> empty.create(threadCreated);
+                default -> throw new IllegalStateException("Unexpected value: " + threadEvent);
+            };
+            case Just just -> just.update(threadEvent);
+        };
+    }
 
-  public static Either<ThreadError, ThreadCreated> create(ThreadId id, AccountId accountId) {
-    return Either.right(new ThreadCreated(UUID.randomUUID(), id, accountId));
-  }
-
-  public static Thread applyEvent(ThreadCreated event) {
-    return new Thread(event.threadId(), Vector.of(event.accountId()), Vector.empty());
-  }
 }

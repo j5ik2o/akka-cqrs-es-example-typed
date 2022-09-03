@@ -2,7 +2,7 @@
 
 ## Add an aws profile
 
-edit `~/.aws/credentials` as follows.
+Edit `~/.aws/credentials` as follows.
 
 ### If AWS SSO is not used
 

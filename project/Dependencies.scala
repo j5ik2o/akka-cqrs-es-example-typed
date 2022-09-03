@@ -33,7 +33,7 @@ object Dependencies {
     val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.2"
   }
   object vavr {
-    val vavr = "io.vavr" % "vavr" % "0.10.4"
+    val vavr       = "io.vavr" % "vavr"        % "0.10.4"
     val vavrKotlin = "io.vavr" % "vavr-kotlin" % "0.10.2"
   }
   object heikoseeberger {

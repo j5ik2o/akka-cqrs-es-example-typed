@@ -19,36 +19,33 @@ import wvlet.airframe.ulid.ULID;
 
 public final class ThreadId {
 
-    public ThreadId(ULID value) {
-        this.value = value;
-    }
+  public ThreadId(ULID value) {
+    this.value = value;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
-        ThreadId threadId = (ThreadId) o;
+    ThreadId threadId = (ThreadId) o;
 
-        return value.equals(threadId.value);
-    }
+    return value.equals(threadId.value);
+  }
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return value.hashCode();
+  }
 
-    @Override
-    public String toString() {
-        return "ThreadId{" +
-                "value=" + value +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ThreadId{" + "value=" + value + '}';
+  }
 
-    public String asString() {
-        return value.toString();
-    }
+  public String asString() {
+    return value.toString();
+  }
 
-    private final ULID value;
-
+  private final ULID value;
 }

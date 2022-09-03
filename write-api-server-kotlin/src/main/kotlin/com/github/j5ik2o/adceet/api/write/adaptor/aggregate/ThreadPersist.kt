@@ -83,6 +83,7 @@ object ThreadPersist {
     EventSourcedBehavior<Persist, ThreadEvent, ThreadState>(
       PersistenceId.ofUniqueId(id.asString())
     ) {
+
     override fun signalHandler(): SignalHandler<ThreadState> {
       val builder = newSignalHandlerBuilder()
       builder.onSignal(RecoveryCompleted::class.java) { state, _ ->
