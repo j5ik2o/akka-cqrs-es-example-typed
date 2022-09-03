@@ -1,4 +1,4 @@
-# CQRS+ES Example by using akka-cluster-typed
+# CQRS/Event Sourcing System Example by using Akka
 
 This is a example for CQRS+ES(Event Sourcing).
 
