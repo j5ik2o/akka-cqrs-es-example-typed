@@ -18,7 +18,6 @@ package com.github.j5ik2o.adceet.api.write.adaptor.aggregate;
 import akka.actor.BootstrapSetup;
 import akka.actor.setup.ActorSystemSetup;
 import akka.actor.testkit.typed.javadsl.ActorTestKit;
-import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.Behavior;
@@ -33,8 +32,6 @@ import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 import com.typesafe.config.Config;
 import org.junit.jupiter.api.Assertions;
 import wvlet.airframe.ulid.ULID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 abstract class AbstractThreadAggregateTestBase {
   private ActorTestKit testKit;

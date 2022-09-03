@@ -13,7 +13,6 @@ package com.github.j5ik2o.adceet.api.write.domain.errors;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import com.github.j5ik2o.adceet.api.write.domain.AccountId;
 
 public record ExistsMemberError(AccountId accountId) implements ThreadError {
