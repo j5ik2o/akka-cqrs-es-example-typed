@@ -7,12 +7,12 @@ import akka.cluster.typed.SelfUp
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import com.github.j5ik2o.adceet.api.write.aggregate._
 import com.github.j5ik2o.adceet.api.write.use.`case`.{
-  AddMemberUseCase,
   AddMemberInteractor,
-  AddMessageUseCase,
+  AddMemberUseCase,
   AddMessageInteractor,
-  CreateThreadUseCase,
-  CreateThreadInteractor
+  AddMessageUseCase,
+  CreateThreadInteractor,
+  CreateThreadUseCase
 }
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.{ Logger, LoggerFactory }
