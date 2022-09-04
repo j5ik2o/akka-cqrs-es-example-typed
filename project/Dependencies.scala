@@ -88,7 +88,7 @@ object Dependencies {
   }
 
   object jakarta {
-    val rsApi = "jakarta.ws.rs" % "jakarta.ws.rs-api" % "3.0.0"
+    val rsApi = "jakarta.ws.rs" % "jakarta.ws.rs-api" % "3.1.0"
   }
 
   object swaggerAkkaHttp {
