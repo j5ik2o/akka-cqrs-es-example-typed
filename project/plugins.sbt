@@ -9,7 +9,7 @@ resolvers ++= Seq(
 libraryDependencies ++= {
   val amazonSdkV = "1.11.672"
   val scalaTestV = "3.0.8"
-  val awsSsoSdkV = "2.16.63"
+  val awsSsoSdkV = "2.16.104"
   Seq(
     "com.amazonaws"          % "aws-java-sdk-sts" % amazonSdkV,
     "com.amazonaws"          % "aws-java-sdk-ecr" % amazonSdkV,
