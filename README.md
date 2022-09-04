@@ -28,7 +28,7 @@ Note: Akka is implemented in Scala, so even if you use Kotlin or Java, you may n
 
 ## Updates
 
-- Modified JDK version from temurin-11 to temurin-17, **need to set -enable-preview in the environment variable JAVA_OPTS(`export JAVA_OPTS='--enable-prewview'`)**.
+- Modified JDK version from temurin-11 to temurin-17, **need to set `--enable-preview` in the environment variable `JAVA_OPTS`(`export JAVA_OPTS='--enable-prewview'`)**.
 
 
 ## Architecture
