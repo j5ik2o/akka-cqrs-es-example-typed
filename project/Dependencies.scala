@@ -75,8 +75,8 @@ object Dependencies {
   }
 
   object kotlinx {
-    val coroutinesCoreJvm = "org.jetbrains.kotlinx" % "kotlinx-coroutines-core-jvm" % "1.6.1"
-    val coroutinesTest    = "org.jetbrains.kotlinx" % "kotlinx-coroutines-test"     % "1.6.1"
+    val coroutinesCoreJvm = "org.jetbrains.kotlinx" % "kotlinx-coroutines-core-jvm" % "1.6.4"
+    val coroutinesTest    = "org.jetbrains.kotlinx" % "kotlinx-coroutines-test"     % "1.6.4"
   }
 
   object scalatest {
