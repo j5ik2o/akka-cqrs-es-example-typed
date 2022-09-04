@@ -112,7 +112,7 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
     Test / parallelExecution := false,
     Global / cancelable := false,
     libraryDependencies ++= Seq(
-      "com.github.scopt" %% "scopt"      % "4.0.1",
+      "com.github.scopt" %% "scopt"      % "4.1.0",
       "com.beachape"     %% "enumeratum" % "1.7.0"
     )
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
