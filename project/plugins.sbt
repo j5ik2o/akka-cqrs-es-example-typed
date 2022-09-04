@@ -15,7 +15,7 @@ libraryDependencies ++= {
     "com.amazonaws"          % "aws-java-sdk-ecr" % amazonSdkV,
     "software.amazon.awssdk" % "sso"              % awsSsoSdkV,
     "org.scalatest"         %% "scalatest"        % scalaTestV % "test",
-    "com.github.tmtsoftware" % "kotlin-plugin"    % "3.0.3"
+    "com.github.tmtsoftware" % "kotlin-plugin"    % "3.0.4"
   )
 }
 
