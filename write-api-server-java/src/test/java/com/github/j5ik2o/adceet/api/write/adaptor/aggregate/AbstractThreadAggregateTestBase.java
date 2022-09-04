@@ -56,7 +56,7 @@ abstract class AbstractThreadAggregateTestBase {
     ThreadPersistFactory.dispose();
   }
 
-  private boolean inMemoryMode = false;
+  protected boolean inMemoryMode = false;
 
   abstract Behavior<ThreadAggregateProtocol.CommandRequest> behavior(
       ThreadId id, boolean inMemoryMode);

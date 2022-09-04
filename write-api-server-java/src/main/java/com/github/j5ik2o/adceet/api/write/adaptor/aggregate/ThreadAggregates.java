@@ -22,10 +22,10 @@ import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 
 import java.util.function.Function;
 
-public class ThreadAggregates {
+public final class ThreadAggregates {
   public static final String NAME = "threads";
 
-  public Behavior<ThreadAggregateProtocol.CommandRequest> create(
+  public static Behavior<ThreadAggregateProtocol.CommandRequest> create(
       Function<ThreadId, String> nameF,
       Function<ThreadId, Behavior<ThreadAggregateProtocol.CommandRequest>> childBehaviorF) {
     return Behaviors.setup(

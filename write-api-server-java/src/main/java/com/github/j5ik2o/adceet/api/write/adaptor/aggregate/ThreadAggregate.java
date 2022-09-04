@@ -87,7 +87,7 @@ public final class ThreadAggregate extends AbstractBehavior<ThreadAggregateProto
                 }
         );
         builder.onMessage(ThreadAggregateProtocol.AddMessage.class, msg -> {
-            var result = state.thread().addMessage(msg.message().getSenderId(), msg.message().getId(), msg.message().getBody());
+            var result = state.thread().addMessage(msg.message().senderId(), msg.message().id(), msg.message().body());
             return switch (result) {
                 case Either.Right<ThreadError, MessageAdd> r ->
                     persist(r.get(), it -> {
