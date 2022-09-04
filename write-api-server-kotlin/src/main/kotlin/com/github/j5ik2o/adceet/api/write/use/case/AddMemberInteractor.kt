@@ -17,7 +17,7 @@ class AddMemberInteractor(
   private val askTimeout: Duration = Duration.ofSeconds(3)
 ) : AddMemberUseCase {
   override fun execute(threadId: ThreadId, accountId: AccountId): CompletionStage<ThreadId> {
-    return AskPattern.ask(
+    return AskPattern.ask<ThreadAggregateProtocol.CommandRequest, ThreadAggregateProtocol.AddMemberReply>(
       threadAggregateRef,
       { replyTo -> ThreadAggregateProtocol.AddMember(ULID.newULID(), threadId, accountId, replyTo) },
       askTimeout,

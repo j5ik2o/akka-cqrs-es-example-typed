@@ -17,7 +17,7 @@ class AddMessageInteractor(
   private val askTimeout: Duration = Duration.ofSeconds(3)
 ) : AddMessageUseCase {
   override fun execute(message: Message): CompletionStage<ThreadId> {
-    return AskPattern.ask(
+    return AskPattern.ask<ThreadAggregateProtocol.CommandRequest, ThreadAggregateProtocol.AddMessageReply>(
       threadAggregateRef,
       { replyTo -> ThreadAggregateProtocol.AddMessage(ULID.newULID(), message.threadId, message, replyTo) },
       askTimeout,

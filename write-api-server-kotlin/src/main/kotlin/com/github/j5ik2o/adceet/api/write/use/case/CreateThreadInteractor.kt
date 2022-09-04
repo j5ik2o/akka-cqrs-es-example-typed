@@ -17,7 +17,7 @@ class CreateThreadInteractor(
   private val askTimeout: Duration = Duration.ofSeconds(30)
 ) : CreateThreadUseCase {
   override fun execute(threadId: ThreadId, accountId: AccountId): CompletionStage<ThreadId> {
-    return AskPattern.ask(
+    return AskPattern.ask<ThreadAggregateProtocol.CommandRequest, ThreadAggregateProtocol.CreateThreadReply>(
       threadAggregateRef,
       { replyTo -> ThreadAggregateProtocol.CreateThread(ULID.newULID(), threadId, accountId, replyTo) },
       askTimeout,
