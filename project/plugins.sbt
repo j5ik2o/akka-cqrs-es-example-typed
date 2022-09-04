@@ -25,7 +25,7 @@ addSbtPlugin("com.lightbend.sbt" % "sbt-javaagent" % "0.1.6")
 //lazy val root       = project.in(file(".")).dependsOn(githubRepo)
 //lazy val githubRepo = RootProject(uri("git://github.com/crossroad0201/sbt-ecr.git#69d8121"))
 
-addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.3")
+addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.4")
 
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
