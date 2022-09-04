@@ -35,7 +35,7 @@ addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.1.3")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-multi-jvm" % "0.4.0")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.8.1")
+addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.11")
 
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.0")
 
