@@ -84,7 +84,7 @@ object Dependencies {
   }
 
   object xenomachina {
-    val kotlinArgParser = "com.xenomachina" % "kotlin-argparser" % "2.0.6"
+    val kotlinArgParser = "com.xenomachina" % "kotlin-argparser" % "2.0.7"
   }
 
   object jakarta {
