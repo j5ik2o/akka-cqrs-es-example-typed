@@ -10,7 +10,7 @@ import wvlet.airframe.ulid.ULID
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.{ ExecutionContext, Future }
 
-final class AddMessageUseCaseImpl(
+final class AddMessageInteractor(
     private val system: ActorSystem[_],
     private val threadAggregateRef: ActorRef[ThreadAggregateProtocol.CommandRequest],
     private val askTimeout: FiniteDuration = 30.seconds

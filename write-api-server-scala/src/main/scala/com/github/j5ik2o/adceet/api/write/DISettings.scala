@@ -8,11 +8,11 @@ import akka.management.cluster.bootstrap.ClusterBootstrap
 import com.github.j5ik2o.adceet.api.write.aggregate._
 import com.github.j5ik2o.adceet.api.write.use.`case`.{
   AddMemberUseCase,
-  AddMemberUseCaseImpl,
+  AddMemberInteractor,
   AddMessageUseCase,
-  AddMessageUseCaseImpl,
+  AddMessageInteractor,
   CreateThreadUseCase,
-  CreateThreadUseCaseImpl
+  CreateThreadInteractor
 }
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.{ Logger, LoggerFactory }
@@ -64,13 +64,13 @@ object DISettings {
           ctx.spawn(ShardedThreadAggregate.ofProxy(clusterSharding), "sharded-thread")
       }
       .bind[CreateThreadUseCase].toProvider[ActorRef[ThreadAggregateProtocol.CommandRequest]] { actorRef =>
-        new CreateThreadUseCaseImpl(ctx.system, actorRef)
+        new CreateThreadInteractor(ctx.system, actorRef)
       }
       .bind[AddMemberUseCase].toProvider[ActorRef[ThreadAggregateProtocol.CommandRequest]] { actorRef =>
-        new AddMemberUseCaseImpl(ctx.system, actorRef)
+        new AddMemberInteractor(ctx.system, actorRef)
       }
       .bind[AddMessageUseCase].toProvider[ActorRef[ThreadAggregateProtocol.CommandRequest]] { actorRef =>
-        new AddMessageUseCaseImpl(ctx.system, actorRef)
+        new AddMessageInteractor(ctx.system, actorRef)
       }
   }
 }
