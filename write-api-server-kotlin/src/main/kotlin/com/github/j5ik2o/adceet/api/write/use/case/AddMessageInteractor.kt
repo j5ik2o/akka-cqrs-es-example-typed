@@ -11,13 +11,13 @@ import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-class AddMessageUseCaseImpl(
+class AddMessageInteractor(
   private val system: ActorSystem<Void>,
   private val threadAggregateRef: ActorRef<ThreadAggregateProtocol.CommandRequest>,
   private val askTimeout: Duration = Duration.ofSeconds(3)
 ) : AddMessageUseCase {
   override fun execute(message: Message): CompletionStage<ThreadId> {
-    return AskPattern.ask<ThreadAggregateProtocol.CommandRequest, ThreadAggregateProtocol.AddMessageReply>(
+    return AskPattern.ask(
       threadAggregateRef,
       { replyTo -> ThreadAggregateProtocol.AddMessage(ULID.newULID(), message.threadId, message, replyTo) },
       askTimeout,

@@ -32,11 +32,11 @@ import com.github.j5ik2o.adceet.api.write.adaptor.aggregate.ThreadAggregates
 import com.github.j5ik2o.adceet.api.write.adaptor.aggregate.ThreadPersist
 import com.github.j5ik2o.adceet.api.write.adaptor.http.controller.ThreadController
 import com.github.j5ik2o.adceet.api.write.use.case.AddMemberUseCase
-import com.github.j5ik2o.adceet.api.write.use.case.AddMemberUseCaseImpl
+import com.github.j5ik2o.adceet.api.write.use.case.AddMemberInteractor
 import com.github.j5ik2o.adceet.api.write.use.case.AddMessageUseCase
-import com.github.j5ik2o.adceet.api.write.use.case.AddMessageUseCaseImpl
+import com.github.j5ik2o.adceet.api.write.use.case.AddMessageInteractor
 import com.github.j5ik2o.adceet.api.write.use.case.CreateThreadUseCase
-import com.github.j5ik2o.adceet.api.write.use.case.CreateThreadUseCaseImpl
+import com.github.j5ik2o.adceet.api.write.use.case.CreateThreadInteractor
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigRenderOptions
@@ -116,17 +116,17 @@ object DISettings {
     }
     bind<CreateThreadUseCase> {
       scoped(ctxScope).singleton {
-        CreateThreadUseCaseImpl(context.ctx.system, instance())
+        CreateThreadInteractor(context.ctx.system, instance())
       }
     }
     bind<AddMemberUseCase> {
       scoped(ctxScope).singleton {
-        AddMemberUseCaseImpl(context.ctx.system, instance())
+        AddMemberInteractor(context.ctx.system, instance())
       }
     }
     bind<AddMessageUseCase> {
       scoped(ctxScope).singleton {
-        AddMessageUseCaseImpl(context.ctx.system, instance())
+        AddMessageInteractor(context.ctx.system, instance())
       }
     }
     bind<ThreadController> {
