@@ -15,13 +15,22 @@
  */
 package com.github.j5ik2o.adceet.api.write;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import akka.actor.typed.ActorSystem;
+import com.google.inject.Guice;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
-@SpringBootApplication
+import java.util.concurrent.ExecutionException;
+
 public class Main {
-
-  public static void main(String[] args) {
-    SpringApplication.run(Main.class, args);
-  }
+    public static void main(String[] args) {
+        try {
+            var injector = Guice.createInjector(new MainModule());
+            var system = injector.getInstance(Key.get(new TypeLiteral<ActorSystem<MainProtocol.Command>>() {
+            }));
+            system.getWhenTerminated().toCompletableFuture().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

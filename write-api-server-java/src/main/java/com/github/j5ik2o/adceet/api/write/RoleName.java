@@ -1,4 +1,4 @@
-/*
+package com.github.j5ik2o.adceet.api.write;/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.j5ik2o.adceet.api.write;
-
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
-
-@Component
-public class ApplicationRunnerImpl implements ApplicationRunner {
-  @Override
-  public void run(ApplicationArguments args) throws Exception {
-    System.out.println("args = " + args.getSourceArgs().toString());
-  }
+public enum RoleName {
+    FRONTEND,
+    BACKEND
 }
