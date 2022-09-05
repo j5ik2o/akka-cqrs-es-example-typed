@@ -32,18 +32,18 @@ public class MainModule extends AbstractModule {
     @Override protected void configure() {}
 
     @Provides
-    public Config config() {
+    private Config config() {
         return ConfigFactory.load();
     }
 
     @Provides
-    public Behavior<MainProtocol.Command> mainBehavior() {
+    private Behavior<MainProtocol.Command> mainBehavior() {
         var stopWatch = new StopWatch();
         return MainActorFactory.create(stopWatch);
     }
 
     @Provides
-    public ActorSystem<MainProtocol.Command> system(Config config, Behavior<MainProtocol.Command> mainBehavior) {
+    private ActorSystem<MainProtocol.Command> system(Config config, Behavior<MainProtocol.Command> mainBehavior) {
         var setup = ActorSystemSetup.create(BootstrapSetup.create(config)).withSetup(
                 new JacksonObjectMapperProviderSetup(new JacksonObjectMapperFactory())
         );
@@ -55,7 +55,7 @@ public class MainModule extends AbstractModule {
     }
 
     @Provides
-    public Scheduler scheduler(ActorSystem<MainProtocol.Command> system) {
+    private Scheduler scheduler(ActorSystem<MainProtocol.Command> system) {
         return system.scheduler();
     }
 }
