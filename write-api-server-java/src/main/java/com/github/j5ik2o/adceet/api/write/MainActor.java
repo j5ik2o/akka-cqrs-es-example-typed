@@ -26,6 +26,7 @@ public final class MainActor extends AbstractBehavior<MainProtocol.Command> {
 
     @Override
     public Receive<MainProtocol.Command> createReceive() {
-        return null;
+        var builder = newReceiveBuilder();
+        return builder.build();
     }
 }
