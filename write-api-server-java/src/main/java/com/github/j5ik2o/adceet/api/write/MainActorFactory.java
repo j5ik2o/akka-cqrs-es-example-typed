@@ -31,7 +31,7 @@ public final class MainActorFactory {
             var selfMember = cluster.selfMember();
             LOGGER.info("[{}] Specified role(s) = {}", stopWatch.reportElapsedTime(), selfMember.getRoles().stream().reduce("", "%s, %s"::formatted));
 
-
+            LOGGER.info("selfMember.roles = {}", selfMember.getRoles());
 
             return new MainActor(ctx);
         });

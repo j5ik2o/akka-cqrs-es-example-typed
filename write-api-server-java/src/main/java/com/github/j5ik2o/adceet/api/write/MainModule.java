@@ -29,6 +29,8 @@ import com.typesafe.config.ConfigFactory;
 import wvlet.log.io.StopWatch;
 
 public class MainModule extends AbstractModule {
+    @Override protected void configure() {}
+
     @Provides
     public Config config() {
         return ConfigFactory.load();
@@ -41,7 +43,7 @@ public class MainModule extends AbstractModule {
     }
 
     @Provides
-    public ActorRef<MainProtocol.Command> system(Config config, Behavior<MainProtocol.Command> mainBehavior) {
+    public ActorSystem<MainProtocol.Command> system(Config config, Behavior<MainProtocol.Command> mainBehavior) {
         var setup = ActorSystemSetup.create(BootstrapSetup.create(config)).withSetup(
                 new JacksonObjectMapperProviderSetup(new JacksonObjectMapperFactory())
         );
