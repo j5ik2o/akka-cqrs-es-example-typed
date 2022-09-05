@@ -55,19 +55,7 @@ class MainActor constructor(override val di: DI, ctx: ActorContext<Command>) :
         logger.info("selfMember.roles = ${selfMember.roles}")
         require(selfMember.roles.isNotEmpty()) { "akka.cluster.roles are empty" }
 
-        val roleNames = (
-          if (selfMember.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
-            listOf(RoleName.FRONTEND)
-          } else {
-            listOf()
-          }
-          ) + (
-          if (selfMember.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
-            listOf(RoleName.FRONTEND)
-          } else {
-            listOf()
-          }
-          )
+        val roleNames = RoleNames.from(selfMember)
         logger.info("roleNames = $roleNames")
 
         val config = ctx.system.settings().config()

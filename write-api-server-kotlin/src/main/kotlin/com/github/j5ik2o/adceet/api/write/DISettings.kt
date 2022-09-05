@@ -55,7 +55,7 @@ import wvlet.log.io.StopWatch
 object DISettings {
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-  data class CtxWithArgs(val ctx: ActorContext<MainActor.Companion.Command>, val roleNames: List<RoleName>)
+  data class CtxWithArgs(val ctx: ActorContext<MainActor.Companion.Command>, val roleNames: RoleNames)
 
   fun toDI(args: ExampleArgs, stopWatch: StopWatch): DI = DI {
     val ctxScope = WeakContextScope.of<CtxWithArgs>()
