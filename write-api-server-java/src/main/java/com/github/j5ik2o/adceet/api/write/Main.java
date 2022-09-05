@@ -23,14 +23,14 @@ import com.google.inject.TypeLiteral;
 import java.util.concurrent.ExecutionException;
 
 public class Main {
-    public static void main(String[] args) {
-        try {
-            var injector = Guice.createInjector(new MainModule());
-            var system = injector.getInstance(Key.get(new TypeLiteral<ActorSystem<MainProtocol.Command>>() {
-            }));
-            system.getWhenTerminated().toCompletableFuture().get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+  public static void main(String[] args) {
+    try {
+      var injector = Guice.createInjector(new MainModule());
+      var key = Key.get(new TypeLiteral<ActorSystem<MainProtocol.Command>>() {});
+      var system = injector.getInstance(key);
+      system.getWhenTerminated().toCompletableFuture().get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
     }
+  }
 }

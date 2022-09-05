@@ -1,4 +1,4 @@
-package com.github.j5ik2o.adceet.api.write;/*
+/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package com.github.j5ik2o.adceet.api.write;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.j5ik2o.adceet.api.write;
 
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.Behaviors;
@@ -22,18 +23,22 @@ import org.slf4j.LoggerFactory;
 import wvlet.log.io.StopWatch;
 
 public final class MainActorFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainActorFactory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MainActorFactory.class);
 
-    public static Behavior<MainProtocol.Command> create(StopWatch stopWatch) {
-        return Behaviors.setup(ctx -> {
-            LOGGER.info("[{}] create", stopWatch.reportElapsedTime());
-            var cluster = Cluster.get(ctx.getSystem());
-            var selfMember = cluster.selfMember();
-            LOGGER.info("[{}] Specified role(s) = {}", stopWatch.reportElapsedTime(), selfMember.getRoles().stream().reduce("", "%s, %s"::formatted));
+  public static Behavior<MainProtocol.Command> create(StopWatch stopWatch) {
+    return Behaviors.setup(
+        ctx -> {
+          LOGGER.info("[{}] create", stopWatch.reportElapsedTime());
+          var cluster = Cluster.get(ctx.getSystem());
+          var selfMember = cluster.selfMember();
+          LOGGER.info(
+              "[{}] Specified role(s) = {}",
+              stopWatch.reportElapsedTime(),
+              selfMember.getRoles().stream().reduce("", "%s, %s"::formatted));
 
-            LOGGER.info("selfMember.roles = {}", selfMember.getRoles());
+          LOGGER.info("selfMember.roles = {}", selfMember.getRoles());
 
-            return new MainActor(ctx);
+          return new MainActor(ctx);
         });
-    }
+  }
 }

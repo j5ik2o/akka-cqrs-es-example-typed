@@ -1,4 +1,4 @@
-package com.github.j5ik2o.adceet.api.write;/*
+/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package com.github.j5ik2o.adceet.api.write;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.j5ik2o.adceet.api.write;
 
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
@@ -20,13 +21,13 @@ import akka.actor.typed.javadsl.Receive;
 
 public final class MainActor extends AbstractBehavior<MainProtocol.Command> {
 
-    public MainActor(ActorContext<MainProtocol.Command> context) {
-        super(context);
-    }
+  public MainActor(ActorContext<MainProtocol.Command> context) {
+    super(context);
+  }
 
-    @Override
-    public Receive<MainProtocol.Command> createReceive() {
-        var builder = newReceiveBuilder();
-        return builder.build();
-    }
+  @Override
+  public Receive<MainProtocol.Command> createReceive() {
+    var builder = newReceiveBuilder();
+    return builder.build();
+  }
 }
