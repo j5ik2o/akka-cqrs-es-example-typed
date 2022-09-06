@@ -69,7 +69,7 @@ class ThreadController(
     ]
   )
   fun createThread(): Route {
-    return path(segment("threads")) {
+    return path("threads") {
       post {
         entity(
           Jackson.unmarshaller(
