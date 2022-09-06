@@ -170,6 +170,7 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
 
 lazy val `write-api-server-java` = (project in file("write-api-server-java"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .disablePlugins(KotlinPlugin)
   .configs(MultiJvm)
   .settings(
     Settings.baseSettings,
@@ -211,6 +212,7 @@ lazy val `write-api-server-java` = (project in file("write-api-server-java"))
     Test / parallelExecution := false,
     Global / cancelable := false
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
+
 // --- Custom commands
 addCommandAlias(
   "lint",
