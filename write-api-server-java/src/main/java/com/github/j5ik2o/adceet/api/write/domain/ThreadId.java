@@ -19,6 +19,10 @@ import wvlet.airframe.ulid.ULID;
 
 public final class ThreadId {
 
+  public static ThreadId parseFrom(String text) {
+    return new ThreadId(ULID.fromString(text));
+  }
+
   public ThreadId(ULID value) {
     this.value = value;
   }

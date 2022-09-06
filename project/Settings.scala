@@ -115,7 +115,7 @@ object Settings {
     }
   )
 
-  def ecrSettings: Seq[Def.Setting[_]] = {
+  val ecrSettings: Seq[Def.Setting[_]] = {
     Seq(
       Ecr / region := Region.getRegion(Regions.fromName(EcrRepositorySetting.AwsRegion)),
       Ecr / repositoryName := EcrRepositorySetting.repositoryNameForProject(name.value),

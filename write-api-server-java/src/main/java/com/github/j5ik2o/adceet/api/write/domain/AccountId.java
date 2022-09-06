@@ -19,6 +19,10 @@ import wvlet.airframe.ulid.ULID;
 
 public final class AccountId {
 
+  public static AccountId parseFrom(String text) {
+    return new AccountId(ULID.fromString(text));
+  }
+
   public AccountId(ULID value) {
     this.value = value;
   }

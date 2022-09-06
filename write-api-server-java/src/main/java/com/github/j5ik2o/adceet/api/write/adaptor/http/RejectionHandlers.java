@@ -15,5 +15,30 @@
  */
 package com.github.j5ik2o.adceet.api.write.adaptor.http;
 
+import static akka.http.javadsl.server.Directives.complete;
 
-public class RejectionHandlers {}
+import akka.http.javadsl.marshallers.jackson.Jackson;
+import akka.http.javadsl.model.StatusCodes;
+import akka.http.javadsl.server.RejectionHandler;
+import com.github.j5ik2o.adceet.api.write.JacksonObjectMappers;
+import com.github.j5ik2o.adceet.api.write.adaptor.http.json.ErrorsResponseJson;
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.error.ValidationError;
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.ValidationRejection;
+
+public class RejectionHandlers {
+
+  static RejectionHandler defaultHandler() {
+    var builder = RejectionHandler.newBuilder();
+    builder.handle(
+        ValidationRejection.class,
+        rejection -> {
+          var messages = rejection.errorMessages().map(ValidationError::msg).toList().toJavaList();
+          var responseJson = new ErrorsResponseJson(messages);
+          return complete(
+              StatusCodes.BAD_REQUEST,
+              responseJson,
+              Jackson.marshaller(JacksonObjectMappers.defaultObjectMapper()));
+        });
+    return builder.build();
+  }
+}

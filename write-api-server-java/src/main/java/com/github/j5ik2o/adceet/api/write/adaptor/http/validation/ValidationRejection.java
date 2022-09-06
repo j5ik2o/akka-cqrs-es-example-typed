@@ -1,4 +1,4 @@
-/*
+package com.github.j5ik2o.adceet.api.write.adaptor.http.validation;/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.adaptor.http;
 
-import akka.http.javadsl.model.StatusCodes;
+import akka.http.javadsl.server.CustomRejection;
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.error.ValidationError;
+import fj.data.NonEmptyList;
 
-import static akka.http.javadsl.server.Directives.complete;
-
-import akka.http.javadsl.server.ExceptionHandler;
-import com.github.j5ik2o.adceet.api.write.use_case.ThreadException;
-
-public class ExceptionHandlers {
-
-  public static ExceptionHandler defaultHandler() {
-    var builder = ExceptionHandler.newBuilder();
-    builder.match(ThreadException.class, ex -> complete(StatusCodes.BAD_REQUEST, ex.getMessage()));
-    return builder.build();
-  }
+public record ValidationRejection(NonEmptyList<ValidationError> errorMessages) implements CustomRejection {
 }

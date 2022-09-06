@@ -13,20 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.adaptor.http;
+package com.github.j5ik2o.adceet.api.write.adaptor.http.validation.error;
 
-import akka.http.javadsl.model.StatusCodes;
-
-import static akka.http.javadsl.server.Directives.complete;
-
-import akka.http.javadsl.server.ExceptionHandler;
-import com.github.j5ik2o.adceet.api.write.use_case.ThreadException;
-
-public class ExceptionHandlers {
-
-  public static ExceptionHandler defaultHandler() {
-    var builder = ExceptionHandler.newBuilder();
-    builder.match(ThreadException.class, ex -> complete(StatusCodes.BAD_REQUEST, ex.getMessage()));
-    return builder.build();
-  }
+public sealed interface ValidationError permits ParseError {
+    String msg();
 }
