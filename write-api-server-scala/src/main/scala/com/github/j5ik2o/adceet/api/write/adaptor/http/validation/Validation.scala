@@ -1,8 +1,8 @@
-package com.github.j5ik2o.adceet.api.write.http.validation
+package com.github.j5ik2o.adceet.api.write.adaptor.http.validation
 
 import cats.data.ValidatedNel
 import cats.implicits.catsSyntaxValidatedId
-import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, ThreadId }
+import com.github.j5ik2o.adceet.api.write.domain.{AccountId, ThreadId}
 
 sealed abstract class ValidationError(val msg: String) {}
 

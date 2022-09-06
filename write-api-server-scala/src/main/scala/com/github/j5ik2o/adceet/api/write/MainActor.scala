@@ -8,8 +8,8 @@ import akka.cluster.typed.{ Cluster, SelfUp }
 import akka.http.scaladsl.Http
 import akka.management.cluster.bootstrap.ClusterBootstrap
 import akka.management.scaladsl.AkkaManagement
-import com.github.j5ik2o.adceet.api.write.http.Routes
-import com.github.j5ik2o.adceet.api.write.http.controller.ThreadController
+import com.github.j5ik2o.adceet.api.write.adaptor.http.Routes
+import com.github.j5ik2o.adceet.api.write.adaptor.http.controller.ThreadController
 import kamon.Kamon
 import wvlet.log.io.StopWatch
 // import kamon.Kamon

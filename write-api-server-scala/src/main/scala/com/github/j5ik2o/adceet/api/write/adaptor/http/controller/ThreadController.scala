@@ -1,30 +1,24 @@
-package com.github.j5ik2o.adceet.api.write.http.controller
+package com.github.j5ik2o.adceet.api.write.adaptor.http.controller
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import cats.data.ValidatedNel
 import cats.implicits._
-import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, Message, MessageId, ThreadId }
-import com.github.j5ik2o.adceet.api.write.http.json.{
-  AddMemberRequestJson,
-  AddMemberResponseJson,
-  AddMessageRequestJson,
-  AddMessageResponseJson,
-  CreateThreadRequestJson,
-  CreateThreadResponseJson
-}
-import com.github.j5ik2o.adceet.api.write.http.validation.{ ValidationError, ValidationRejection, Validator }
-import com.github.j5ik2o.adceet.api.write.use.`case`.{ AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase }
+import com.github.j5ik2o.adceet.api.write.adaptor.http.json._
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.{ValidationError, Validator}
+import com.github.j5ik2o.adceet.api.write.domain.{AccountId, Message, MessageId, ThreadId}
+import com.github.j5ik2o.adceet.api.write.use.`case`.{AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 import io.swagger.v3.oas.annotations.enums.ParameterIn
-import io.swagger.v3.oas.annotations.{ Operation, Parameter }
-import io.swagger.v3.oas.annotations.media.{ Content, Schema }
+import io.swagger.v3.oas.annotations.media.{Content, Schema}
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.{Operation, Parameter}
 import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.{ POST, Path }
+import jakarta.ws.rs.{POST, Path}
 
 class ThreadController(
     private val createThreadUseCase: CreateThreadUseCase,
@@ -81,7 +75,7 @@ class ThreadController(
             Validator
               .validateAccountId(json.accountId).fold(
                 { errors =>
-                  reject(ValidationRejection(errors))
+                  reject(validation.ValidationRejection(errors))
                 },
                 { accountId =>
                   val result = createThreadUseCase.execute(ThreadId(), accountId)
@@ -132,7 +126,7 @@ class ThreadController(
           extractExecutionContext { implicit ec =>
             validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
               { errors =>
-                reject(ValidationRejection(errors))
+                reject(validation.ValidationRejection(errors))
               },
               { case (threadId, accountId) =>
                 val result = addMemberUseCase.execute(threadId, accountId)
@@ -183,7 +177,7 @@ class ThreadController(
           extractExecutionContext { implicit ec =>
             validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
               { errors =>
-                reject(ValidationRejection(errors))
+                reject(validation.ValidationRejection(errors))
               },
               { case (threadId, accountId) =>
                 val message = Message(MessageId(), threadId, accountId, json.body)
