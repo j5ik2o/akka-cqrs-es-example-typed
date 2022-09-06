@@ -21,31 +21,30 @@ import io.vavr.collection.Vector
 import java.util.Locale
 
 data class RoleNames(private val values: Seq<RoleName>) {
-    companion object {
-        fun from(member: Member): RoleNames {
-            val roleNames = (
-                    if (member.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
-                        Vector.of(RoleName.FRONTEND)
-                    } else {
-                        Vector.empty()
-                    }
-                    ).appendAll(
-                    if (member.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
-                        Vector.of(RoleName.FRONTEND)
-                    } else {
-                        Vector.empty()
-                    }
-                )
-            return RoleNames(roleNames)
+  companion object {
+    fun from(member: Member): RoleNames {
+      val roleNames = (
+        if (member.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
+          Vector.of(RoleName.FRONTEND)
+        } else {
+          Vector.empty()
         }
+        ).appendAll(
+        if (member.hasRole(RoleName.FRONTEND.toString().lowercase(Locale.getDefault()))) {
+          Vector.of(RoleName.FRONTEND)
+        } else {
+          Vector.empty()
+        }
+      )
+      return RoleNames(roleNames)
     }
+  }
 
-    fun contains(roleName: RoleName): Boolean {
-        return values.contains(roleName)
-    }
+  fun contains(roleName: RoleName): Boolean {
+    return values.contains(roleName)
+  }
 
-    fun asSeq(): Seq<RoleName> {
-        return values
-    }
-
+  fun asSeq(): Seq<RoleName> {
+    return values
+  }
 }
