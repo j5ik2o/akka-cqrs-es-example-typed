@@ -5,8 +5,6 @@ import akka.http.javadsl.model.StatusCodes
 import akka.http.javadsl.server.AllDirectives
 import akka.http.javadsl.server.PathMatchers.segment
 import akka.http.javadsl.server.Route
-import arrow.core.ValidatedNel
-import arrow.core.sequence
 import com.github.j5ik2o.adceet.api.write.JacksonObjectMappers
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.AddMemberRequestJson
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.AddMemberResponseJson
@@ -14,10 +12,8 @@ import com.github.j5ik2o.adceet.api.write.adaptor.http.json.AddMessageRequestJso
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.AddMessageResponseJson
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.CreateThreadRequestJson
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.CreateThreadResponseJson
-import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.ValidationError
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.ValidationRejection
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.Validator
-import com.github.j5ik2o.adceet.api.write.domain.AccountId
 import com.github.j5ik2o.adceet.api.write.domain.Message
 import com.github.j5ik2o.adceet.api.write.domain.MessageId
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId
@@ -43,17 +39,6 @@ class ThreadController(
 
   fun toRoute(): Route {
     return concat(createThread(), addMember(), addMessage())
-  }
-
-  private fun validateThreadIdWithAccountId(
-    threadIdString: String,
-    accountIdString: String
-  ): ValidatedNel<ValidationError, Pair<ThreadId, AccountId>> = listOf(
-    Validator.validateThreadId(threadIdString),
-    Validator.validateAccountId(accountIdString)
-  ).sequence().map {
-    // mapNないがようなのでこういうやり方しかできない…。
-    Pair(it[0] as ThreadId, it[1] as AccountId)
   }
 
   @Path("/threads")
@@ -145,7 +130,7 @@ class ThreadController(
     return path(segment("threads").slash(segment()).slash("members")) { threadIdString ->
       post {
         entity(Jackson.unmarshaller(JacksonObjectMappers.default, AddMemberRequestJson::class.java)) { json ->
-          validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
+          Validator.validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
             { errors ->
               reject(ValidationRejection(errors))
             },
@@ -198,7 +183,7 @@ class ThreadController(
     return path(segment("threads").slash(segment()).slash("messages")) { threadIdString ->
       post {
         entity(Jackson.unmarshaller(JacksonObjectMappers.default, AddMessageRequestJson::class.java)) { json ->
-          validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
+          Validator.validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
             { errors ->
               reject(ValidationRejection(errors))
             },

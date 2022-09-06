@@ -1,7 +1,7 @@
 package com.github.j5ik2o.adceet.api.write.adaptor.http.validation
 
 import cats.data.ValidatedNel
-import cats.implicits.catsSyntaxValidatedId
+import cats.implicits._
 import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, ThreadId }
 
 sealed abstract class ValidationError(val msg: String) {}
@@ -27,5 +27,15 @@ object Validator {
           _.validNel
         }
       )
+  }
+
+  def validateThreadIdWithAccountId(
+      threadIdString: String,
+      accountIdString: String
+  ): ValidatedNel[ValidationError, (ThreadId, AccountId)] = {
+    (Validator.validateThreadId(threadIdString), Validator.validateAccountId(accountIdString)).mapN {
+      case (threadId, accountId) =>
+        (threadId, accountId)
+    }
   }
 }

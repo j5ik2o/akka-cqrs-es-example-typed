@@ -3,12 +3,10 @@ package com.github.j5ik2o.adceet.api.write.adaptor.http.controller
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import cats.data.ValidatedNel
-import cats.implicits._
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json._
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation
-import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.{ ValidationError, Validator }
-import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, Message, MessageId, ThreadId }
+import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.Validator
+import com.github.j5ik2o.adceet.api.write.domain.{ Message, MessageId, ThreadId }
 import com.github.j5ik2o.adceet.api.write.use.`case`.{ AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase }
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
@@ -28,16 +26,6 @@ class ThreadController(
 
   def toRoute: Route = {
     concat(createThread, addMember, addMessage)
-  }
-
-  private def validateThreadIdWithAccountId(
-      threadIdString: String,
-      accountIdString: String
-  ): ValidatedNel[ValidationError, (ThreadId, AccountId)] = {
-    (Validator.validateThreadId(threadIdString), Validator.validateAccountId(accountIdString)).mapN {
-      case (threadId, accountId) =>
-        (threadId, accountId)
-    }
   }
 
   @Path("/threads")
@@ -124,17 +112,18 @@ class ThreadController(
       post {
         entity(as[AddMemberRequestJson]) { json =>
           extractExecutionContext { implicit ec =>
-            validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
-              { errors =>
-                reject(validation.ValidationRejection(errors))
-              },
-              { case (threadId, accountId) =>
-                val result = addMemberUseCase.execute(threadId, accountId)
-                onSuccess(result) { threadId =>
-                  complete(StatusCodes.OK, AddMemberResponseJson(threadId.asString))
+            Validator
+              .validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
+                { errors =>
+                  reject(validation.ValidationRejection(errors))
+                },
+                { case (threadId, accountId) =>
+                  val result = addMemberUseCase.execute(threadId, accountId)
+                  onSuccess(result) { threadId =>
+                    complete(StatusCodes.OK, AddMemberResponseJson(threadId.asString))
+                  }
                 }
-              }
-            )
+              )
           }
         }
       }
@@ -175,18 +164,19 @@ class ThreadController(
       post {
         entity(as[AddMessageRequestJson]) { json =>
           extractExecutionContext { implicit ec =>
-            validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
-              { errors =>
-                reject(validation.ValidationRejection(errors))
-              },
-              { case (threadId, accountId) =>
-                val message = Message(MessageId(), threadId, accountId, json.body)
-                val result  = addMessageUseCase.execute(message)
-                onSuccess(result) { threadId =>
-                  complete(StatusCodes.OK, AddMessageResponseJson(threadId.asString, accountId.asString))
+            Validator
+              .validateThreadIdWithAccountId(threadIdString, json.accountId).fold(
+                { errors =>
+                  reject(validation.ValidationRejection(errors))
+                },
+                { case (threadId, accountId) =>
+                  val message = Message(MessageId(), threadId, accountId, json.body)
+                  val result  = addMessageUseCase.execute(message)
+                  onSuccess(result) { threadId =>
+                    complete(StatusCodes.OK, AddMessageResponseJson(threadId.asString, accountId.asString))
+                  }
                 }
-              }
-            )
+              )
           }
         }
       }
