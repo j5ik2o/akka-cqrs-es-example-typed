@@ -18,6 +18,7 @@ package com.github.j5ik2o.adceet.api.write;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.cluster.typed.Cluster;
+import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wvlet.log.io.StopWatch;
@@ -25,7 +26,7 @@ import wvlet.log.io.StopWatch;
 public final class MainActorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(MainActorFactory.class);
 
-  public static Behavior<MainProtocol.Command> create(StopWatch stopWatch) {
+  public static Behavior<MainProtocol.Command> create(Injector injector, StopWatch stopWatch) {
     return Behaviors.setup(
         ctx -> {
           LOGGER.info("[{}] create", stopWatch.reportElapsedTime());
@@ -37,6 +38,10 @@ public final class MainActorFactory {
               selfMember.getRoles().stream().reduce("", "%s, %s"::formatted));
 
           LOGGER.info("selfMember.roles = {}", selfMember.getRoles());
+          var roleNames = RoleNames.from(selfMember);
+
+          var childInjector = injector.createChildInjector(new MainActorModule(ctx, roleNames));
+          // childInjector.getInstance()
 
           return new MainActor(ctx);
         });

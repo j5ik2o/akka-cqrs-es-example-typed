@@ -1,4 +1,4 @@
-package com.github.j5ik2o.adceet.api.write;/*
+/*
  * Copyright 2022 Junichi Kato
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,13 @@ package com.github.j5ik2o.adceet.api.write;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.j5ik2o.adceet.api.write.use_case;
 
-public class MainProtocol {
-    public sealed interface Command {}
+import com.github.j5ik2o.adceet.api.write.domain.AccountId;
+import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 
-    public static final class MeUp implements Command {}
+import java.util.concurrent.CompletionStage;
+
+public interface AddMemberUseCase {
+  CompletionStage<ThreadId> execute(ThreadId threadId, AccountId accountId);
 }

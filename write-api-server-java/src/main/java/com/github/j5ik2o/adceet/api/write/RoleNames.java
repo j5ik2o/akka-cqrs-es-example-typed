@@ -15,17 +15,41 @@
  */
 package com.github.j5ik2o.adceet.api.write;
 
+import akka.cluster.Member;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Vector;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class RoleNames {
-  private final List<RoleName> values;
+  private final Seq<RoleName> values;
 
-  public RoleNames(List<RoleName> values) {
+  public RoleNames(Seq<RoleName> values) {
     this.values = values;
   }
 
-  public List<RoleName> asList() {
-    return new ArrayList<>(values);
+  public Seq<RoleName> asSeq() {
+    return values;
+  }
+
+  static RoleNames from(Member member) {
+    Vector<RoleName> frontend, backend;
+    if (member.hasRole(RoleName.FRONTEND.toString().toLowerCase(Locale.getDefault()))) {
+      frontend = Vector.of(RoleName.FRONTEND);
+    } else {
+      frontend = Vector.empty();
+    }
+    if (member.hasRole(RoleName.FRONTEND.toString().toLowerCase(Locale.getDefault()))) {
+      backend = Vector.of(RoleName.FRONTEND);
+    } else {
+      backend = Vector.empty();
+    }
+    return new RoleNames(frontend.appendAll(backend));
+  }
+
+  public boolean contains(RoleName roleName) {
+    return values.contains(roleName);
   }
 }

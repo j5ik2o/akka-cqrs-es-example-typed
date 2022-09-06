@@ -23,6 +23,7 @@ import akka.actor.typed.Scheduler;
 import akka.serialization.jackson.JacksonObjectMapperFactory;
 import akka.serialization.jackson.JacksonObjectMapperProviderSetup;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -38,9 +39,9 @@ public final class MainModule extends AbstractModule {
   }
 
   @Provides
-  private Behavior<MainProtocol.Command> mainBehavior() {
+  private Behavior<MainProtocol.Command> mainBehavior(Injector injector) {
     var stopWatch = new StopWatch();
-    return MainActorFactory.create(stopWatch);
+    return MainActorFactory.create(injector, stopWatch);
   }
 
   @Provides
