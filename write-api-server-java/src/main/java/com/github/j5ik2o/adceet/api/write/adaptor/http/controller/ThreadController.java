@@ -73,7 +73,7 @@ public final class ThreadController extends AllDirectives {
                       mediaType = MediaType.APPLICATION_JSON)))
   public Route createThread() {
     return path(
-        "thread",
+        "threads",
         () ->
             post(
                 () ->
