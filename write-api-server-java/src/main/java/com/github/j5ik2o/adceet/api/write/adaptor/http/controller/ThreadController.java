@@ -85,17 +85,16 @@ public final class ThreadController extends AllDirectives {
                             Validator.validateAccountId(json.accountId())
                                 .fold(
                                     errors -> reject(new ValidationRejection(errors)),
-                                    accountId -> {
-                                      var result =
-                                          createThreadUseCase.execute(new ThreadId(), accountId);
-                                      return onSuccess(
-                                          result,
-                                          threadId ->
-                                              complete(
-                                                  StatusCodes.OK,
-                                                  new CreateThreadResponseJson(threadId.asString()),
-                                                  Jackson.marshaller(
-                                                      JacksonObjectMappers.defaultObjectMapper())));
-                                    }))));
+                                    accountId ->
+                                        onSuccess(
+                                            createThreadUseCase.execute(new ThreadId(), accountId),
+                                            threadId ->
+                                                complete(
+                                                    StatusCodes.OK,
+                                                    new CreateThreadResponseJson(
+                                                        threadId.asString()),
+                                                    Jackson.marshaller(
+                                                        JacksonObjectMappers
+                                                            .defaultObjectMapper())))))));
   }
 }

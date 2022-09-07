@@ -66,8 +66,7 @@ class ThreadController(
                   reject(validation.ValidationRejection(errors))
                 },
                 { accountId =>
-                  val result = createThreadUseCase.execute(ThreadId(), accountId)
-                  onSuccess(result) { threadId =>
+                  onSuccess(createThreadUseCase.execute(ThreadId(), accountId)) { threadId =>
                     complete(StatusCodes.OK, CreateThreadResponseJson(threadId.asString))
                   }
                 }
