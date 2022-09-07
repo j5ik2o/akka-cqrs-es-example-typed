@@ -23,11 +23,14 @@ import static akka.http.javadsl.server.PathMatchers.segment;
 
 import akka.http.javadsl.server.Route;
 import com.github.j5ik2o.adceet.api.write.JacksonObjectMappers;
-import com.github.j5ik2o.adceet.api.write.adaptor.http.json.CreateThreadRequestJson;
-import com.github.j5ik2o.adceet.api.write.adaptor.http.json.CreateThreadResponseJson;
+import com.github.j5ik2o.adceet.api.write.adaptor.http.json.*;
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.ValidationRejection;
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.Validator;
+import com.github.j5ik2o.adceet.api.write.domain.Message;
+import com.github.j5ik2o.adceet.api.write.domain.MessageId;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
+import com.github.j5ik2o.adceet.api.write.use_case.AddMemberUseCase;
+import com.github.j5ik2o.adceet.api.write.use_case.AddMessageUseCase;
 import com.github.j5ik2o.adceet.api.write.use_case.CreateThreadUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,13 +45,20 @@ import jakarta.ws.rs.core.MediaType;
 
 public final class ThreadController extends AllDirectives {
   private final CreateThreadUseCase createThreadUseCase;
+  private final AddMemberUseCase addMemberUseCase;
+  private final AddMessageUseCase addMessageUseCase;
 
-  public ThreadController(CreateThreadUseCase createThreadUseCase) {
+  public ThreadController(
+      CreateThreadUseCase createThreadUseCase,
+      AddMemberUseCase addMemberUseCase,
+      AddMessageUseCase addMessageUseCase) {
     this.createThreadUseCase = createThreadUseCase;
+    this.addMemberUseCase = addMemberUseCase;
+    this.addMessageUseCase = addMessageUseCase;
   }
 
   public Route toRoute() {
-    return concat(createThread());
+    return concat(createThread(), addMember(), addMessage());
   }
 
   @Path("/threads")
@@ -96,5 +106,111 @@ public final class ThreadController extends AllDirectives {
                                                     Jackson.marshaller(
                                                         JacksonObjectMappers
                                                             .defaultObjectMapper())))))));
+  }
+
+  @Path("/threads/{threadId}/member")
+  @POST
+  @Operation(
+      description = "Add a member to the thread",
+      method = "POST",
+      parameters = @Parameter(name = "threadId", in = ParameterIn.PATH),
+      requestBody =
+          @RequestBody(
+              description = "add member request",
+              required = true,
+              content =
+                  @Content(
+                      schema = @Schema(implementation = AddMemberRequestJson.class),
+                      mediaType = MediaType.APPLICATION_JSON)),
+      responses =
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+                  @Content(
+                      schema = @Schema(implementation = AddMemberRequestJson.class),
+                      mediaType = MediaType.APPLICATION_JSON)))
+  public Route addMember() {
+    return path(
+        segment("threads").slash(segment()).slash("members"),
+        threadIdString ->
+            post(
+                () ->
+                    entity(
+                        Jackson.unmarshaller(
+                            JacksonObjectMappers.defaultObjectMapper(), AddMemberRequestJson.class),
+                        json ->
+                            Validator.validateThreadIdWithAccountId(
+                                    threadIdString, json.accountId())
+                                .fold(
+                                    errors -> reject(new ValidationRejection(errors)),
+                                    threadIdWithAccountId ->
+                                        onSuccess(
+                                            addMemberUseCase.execute(
+                                                threadIdWithAccountId._1, threadIdWithAccountId._2),
+                                            ignore ->
+                                                complete(
+                                                    StatusCodes.OK,
+                                                    new AddMemberResponseJson(
+                                                        threadIdWithAccountId._1.asString()),
+                                                    Jackson.marshaller(
+                                                        JacksonObjectMappers
+                                                            .defaultObjectMapper())))))));
+  }
+
+  @Path("/threads/{threadId}/messages")
+  @POST
+  @Operation(
+      description = "Add a message to the thread",
+      method = "POST",
+      parameters = @Parameter(name = "threadId", in = ParameterIn.PATH),
+      requestBody =
+          @RequestBody(
+              description = "add message request",
+              required = true,
+              content =
+                  @Content(
+                      schema = @Schema(implementation = AddMessageRequestJson.class),
+                      mediaType = MediaType.APPLICATION_JSON)),
+      responses =
+          @ApiResponse(
+              responseCode = "200",
+              description = "OK",
+              content =
+                  @Content(
+                      schema = @Schema(implementation = AddMessageResponseJson.class),
+                      mediaType = MediaType.APPLICATION_JSON)))
+  public Route addMessage() {
+    return path(
+        segment("threads").slash(segment()).slash("messages"),
+        threadIdString ->
+            post(
+                () ->
+                    entity(
+                        Jackson.unmarshaller(
+                            JacksonObjectMappers.defaultObjectMapper(),
+                            AddMessageRequestJson.class),
+                        json ->
+                            Validator.validateThreadIdWithAccountId(
+                                    threadIdString, json.accountId())
+                                .fold(
+                                    errors -> reject(new ValidationRejection(errors)),
+                                    threadIdWithAccountId -> {
+                                      var message =
+                                          new Message(
+                                              new MessageId(),
+                                              threadIdWithAccountId._1,
+                                              threadIdWithAccountId._2,
+                                              json.body());
+                                      return onSuccess(
+                                          addMessageUseCase.execute(message),
+                                          ignore ->
+                                              complete(
+                                                  StatusCodes.OK,
+                                                  new AddMemberResponseJson(
+                                                      threadIdWithAccountId._1.asString()),
+                                                  Jackson.marshaller(
+                                                      JacksonObjectMappers.defaultObjectMapper())));
+                                    }))));
   }
 }
