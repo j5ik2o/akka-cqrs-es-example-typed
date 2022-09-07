@@ -22,7 +22,7 @@ import static akka.http.javadsl.server.Directives.complete;
 import akka.http.javadsl.server.ExceptionHandler;
 import com.github.j5ik2o.adceet.api.write.use_case.ThreadException;
 
-public class ExceptionHandlers {
+public final class ExceptionHandlers {
 
   public static ExceptionHandler defaultHandler() {
     var builder = ExceptionHandler.newBuilder();

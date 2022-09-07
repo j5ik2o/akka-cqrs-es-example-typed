@@ -28,7 +28,6 @@ import com.github.j5ik2o.adceet.api.write.adaptor.http.json.AddMessageResponseJs
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.CreateThreadRequestJson;
 import com.github.j5ik2o.adceet.api.write.domain.AccountId;
 import com.github.j5ik2o.adceet.api.write.domain.Message;
-import com.github.j5ik2o.adceet.api.write.domain.MessageId;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
 import com.github.j5ik2o.adceet.api.write.use_case.AddMemberUseCase;
 import com.github.j5ik2o.adceet.api.write.use_case.AddMessageUseCase;
@@ -36,7 +35,6 @@ import com.github.j5ik2o.adceet.api.write.use_case.CreateThreadUseCase;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.jupiter.api.*;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.concurrent.CompletableFuture;
