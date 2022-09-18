@@ -7,6 +7,52 @@ lazy val root = (project in file("."))
     name := "adceet-root"
   ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
 
+lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-read-model-updater-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus
+    )
+  )
+
+lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala"))
+  .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .settings(
+    name := "read-model-updater-scala",
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings,
+    Settings.dockerCommonSettings,
+    Settings.ecrSettings
+  ).dependsOn(`read-model-updater-base`)
+
+lazy val `read-api-base` = (project in file("read-api-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-read-api-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus
+    )
+  )
+
+lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
+  .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .settings(
+    name := "read-api-server-scala",
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings,
+    Settings.dockerCommonSettings,
+    Settings.ecrSettings
+  ).dependsOn(`read-api-base`)
+
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
     Settings.baseSettings,
