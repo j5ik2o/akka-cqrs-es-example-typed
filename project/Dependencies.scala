@@ -30,7 +30,7 @@ object Dependencies {
     val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.11.0"
   }
   object arrowKt {
-    val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.2"
+    val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.3"
   }
   object vavr {
     val vavr       = "io.vavr" % "vavr"        % "0.10.4"
