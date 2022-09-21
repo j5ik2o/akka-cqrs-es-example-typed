@@ -39,6 +39,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.8.1")
 
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.0")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.2")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.3")
 
 addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
