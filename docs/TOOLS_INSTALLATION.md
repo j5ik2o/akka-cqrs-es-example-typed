@@ -60,7 +60,7 @@ adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer impor
 ```sh
 $ asdf plugin add java
 $ asdf list all java
-$ asdf instal java temurin-17.0.4+101
+$ asdf install java temurin-17.0.4+101
 $ asdf local java temurin-17.0.4+101
 # Set the appropriate settings for your environment.
 $ echo "export JAVA_OPTS='--enable-preiview'" >> ~/.bashrc
