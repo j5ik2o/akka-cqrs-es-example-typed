@@ -49,7 +49,7 @@ https://github.com/GoogleCloudPlatform/terraformer
 ```shell
 adceet-root $ asdf plugin add terraformer https://github.com/grimoh/asdf-terraformer.git
 adceet-root $ asdf install terraformer 0.8.20
-adceet-root $ asdf local terrformer 0.8.20
+adceet-root $ asdf local terraformer 0.8.20
 adceet-root $ mkdir ./temp
 adceet-root/temp $ export GODEBUG=asyncpreemptoff=1
 adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer import datadog --resources=dashboard --filter=datadog_dashboard=XXXXX
