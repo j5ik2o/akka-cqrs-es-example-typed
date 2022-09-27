@@ -5,7 +5,13 @@ lazy val root = (project in file("."))
     Settings.baseSettings,
     Settings.scalaSettings,
     name := "adceet-root"
-  ).aggregate(`test-base`, `write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
+  ).aggregate(
+    `test-base`,
+    `write-api-base`,
+    `write-api-server-scala`,
+    `write-api-server-kotlin`,
+    `write-api-server-java`
+  )
 
 lazy val `test-base` = (project in file("test-base"))
   .settings(
@@ -13,14 +19,17 @@ lazy val `test-base` = (project in file("test-base"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-  name := "adceet-test-base",
-  libraryDependencies ++= Seq(
-    iheart.ficus,
-    typesafeAkka.akkaActorTyped,
-    typesafeAkka.actorTestkitTyped                           ,
-    scalatest.scalatest,
+    name := "adceet-test-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      typesafeAkka.akkaActorTyped,
+      typesafeAkka.actorTestkitTyped,
+      scalatest.scalatest,
+      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"  % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-localstack" % "1.14.34",
+        awssdk.v1.dynamodb,
+    )
   )
-)
 
 lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
   .settings(
@@ -35,7 +44,7 @@ lazy val `read-model-updater-base` = (project in file("read-model-updater-base")
       typesafeAkka.akkaActorTyped,
       airframe.ulid,
       mockito.mocktioScala % Test,
-      scalatest.scalatest % Test,
+      scalatest.scalatest  % Test
     )
   )
 
