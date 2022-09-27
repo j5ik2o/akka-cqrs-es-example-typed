@@ -63,7 +63,7 @@ $ asdf list all java
 $ asdf install java temurin-17.0.4+101
 $ asdf local java temurin-17.0.4+101
 # Set the appropriate settings for your environment.
-$ echo "export JAVA_OPTS='--enable-preiview'" >> ~/.bashrc
+$ echo "export JAVA_OPTS='--enable-preview'" >> ~/.bashrc
 $ java -version
 openjdk version "17.0.4.1" 2022-08-12
 OpenJDK Runtime Environment Temurin-17.0.4.1+1 (build 17.0.4.1+1)
