@@ -9,6 +9,8 @@ object Version {
   val kamon          = "2.5.1"
 
   val akkaPersistenceDynamoDB = "1.14.32"
+
+  val akkaKinesis = "1.0.253"
 }
 
 object Dependencies {
@@ -172,5 +174,7 @@ object Dependencies {
       "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v1" % Version.akkaPersistenceDynamoDB
     val akkaPersistenceDynamoDBSnapshotV2 =
       "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v2" % Version.akkaPersistenceDynamoDB
+
+    val akkaKinesisKclDynamoDBStreams = "com.github.j5ik2o" %% "akka-kinesis-kcl-dynamodb-streams" % Version.akkaKinesis
   }
 }

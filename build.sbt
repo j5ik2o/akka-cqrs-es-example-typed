@@ -5,7 +5,22 @@ lazy val root = (project in file("."))
     Settings.baseSettings,
     Settings.scalaSettings,
     name := "adceet-root"
-  ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
+  ).aggregate(`test-base`, `write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
+
+lazy val `test-base` = (project in file("test-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+  name := "adceet-test-base",
+  libraryDependencies ++= Seq(
+    iheart.ficus,
+    typesafeAkka.akkaActorTyped,
+    typesafeAkka.actorTestkitTyped                           ,
+    scalatest.scalatest,
+  )
+)
 
 lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
   .settings(
@@ -15,7 +30,12 @@ lazy val `read-model-updater-base` = (project in file("read-model-updater-base")
   ).settings(
     name := "adceet-read-model-updater-base",
     libraryDependencies ++= Seq(
-      iheart.ficus
+      iheart.ficus,
+      j5ik2o.akkaKinesisKclDynamoDBStreams,
+      typesafeAkka.akkaActorTyped,
+      airframe.ulid,
+      mockito.mocktioScala % Test,
+      scalatest.scalatest % Test,
     )
   )
 
@@ -28,7 +48,7 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     Settings.javaSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
-  ).dependsOn(`read-model-updater-base`)
+  ).dependsOn(`read-model-updater-base` % "compile->compile;test->test", `test-base` % "test")
 
 lazy val `read-api-base` = (project in file("read-api-base"))
   .settings(
@@ -161,7 +181,7 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
       "com.github.scopt" %% "scopt"      % "4.0.1",
       "com.beachape"     %% "enumeratum" % "1.7.0"
     )
-  ).dependsOn(`write-api-base` % "compile->compile;test->test")
+  ).dependsOn(`write-api-base` % "compile->compile;test->test", `test-base` % "test")
 
 lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
