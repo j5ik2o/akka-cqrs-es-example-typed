@@ -15,7 +15,7 @@
  */
 package com.github.j5ik2o.adceet.api.rmu
 
-import com.github.j5ik2o.adceet.test.ActorSpec
+import com.github.j5ik2o.adceet.test.{ActorSpec, DynamoDBSpecSupport}
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
 import com.typesafe.config.ConfigFactory
 import org.scalatest.freespec.AnyFreeSpecLike
@@ -73,4 +73,7 @@ class ThreadReadModelUpdaterSpec extends ActorSpec(ConfigFactory.parseString(s""
                                          |  initial-position-in-stream = "TRIM_HORIZON"
                                          |}
                                          |""".stripMargin).withFallback(ConfigFactory.load()))
-with AnyFreeSpecLike {}
+with AnyFreeSpecLike with DynamoDBSpecSupport{
+
+
+}

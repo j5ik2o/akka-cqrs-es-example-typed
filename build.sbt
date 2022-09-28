@@ -57,7 +57,7 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     Settings.javaSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
-  ).dependsOn(`read-model-updater-base` % "compile->compile;test->test", `test-base` % "test")
+  ).dependsOn(`read-model-updater-base` % "compile->compile;test->test", `test-base` % "test", `write-api-server-scala` % "test->test")
 
 lazy val `read-api-base` = (project in file("read-api-base"))
   .settings(

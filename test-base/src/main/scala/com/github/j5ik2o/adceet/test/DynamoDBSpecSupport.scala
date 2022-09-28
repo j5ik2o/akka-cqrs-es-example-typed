@@ -15,25 +15,13 @@
  */
 package com.github.j5ik2o.adceet.test
 
-import com.amazonaws.auth.{ AWSStaticCredentialsProvider, BasicAWSCredentials }
+import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.regions.Regions
-import com.amazonaws.services.dynamodbv2.model.{
-  AttributeDefinition,
-  CreateTableRequest,
-  GlobalSecondaryIndex,
-  KeySchemaElement,
-  KeyType,
-  Projection,
-  ProjectionType,
-  ProvisionedThroughput,
-  ScalarAttributeType,
-  StreamSpecification,
-  StreamViewType
-}
-import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBClientBuilder }
-import com.github.j5ik2o.dockerController.{ DockerController, DockerControllerSpecSupport, WaitPredicates }
-import com.github.j5ik2o.dockerController.localstack.{ LocalStackController, Service }
+import com.amazonaws.services.dynamodbv2.model.{AttributeDefinition, CreateTableRequest, GlobalSecondaryIndex, KeySchemaElement, KeyType, Projection, ProjectionType, ProvisionedThroughput, ScalarAttributeType, StreamSpecification, StreamViewType}
+import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
+import com.github.j5ik2o.dockerController.{DockerContainerCreateRemoveLifecycle, DockerContainerStartStopLifecycle, DockerController, DockerControllerSpecSupport, WaitPredicates}
+import com.github.j5ik2o.dockerController.localstack.{LocalStackController, Service}
 import org.scalatest.TestSuite
 
 import scala.concurrent.duration.Duration
@@ -41,10 +29,18 @@ import scala.jdk.CollectionConverters._
 
 trait DynamoDBSpecSupport extends DockerControllerSpecSupport {
   this: TestSuite =>
+
+  override protected def createRemoveLifecycle: DockerContainerCreateRemoveLifecycle.Value =
+    DockerContainerCreateRemoveLifecycle.ForAllTest
+
+  override protected def startStopLifecycle: DockerContainerStartStopLifecycle.Value =
+    DockerContainerStartStopLifecycle.ForAllTest
+
   val accessKeyId: String         = "AKIAIOSFODNN7EXAMPLE"
   val secretAccessKey: String     = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-  val hostPort: Int               = temporaryServerPort()
-  val endpointForDynamoDB: String = s"http://$dockerHost:$hostPort"
+  lazy val hostName: String            = dockerHost
+  lazy val hostPort: Int               = temporaryServerPort()
+  val endpointForDynamoDB: String = {val result =  s"http://$hostName:$hostPort"; println(s"endpointForDynamoDB = $result"); result }
   val region: Regions             = Regions.AP_NORTHEAST_1
 
   protected val controller: LocalStackController = LocalStackController(dockerClient)(
