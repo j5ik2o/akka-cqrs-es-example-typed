@@ -27,7 +27,7 @@ object Dependencies {
   }
 
   object kodeinDI {
-    val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.11.0"
+    val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.15.0"
   }
   object arrowKt {
     val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.3"
@@ -154,7 +154,7 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts = "com.amazonaws" % "aws-java-sdk-sts" % "1.12.312"
+      val sts = "com.amazonaws" % "aws-java-sdk-sts" % "1.12.313"
     }
     object v2 {
       val sts = "software.amazon.awssdk" % "sts" % "2.17.283"
