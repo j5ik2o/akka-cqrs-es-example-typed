@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.github.j5ik2o.adceet.api.rmu
+
 import akka.{Done, NotUsed}
 import net.ceedubs.ficus.Ficus._
 import akka.actor.typed.Behavior
@@ -44,6 +45,21 @@ import java.util.Date
 import scala.concurrent.{Future, Promise}
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
+
+object ThreadReadModelUpdater {
+  def apply(id: ULID,
+            amazonDynamoDB: AmazonDynamoDB,
+            amazonDynamoDBStreams: AmazonDynamoDBStreams,
+            amazonCloudWatch: AmazonCloudWatch,
+            awsCredentialsProvider: AWSCredentialsProvider,
+            producerFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed],
+            timestampAtInitialPositionInStream: Option[Instant],
+            regionName: Option[String],
+            config: Config): Behavior[Command] = Behaviors.setup[Command] {ctx =>
+    new ThreadReadModelUpdater(id, amazonDynamoDB, amazonDynamoDBStreams, amazonCloudWatch, awsCredentialsProvider, producerFlow, timestampAtInitialPositionInStream, regionName, config)(ctx)
+
+  }
+}
 
 final class ThreadReadModelUpdater(
                               id: ULID,
@@ -97,12 +113,12 @@ final class ThreadReadModelUpdater(
 
   private val convertToPidWithMessageFlow
   : Flow[CommittableRecord, ((String, Array[Byte]), CommittableRecord), NotUsed] = Flow[CommittableRecord].map {
-    commitableRecord =>
-      val dynamoDb = commitableRecord.record.asInstanceOf[RecordAdapter].getInternalObject.getDynamodb
+    committableRecord =>
+      val dynamoDb = committableRecord.record.asInstanceOf[RecordAdapter].getInternalObject.getDynamodb
       val newImage = dynamoDb.getNewImage.asScala
       val pid = newImage("persistence-id").getS
       val message = newImage("message").getB.array()
-      (pid -> message, commitableRecord)
+      (pid -> message, committableRecord)
   }
 
 

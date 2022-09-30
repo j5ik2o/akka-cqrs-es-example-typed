@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.domain
+package com.github.j5ik2o.adceet.domain
 
-sealed trait ThreadError {
-  def message: String
+import wvlet.airframe.ulid.ULID
+
+final case class ThreadId(value: ULID = ULID.newULID) extends ValueObject {
+  def asString: String = value.toString()
 }
 
-object ThreadError {
+object ThreadId {
 
-  final case class ThreadCountOverError(message: String) extends ThreadError
-  final case class ExistsMemberError(accountId: AccountId) extends ThreadError {
-    override def message: String = s"This account($accountId) is already a member."
+  def parseFromString(text: String): Either[Exception, ThreadId] = {
+    try {
+      Right(ThreadId(ULID.fromString(text)))
+    } catch {
+      case ex: NumberFormatException    => Left(ex)
+      case ex: IllegalArgumentException => Left(ex)
+      case ex: Throwable                => throw ex
+    }
   }
-  final case class NotMemberError(accountId: AccountId) extends ThreadError {
-    override def message: String = s"This account($accountId) is not a member."
-  }
-  final case class MessageSizeOverError(message: String) extends ThreadError
 
 }

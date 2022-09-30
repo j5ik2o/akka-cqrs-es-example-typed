@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.domain
+package com.github.j5ik2o.adceet.domain
 
 import wvlet.airframe.ulid.ULID
 
-final case class ThreadId(value: ULID = ULID.newULID) extends ValueObject {
-  def asString: String = value.toString()
-}
+final case class MessageId(val value: ULID = ULID.newULID) extends ValueObject
 
-object ThreadId {
-
-  def parseFromString(text: String): Either[Exception, ThreadId] = {
+object MessageId {
+  def parseFromString(text: String): Either[Exception, MessageId] = {
     try {
-      Right(ThreadId(ULID.fromString(text)))
+      Right(MessageId(ULID.fromString(text)))
     } catch {
       case ex: NumberFormatException    => Left(ex)
       case ex: IllegalArgumentException => Left(ex)
       case ex: Throwable                => throw ex
     }
   }
-
 }

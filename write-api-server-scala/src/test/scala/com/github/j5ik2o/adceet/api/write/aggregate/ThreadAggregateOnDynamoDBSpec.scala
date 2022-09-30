@@ -17,17 +17,17 @@ package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.typed.Behavior
 import com.github.dockerjava.core.DockerClientConfig
-import com.github.j5ik2o.adceet.api.write.CborSerializable
-import com.github.j5ik2o.adceet.api.write.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.ThreadId
+import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
-import com.github.j5ik2o.adceet.test.{ActorSpec, DynamoDBSpecSupport}
+import com.github.j5ik2o.adceet.test.{ActorSpec, LocalstackSpecSupport}
 import com.github.j5ik2o.dockerController.DockerClientConfigUtil
 import com.typesafe.config.{Config, ConfigFactory}
 
 object ThreadAggregateOnDynamoDBSpec {
-  protected val dockerClientConfig: DockerClientConfig = DockerClientConfigUtil.buildConfigAwareOfDockerMachine()
-  val dockerHost: String = DockerClientConfigUtil.dockerHost(dockerClientConfig)
-  val dynamoDbPort: Int = RandomPortUtil.temporaryServerPort()
+  private val dockerClientConfig: DockerClientConfig = DockerClientConfigUtil.buildConfigAwareOfDockerMachine()
+  val dockerHost: String                             = DockerClientConfigUtil.dockerHost(dockerClientConfig)
+  val dynamoDbPort: Int                              = RandomPortUtil.temporaryServerPort()
   val config: Config = ConfigFactory.parseString(
     s"""
       |j5ik2o {
@@ -61,10 +61,10 @@ object ThreadAggregateOnDynamoDBSpec {
   )
 }
 
-class ThreadAggregateOnDynamoDBSpec extends ActorSpec(ThreadAggregateOnDynamoDBSpec.config) with DynamoDBSpecSupport {
+class ThreadAggregateOnDynamoDBSpec extends ActorSpec(ThreadAggregateOnDynamoDBSpec.config) with LocalstackSpecSupport {
 
   override lazy val hostName: String = ThreadAggregateOnDynamoDBSpec.dockerHost
-  override lazy val hostPort: Int = ThreadAggregateOnDynamoDBSpec.dynamoDbPort
+  override lazy val dynamodbLocalPort: Int    = ThreadAggregateOnDynamoDBSpec.dynamoDbPort
 
   val underlying: AbstractThreadAggregateTestBase = new AbstractThreadAggregateTestBase(testKit) {
     override def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest] = {

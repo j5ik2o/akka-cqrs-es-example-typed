@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.domain
+package com.github.j5ik2o.adceet.domain
 
-import com.github.j5ik2o.adceet.api.write.CborSerializable
 import wvlet.airframe.ulid.ULID
 
-object ThreadEvents {
+final case class AccountId(value: ULID = ULID.newULID) extends ValueObject {
+  def asString: String = value.toString()
+}
 
-  trait ThreadEvent extends CborSerializable {
-    def id: ULID
-    def threadId: ThreadId
+object AccountId {
+
+  def parseFromString(text: String): Either[Exception, AccountId] = {
+    try {
+      Right(AccountId(ULID.fromString(text)))
+    } catch {
+      case ex: NumberFormatException    => Left(ex)
+      case ex: IllegalArgumentException => Left(ex)
+      case ex: Throwable                => throw ex
+    }
   }
-
-  final case class ThreadCreated(id: ULID, threadId: ThreadId, accountId: AccountId) extends ThreadEvent
-  final case class MemberAdd(id: ULID, threadId: ThreadId, accountId: AccountId) extends ThreadEvent
-  final case class MessageAdd(id: ULID, threadId: ThreadId, accountId: AccountId, messageId: MessageId, body: String)
-      extends ThreadEvent
 
 }

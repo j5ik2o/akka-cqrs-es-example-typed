@@ -16,14 +16,14 @@
 package com.github.j5ik2o.adceet.api.write.use.`case`
 
 import akka.actor.typed.scaladsl.AskPattern.Askable
-import akka.actor.typed.{ ActorRef, ActorSystem, Scheduler }
+import akka.actor.typed.{ActorRef, ActorSystem, Scheduler}
 import akka.util.Timeout
 import com.github.j5ik2o.adceet.api.write.aggregate.ThreadAggregateProtocol
-import com.github.j5ik2o.adceet.api.write.domain.{ Message, ThreadId }
+import com.github.j5ik2o.adceet.domain.{Message, ThreadId}
 import wvlet.airframe.ulid.ULID
 
-import scala.concurrent.duration.{ DurationInt, FiniteDuration }
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.concurrent.{ExecutionContext, Future}
 
 final class AddMessageInteractor(
     private val system: ActorSystem[_],

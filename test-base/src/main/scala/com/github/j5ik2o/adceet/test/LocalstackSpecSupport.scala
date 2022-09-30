@@ -20,15 +20,21 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.model.{AttributeDefinition, CreateTableRequest, GlobalSecondaryIndex, KeySchemaElement, KeyType, Projection, ProjectionType, ProvisionedThroughput, ScalarAttributeType, StreamSpecification, StreamViewType}
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
+import com.github.j5ik2o.dockerController.WaitPredicates.WaitPredicate
+import com.github.j5ik2o.dockerController.dynamodbLocal.DynamoDBLocalController
 import com.github.j5ik2o.dockerController.{DockerContainerCreateRemoveLifecycle, DockerContainerStartStopLifecycle, DockerController, DockerControllerSpecSupport, WaitPredicates}
 import com.github.j5ik2o.dockerController.localstack.{LocalStackController, Service}
 import org.scalatest.TestSuite
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, DurationInt}
 import scala.jdk.CollectionConverters._
 
-trait DynamoDBSpecSupport extends DockerControllerSpecSupport {
+trait LocalstackSpecSupport extends DockerControllerSpecSupport {
   this: TestSuite =>
+
+  private val testTimeFactor: Int = sys.env.getOrElse("TEST_TIME_FACTOR", "1").toInt
+  logger.debug(s"testTimeFactor = $testTimeFactor")
+
 
   override protected def createRemoveLifecycle: DockerContainerCreateRemoveLifecycle.Value =
     DockerContainerCreateRemoveLifecycle.ForAllTest
@@ -36,31 +42,43 @@ trait DynamoDBSpecSupport extends DockerControllerSpecSupport {
   override protected def startStopLifecycle: DockerContainerStartStopLifecycle.Value =
     DockerContainerStartStopLifecycle.ForAllTest
 
-  val accessKeyId: String         = "AKIAIOSFODNN7EXAMPLE"
-  val secretAccessKey: String     = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-  lazy val hostName: String            = dockerHost
-  lazy val hostPort: Int               = temporaryServerPort()
-  val endpointForDynamoDB: String = {val result =  s"http://$hostName:$hostPort"; println(s"endpointForDynamoDB = $result"); result }
-  val region: Regions             = Regions.AP_NORTHEAST_1
+  val accessKeyId: String     = "AKIAIOSFODNN7EXAMPLE"
+  val secretAccessKey: String = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
-  protected val controller: LocalStackController = LocalStackController(dockerClient)(
-    services = Set(Service.DynamoDB),
-    edgeHostPort = hostPort,
+  lazy val hostName: String   = dockerHost
+  lazy val dynamodbLocalPort: Int      = temporaryServerPort()
+  lazy val cloudwatchPort: Int      = temporaryServerPort()
+
+  val serviceEndpoint: String = s"http://$hostName:$dynamodbLocalPort"
+  val region: Regions = Regions.AP_NORTHEAST_1
+
+  protected val dynamodbLocalController: DockerController = new DynamoDBLocalController(dockerClient, imageTag = None)(dynamodbLocalPort)
+
+  protected val cloudwatchController: DockerController = LocalStackController(dockerClient)(
+    services = Set(Service.DynamoDB, Service.DynamoDBStreams, Service.CloudWatch),
+    edgeHostPort = cloudwatchPort,
     hostNameExternal = Some(dockerHost),
     defaultRegion = Some(region.getName)
   )
 
-  override protected val dockerControllers: Vector[DockerController] = Vector(controller)
+  override protected val dockerControllers: Vector[DockerController] = Vector(dynamodbLocalController, cloudwatchController)
+
+
+  val waitPredicate: WaitPredicate = WaitPredicates.forLogMessageByRegex(
+    DynamoDBLocalController.RegexOfWaitPredicate,
+    Some((1 * testTimeFactor).seconds)
+  )
 
   override protected val waitPredicatesSettings: Map[DockerController, WaitPredicateSetting] =
     Map(
-      controller -> WaitPredicateSetting(Duration.Inf, WaitPredicates.forLogMessageExactly("Ready."))
+      cloudwatchController -> WaitPredicateSetting(Duration.Inf, WaitPredicates.forLogMessageExactly("Ready.")),
+      dynamodbLocalController -> WaitPredicateSetting(Duration.Inf, waitPredicate)
     )
 
   protected val dynamoDBClient: AmazonDynamoDB = {
     AmazonDynamoDBClientBuilder
       .standard()
-      .withEndpointConfiguration(new EndpointConfiguration(endpointForDynamoDB, region.getName))
+      .withEndpointConfiguration(new EndpointConfiguration(serviceEndpoint, region.getName))
       .withCredentials(
         new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKeyId, secretAccessKey))
       )

@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.domain
+package com.github.j5ik2o.adceet.domain
 
 final case class Message(id: MessageId, threadId: ThreadId, senderId: AccountId, body: String) extends ValueObject

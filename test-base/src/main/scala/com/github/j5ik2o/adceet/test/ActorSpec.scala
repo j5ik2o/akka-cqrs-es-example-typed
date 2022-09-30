@@ -15,15 +15,14 @@
  */
 package com.github.j5ik2o.adceet.test
 
-
 import akka.actor.ActorSystem
 import akka.actor.testkit.typed.TestKitSettings
-import akka.actor.testkit.typed.scaladsl.{ActorTestKit, ActorTestKitBase, ScalaTestWithActorTestKit}
+import akka.actor.testkit.typed.scaladsl.{ ActorTestKit, ActorTestKitBase, ScalaTestWithActorTestKit }
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.adapter._
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.freespec.AnyFreeSpecLike
-import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.time.{ Millis, Seconds, Span }
 
 import scala.concurrent.duration.FiniteDuration
 

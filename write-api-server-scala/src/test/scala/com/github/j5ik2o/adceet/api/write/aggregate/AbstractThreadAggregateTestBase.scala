@@ -16,8 +16,8 @@
 package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
-import akka.actor.typed.{ ActorRef, Behavior }
-import com.github.j5ik2o.adceet.api.write.domain.{ AccountId, Message, MessageId, ThreadId }
+import akka.actor.typed.{ActorRef, Behavior}
+import com.github.j5ik2o.adceet.domain.{AccountId, Message, MessageId, ThreadId}
 import wvlet.airframe.ulid.ULID
 
 abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
