@@ -49,7 +49,7 @@ object ClientConfigurationUtil {
       ClientConfiguration.DEFAULT_REQUEST_TIMEOUT.milliseconds
     )
     val maxErrorRetry = config.getAs[Int]("max-error-retry")
-    val retryMode = config.getAs[String]("retry-mode")
+    val retryMode     = config.getAs[String]("retry-mode")
 
     val cc = new ClientConfiguration()
     // * public ClientConfiguration withProtocol(Protocol protocol) {

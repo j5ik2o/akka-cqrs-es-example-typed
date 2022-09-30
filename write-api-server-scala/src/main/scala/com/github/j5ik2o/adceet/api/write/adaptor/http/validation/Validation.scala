@@ -17,7 +17,7 @@ package com.github.j5ik2o.adceet.api.write.adaptor.http.validation
 
 import cats.data.ValidatedNel
 import cats.implicits._
-import com.github.j5ik2o.adceet.domain.{AccountId, ThreadId}
+import com.github.j5ik2o.adceet.domain.{ AccountId, ThreadId }
 
 sealed abstract class ValidationError(val msg: String) {}
 

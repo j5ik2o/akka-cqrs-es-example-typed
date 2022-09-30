@@ -20,14 +20,14 @@ lazy val `infrastructure` = (project in file("infrastructure"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-  name := "adceet-infrastructure",
-  libraryDependencies ++= Seq(
-    iheart.ficus,
-    typesafeAkka.akkaActorTyped,
-    awssdk.v1.dynamodb,
-    awssdk.v1.cloudwatch,
+    name := "adceet-infrastructure",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      typesafeAkka.akkaActorTyped,
+      awssdk.v1.dynamodb,
+      awssdk.v1.cloudwatch
+    )
   )
-)
 
 lazy val `domain-scala` = (project in file("domain-scala"))
   .settings(
@@ -35,11 +35,11 @@ lazy val `domain-scala` = (project in file("domain-scala"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-  name := "adceet-domain",
-  libraryDependencies ++= Seq(
-    airframe.ulid
-  )
-).dependsOn(`infrastructure`)
+    name := "adceet-domain",
+    libraryDependencies ++= Seq(
+      airframe.ulid
+    )
+  ).dependsOn(`infrastructure`)
 
 lazy val `test-base` = (project in file("test-base"))
   .settings(
@@ -53,8 +53,8 @@ lazy val `test-base` = (project in file("test-base"))
       typesafeAkka.akkaActorTyped,
       typesafeAkka.actorTestkitTyped,
       scalatest.scalatest,
-      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"  % "1.14.34",
-      "com.github.j5ik2o" %% "docker-controller-scala-localstack" % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.14.34",
       "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.14.34",
       awssdk.v1.dynamodb
     )

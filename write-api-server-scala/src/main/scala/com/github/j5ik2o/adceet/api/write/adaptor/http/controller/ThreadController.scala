@@ -21,17 +21,17 @@ import akka.http.scaladsl.server.Route
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json._
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.Validator
-import com.github.j5ik2o.adceet.api.write.use.`case`.{AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase}
-import com.github.j5ik2o.adceet.domain.{Message, MessageId, ThreadId}
+import com.github.j5ik2o.adceet.api.write.use.`case`.{ AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase }
+import com.github.j5ik2o.adceet.domain.{ Message, MessageId, ThreadId }
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 import io.swagger.v3.oas.annotations.enums.ParameterIn
-import io.swagger.v3.oas.annotations.media.{Content, Schema}
+import io.swagger.v3.oas.annotations.media.{ Content, Schema }
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.{Operation, Parameter}
+import io.swagger.v3.oas.annotations.{ Operation, Parameter }
 import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.{POST, Path}
+import jakarta.ws.rs.{ POST, Path }
 
 final class ThreadController(
     private val createThreadUseCase: CreateThreadUseCase,

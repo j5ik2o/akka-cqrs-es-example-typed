@@ -18,11 +18,11 @@ package com.github.j5ik2o.adceet.api.write.aggregate
 import akka.actor.typed.Behavior
 import akka.cluster.MemberStatus
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
-import akka.cluster.typed.{Cluster, Join}
+import akka.cluster.typed.{ Cluster, Join }
 import com.github.j5ik2o.adceet.domain.ThreadId
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.ActorSpec
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import java.util.UUID
 

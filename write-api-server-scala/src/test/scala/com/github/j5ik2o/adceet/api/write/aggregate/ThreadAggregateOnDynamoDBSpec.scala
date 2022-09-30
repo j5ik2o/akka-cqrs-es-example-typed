@@ -20,9 +20,9 @@ import com.github.dockerjava.core.DockerClientConfig
 import com.github.j5ik2o.adceet.domain.ThreadId
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
-import com.github.j5ik2o.adceet.test.{ActorSpec, LocalstackSpecSupport}
+import com.github.j5ik2o.adceet.test.{ ActorSpec, LocalstackSpecSupport }
 import com.github.j5ik2o.dockerController.DockerClientConfigUtil
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 
 object ThreadAggregateOnDynamoDBSpec {
   private val dockerClientConfig: DockerClientConfig = DockerClientConfigUtil.buildConfigAwareOfDockerMachine()
@@ -63,8 +63,8 @@ object ThreadAggregateOnDynamoDBSpec {
 
 class ThreadAggregateOnDynamoDBSpec extends ActorSpec(ThreadAggregateOnDynamoDBSpec.config) with LocalstackSpecSupport {
 
-  override lazy val hostName: String = ThreadAggregateOnDynamoDBSpec.dockerHost
-  override lazy val dynamodbLocalPort: Int    = ThreadAggregateOnDynamoDBSpec.dynamoDbPort
+  override lazy val hostName: String       = ThreadAggregateOnDynamoDBSpec.dockerHost
+  override lazy val dynamodbLocalPort: Int = ThreadAggregateOnDynamoDBSpec.dynamoDbPort
 
   val underlying: AbstractThreadAggregateTestBase = new AbstractThreadAggregateTestBase(testKit) {
     override def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest] = {

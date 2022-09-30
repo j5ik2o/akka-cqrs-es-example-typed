@@ -16,9 +16,9 @@
 package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior}
-import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
-import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
+import akka.actor.typed.{ ActorRef, Behavior }
+import akka.persistence.typed.{ PersistenceId, RecoveryCompleted }
+import akka.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import com.github.j5ik2o.adceet.api.write.aggregate.ThreadAggregateProtocol.StateRecoveryCompleted
 import com.github.j5ik2o.adceet.domain.ThreadEvents.ThreadEvent
 import com.github.j5ik2o.adceet.domain.ThreadId

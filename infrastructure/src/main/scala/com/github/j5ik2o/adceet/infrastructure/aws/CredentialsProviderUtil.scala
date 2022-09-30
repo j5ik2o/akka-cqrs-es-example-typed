@@ -15,13 +15,18 @@
  */
 package com.github.j5ik2o.adceet.infrastructure.aws
 
-import com.amazonaws.auth.{AWSCredentialsProvider, AWSStaticCredentialsProvider, BasicAWSCredentials, DefaultAWSCredentialsProviderChain}
+import com.amazonaws.auth.{
+  AWSCredentialsProvider,
+  AWSStaticCredentialsProvider,
+  BasicAWSCredentials,
+  DefaultAWSCredentialsProviderChain
+}
 
 object CredentialsProviderUtil {
   def createCredentialsProvider(
-                                 accessKeyId: Option[String],
-                                 secretAccessKey: Option[String]
-                               ): AWSCredentialsProvider = {
+      accessKeyId: Option[String],
+      secretAccessKey: Option[String]
+  ): AWSCredentialsProvider = {
     (accessKeyId, secretAccessKey) match {
       case (Some(aki), Some(sak)) =>
         new AWSStaticCredentialsProvider(

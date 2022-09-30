@@ -16,7 +16,7 @@
 package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.typed.ActorRef
-import com.github.j5ik2o.adceet.domain.{AccountId, Message, ThreadError, ThreadId}
+import com.github.j5ik2o.adceet.domain.{ AccountId, Message, ThreadError, ThreadId }
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import wvlet.airframe.ulid.ULID
 
