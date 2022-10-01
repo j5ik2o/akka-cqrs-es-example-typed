@@ -44,8 +44,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpecLike
 import wvlet.airframe.ulid.ULID
 
-import scala.util.{ Failure, Success }
-
 object ThreadReadModelUpdaterSpec {
   val defaultAwsAccessKeyId = "x"
   val defaultAwsSecretKey   = "x"
@@ -151,14 +149,11 @@ class ThreadReadModelUpdaterSpec
       val amazonDynamoDB                       = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
       val amazonDynamoDBStreams = AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
       val amazonCloudwatch      = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
-
       val credentialsProvider =
         CredentialsProviderUtil.createCredentialsProvider(Some(accessKeyId), Some(secretAccessKey))
       val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
       var receivePid = ""
-
-      val serializer = serialization.serializerFor(classOf[PersistentRepr])
 
       val readModelUpdaterRef = spawn(
         ThreadReadModelUpdater(

@@ -86,11 +86,17 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     Settings.javaSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
-  ).dependsOn(
+  ).settings(
+    libraryDependencies ++= Seq(
+      typesafeAkka.akkaPersistenceTyped
+    )
+  )
+  .dependsOn(
     `read-model-updater-base` % "compile->compile;test->test",
     `test-base`               % "test",
-    `write-api-server-scala`  % "test->test"
-  ).dependsOn(`domain-scala`)
+    `write-api-server-scala`  % "test->test",
+    `domain-scala`
+  )
 
 lazy val `read-api-base` = (project in file("read-api-base"))
   .settings(
@@ -100,7 +106,9 @@ lazy val `read-api-base` = (project in file("read-api-base"))
   ).settings(
     name := "adceet-read-api-base",
     libraryDependencies ++= Seq(
-      iheart.ficus
+      iheart.ficus,
+      "com.typesafe.slick" %% "slick"                % "3.4.1",
+      "mysql"               % "mysql-connector-java" % "8.0.30"
     )
   )
 
