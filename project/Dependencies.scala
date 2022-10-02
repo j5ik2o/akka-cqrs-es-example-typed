@@ -23,7 +23,7 @@ object Dependencies {
   }
 
   object logback {
-    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.1"
+    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.2"
   }
 
   object kodeinDI {
