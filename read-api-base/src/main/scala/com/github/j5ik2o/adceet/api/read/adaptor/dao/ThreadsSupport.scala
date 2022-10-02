@@ -15,15 +15,22 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.dao
 
+import slick.lifted.ProvenShape
+
+import java.time.Instant
+
 trait ThreadsSupport extends SlickSupport {
-    import profile.api._
+  import profile.api._
 
-  final case class Thread(id: String)
+  final case class ThreadRecord(id: String, createdAt: Instant)
 
-  class Threads(tag: Tag) extends Table[Thread](tag, "THREADS") {
-    def id: Rep[String]                            = column[String]("id")
-
-    override def * = id <> (Thread.apply, Thread.unapply)
+  class Threads(tag: Tag) extends Table[ThreadRecord](tag, "threads") {
+    def id: Rep[String]         = column[String]("id")
+    def createdAt: Rep[Instant] = column[Instant]("created_at")
+    def pk         = primaryKey("pk", (id))
+    override def * : ProvenShape[ThreadRecord] = (id,createdAt) <> (ThreadRecord.tupled, ThreadRecord.unapply)
   }
+
+  val ThreadsQuery = TableQuery[Threads]
 
 }

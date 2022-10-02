@@ -15,15 +15,24 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.dao
 
-trait MessagesSupport extends SlickSupport {
+import slick.lifted.ProvenShape
 
+import java.time.Instant
+
+trait MessagesSupport extends SlickSupport {
   import profile.api._
 
-  final case class Message(id: String)
+  final case class MessageRecord(id: String, threadId: String, accountId: String, text: String, createdAt: Instant)
 
-  class Messages(tag: Tag) extends Table[Message](tag, "MESSAGES") {
+  class Messages(tag: Tag) extends Table[MessageRecord](tag, "messages") {
     def id: Rep[String] = column[String]("id")
-
-    override def * = id <> (Message.apply, Message.unapply)
+    def threadId: Rep[String] = column[String]("thread_id")
+    def accountId: Rep[String] = column[String]("account_id")
+    def text: Rep[String] = column[String]("text")
+    def createdAt: Rep[Instant] = column[Instant]("created_at")
+    def pk         = primaryKey("pk", (id))
+    override def * : ProvenShape[MessageRecord] = (id, threadId, accountId, text, createdAt) <> (MessageRecord.tupled, MessageRecord.unapply)
   }
+
+  val MessagesQuery = TableQuery[Messages]
 }

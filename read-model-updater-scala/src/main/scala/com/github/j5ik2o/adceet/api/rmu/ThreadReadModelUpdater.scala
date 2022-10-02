@@ -15,63 +15,97 @@
  */
 package com.github.j5ik2o.adceet.api.rmu
 
-import akka.{Done, NotUsed}
+import akka.{ Done, NotUsed }
 import net.ceedubs.ficus.Ficus._
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import akka.stream.{KillSwitches, UniqueKillSwitch}
-import akka.stream.scaladsl.{Flow, Keep, Sink}
+import akka.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
+import akka.stream.{ KillSwitches, UniqueKillSwitch }
+import akka.stream.scaladsl.{ Flow, Keep, Sink }
 import akka.stream.stage.AsyncCallback
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
-import com.amazonaws.services.dynamodbv2.model.{BillingMode, DescribeStreamRequest}
+import com.amazonaws.services.dynamodbv2.model.{ BillingMode, DescribeStreamRequest }
 import com.amazonaws.services.dynamodbv2.streamsadapter.model.RecordAdapter
-import com.amazonaws.services.dynamodbv2.streamsadapter.{AmazonDynamoDBStreamsAdapterClient, StreamsWorkerFactory}
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBStreams}
-import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{InitialPositionInStream, KinesisClientLibConfiguration, NoOpShardPrioritization, ShardSyncStrategyType, Worker}
-import com.amazonaws.services.kinesis.clientlibrary.types.{InitializationInput, ShutdownInput}
+import com.amazonaws.services.dynamodbv2.streamsadapter.{ AmazonDynamoDBStreamsAdapterClient, StreamsWorkerFactory }
+import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBStreams }
+import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{
+  InitialPositionInStream,
+  KinesisClientLibConfiguration,
+  NoOpShardPrioritization,
+  ShardSyncStrategyType,
+  Worker
+}
+import com.amazonaws.services.kinesis.clientlibrary.types.{ InitializationInput, ShutdownInput }
 import com.amazonaws.services.kinesis.metrics.interfaces.MetricsLevel
-import com.github.j5ik2o.adceet.api.rmu.ThreadReadModelUpdaterProtocol.{Command, Start, StartWithReply, Started, Stop, StopWithReply, Stopped, WrappedStartedResult, WrappedStoppedResult}
+import com.github.j5ik2o.adceet.api.read.adaptor.dao.{ MembersSupport, MessagesSupport, ThreadsSupport }
+import com.github.j5ik2o.adceet.api.rmu.ThreadReadModelUpdaterProtocol.{
+  Command,
+  Start,
+  StartWithReply,
+  Started,
+  Stop,
+  StopWithReply,
+  Stopped,
+  WrappedStartedResult,
+  WrappedStoppedResult
+}
 import com.github.j5ik2o.ak.kcl.dsl.KCLSource
-import com.github.j5ik2o.ak.kcl.stage.{CommittableRecord, KCLSourceStage}
+import com.github.j5ik2o.ak.kcl.stage.{ CommittableRecord, KCLSourceStage }
 import com.github.j5ik2o.ak.kcl.stage.KCLSourceStage.RecordSet
 import com.typesafe.config.Config
+import slick.jdbc.JdbcProfile
 import wvlet.airframe.ulid.ULID
 
-import scala.concurrent.duration.{Duration, _}
+import scala.concurrent.duration.{ Duration, _ }
 import java.time.Instant
 import java.util.Date
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{ Future, Promise }
 import scala.jdk.CollectionConverters._
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 object ThreadReadModelUpdater {
-  def apply(id: ULID,
-            amazonDynamoDB: AmazonDynamoDB,
-            amazonDynamoDBStreams: AmazonDynamoDBStreams,
-            amazonCloudWatch: AmazonCloudWatch,
-            awsCredentialsProvider: AWSCredentialsProvider,
-            producerFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed],
-            timestampAtInitialPositionInStream: Option[Instant],
-            regionName: Option[String],
-            config: Config): Behavior[Command] = Behaviors.setup[Command] {ctx =>
-    new ThreadReadModelUpdater(id, amazonDynamoDB, amazonDynamoDBStreams, amazonCloudWatch, awsCredentialsProvider, producerFlow, timestampAtInitialPositionInStream, regionName, config)(ctx)
+  def apply(
+      id: ULID,
+      amazonDynamoDB: AmazonDynamoDB,
+      amazonDynamoDBStreams: AmazonDynamoDBStreams,
+      amazonCloudWatch: AmazonCloudWatch,
+      awsCredentialsProvider: AWSCredentialsProvider,
+      producerFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed],
+      timestampAtInitialPositionInStream: Option[Instant],
+      regionName: Option[String],
+
+      config: Config
+  ): Behavior[Command] = Behaviors.setup[Command] { ctx =>
+    new ThreadReadModelUpdater(
+      id,
+      amazonDynamoDB,
+      amazonDynamoDBStreams,
+      amazonCloudWatch,
+      awsCredentialsProvider,
+      producerFlow,
+      timestampAtInitialPositionInStream,
+      regionName,
+
+      config
+    )(ctx)
 
   }
 }
 
 final class ThreadReadModelUpdater(
-                              id: ULID,
-                              amazonDynamoDB: AmazonDynamoDB,
-                              amazonDynamoDBStreams: AmazonDynamoDBStreams,
-                              amazonCloudWatch: AmazonCloudWatch,
-                              awsCredentialsProvider: AWSCredentialsProvider,
-                              producerFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed],
-                              timestampAtInitialPositionInStream: Option[Instant],
-                              regionName: Option[String],
-                              config: Config
-                            )(ctx: ActorContext[Command]) extends AbstractBehavior(ctx){
+    id: ULID,
+    amazonDynamoDB: AmazonDynamoDB,
+    amazonDynamoDBStreams: AmazonDynamoDBStreams,
+    amazonCloudWatch: AmazonCloudWatch,
+    awsCredentialsProvider: AWSCredentialsProvider,
+    producerFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed],
+    timestampAtInitialPositionInStream: Option[Instant],
+    regionName: Option[String],
+    config: Config
+)(ctx: ActorContext[Command])
+    extends AbstractBehavior(ctx)
+    {
   implicit val system = ctx.system.toClassic
   import ctx.executionContext
 
@@ -86,7 +120,7 @@ final class ThreadReadModelUpdater(
       case StopWithReply(replyTo) =>
         sw.shutdown()
         ctx.pipeToSelf(future) {
-          case Success(_) => WrappedStoppedResult(replyTo, Stopped())
+          case Success(_)  => WrappedStoppedResult(replyTo, Stopped())
           case Failure(ex) => throw ex
         }
         Behaviors.same
@@ -103,7 +137,7 @@ final class ThreadReadModelUpdater(
         startWorker(streamArn)
         val start = Promise[Unit]()
         ctx.pipeToSelf(start.future) {
-          case Success(_) => WrappedStartedResult(replyTo, Started())
+          case Success(_)  => WrappedStartedResult(replyTo, Started())
           case Failure(ex) => throw ex
         }
         start.success(())
@@ -112,20 +146,19 @@ final class ThreadReadModelUpdater(
   }
 
   private val convertToPidWithMessageFlow
-  : Flow[CommittableRecord, ((String, Array[Byte]), CommittableRecord), NotUsed] = Flow[CommittableRecord].map {
+      : Flow[CommittableRecord, ((String, Array[Byte]), CommittableRecord), NotUsed] = Flow[CommittableRecord].map {
     committableRecord =>
       val dynamoDb = committableRecord.record.asInstanceOf[RecordAdapter].getInternalObject.getDynamodb
       val newImage = dynamoDb.getNewImage.asScala
-      val pid = newImage("persistence-id").getS
-      val message = newImage("message").getB.array()
+      val pid      = newImage("persistence-id").getS
+      val message  = newImage("message").getB.array()
       (pid -> message, committableRecord)
   }
 
-
   private def startWorker(streamArn: String): Unit = {
     val describeStreamRequest = new DescribeStreamRequest().withStreamArn(streamArn)
-    val describeStreamResult = amazonDynamoDBStreams.describeStream(describeStreamRequest)
-    val shards = describeStreamResult.getStreamDescription.getShards.asScala
+    val describeStreamResult  = amazonDynamoDBStreams.describeStream(describeStreamRequest)
+    val shards                = describeStreamResult.getStreamDescription.getShards.asScala
     ctx.log.debug(s"shards.size = ${shards.size}, shards = $shards")
 
     val result = KCLSource
@@ -142,9 +175,9 @@ final class ThreadReadModelUpdater(
   }
 
   private def newWorker(streamArn: String)(
-    initializationInputCallback: AsyncCallback[InitializationInput],
-    recordSetCallback: AsyncCallback[RecordSet],
-    shutdownInputCallback: AsyncCallback[Try[ShutdownInput]]
+      initializationInputCallback: AsyncCallback[InitializationInput],
+      recordSetCallback: AsyncCallback[RecordSet],
+      shutdownInputCallback: AsyncCallback[Try[ShutdownInput]]
   ): Worker = {
     StreamsWorkerFactory.createDynamoDbStreamsWorker(
       KCLSourceStage
@@ -164,13 +197,13 @@ final class ThreadReadModelUpdater(
   }
 
   private def createWorkerConfig(
-                                  id: ULID,
-                                  awsCredentialsProvider: AWSCredentialsProvider,
-                                  streamArn: String,
-                                  timestampAtInitialPositionInStream: Option[Instant],
-                                  regionName: Option[String],
-                                  config: Config
-                                ): KinesisClientLibConfiguration = {
+      id: ULID,
+      awsCredentialsProvider: AWSCredentialsProvider,
+      streamArn: String,
+      timestampAtInitialPositionInStream: Option[Instant],
+      regionName: Option[String],
+      config: Config
+  ): KinesisClientLibConfiguration = {
     val applicationName = config.getString("application-name")
     val position = config.getOrElse[String](
       "initial-position-in-stream",
@@ -246,15 +279,15 @@ final class ThreadReadModelUpdater(
       config.getOrElse("max-lease-renewal-threads", KinesisClientLibConfiguration.DEFAULT_MAX_LEASE_RENEWAL_THREADS)
 
     val maxPendingProcessRecordsInput = config.getAs[Int]("max-pending-process-records-input")
-    val retryGetRecordsInSeconds = config.getAs[Duration]("retry-get-records")
-    val maxGetRecordsThreadPool = config.getAs[Int]("max-get-records-thread-pool")
-    val maxCacheByteSize = config.getAs[Int]("max-cache-byte-size")
-    val dataFetchingStrategy = config.getAs[String]("data-fetching-strategy")
-    val maxRecordsCount = config.getAs[Int]("max-records-count")
-    val timeout = config.getAs[Duration]("timeout")
+    val retryGetRecordsInSeconds      = config.getAs[Duration]("retry-get-records")
+    val maxGetRecordsThreadPool       = config.getAs[Int]("max-get-records-thread-pool")
+    val maxCacheByteSize              = config.getAs[Int]("max-cache-byte-size")
+    val dataFetchingStrategy          = config.getAs[String]("data-fetching-strategy")
+    val maxRecordsCount               = config.getAs[Int]("max-records-count")
+    val timeout                       = config.getAs[Duration]("timeout")
     val shutdownGrace =
       config.getOrElse("shutdown-grace", KinesisClientLibConfiguration.DEFAULT_SHUTDOWN_GRACE_MILLIS.millis)
-    val idleMillisBetweenCalls = config.getAs[Long]("idle-millis-between-calls")
+    val idleMillisBetweenCalls       = config.getAs[Long]("idle-millis-between-calls")
     val logWarningForTaskAfterMillis = config.getAs[Duration]("log-warning-for-task-after")
     val listShardsBackoffTimeInMillis =
       config.getOrElse(
@@ -308,14 +341,14 @@ final class ThreadReadModelUpdater(
     val c1 = timestampAtInitialPositionInStream.fold(baseWorkerConfig) { instant =>
       baseWorkerConfig.withTimestampAtInitialPositionInStream(Date.from(instant))
     }
-    val c2 = regionName.fold(c1) { v => c1.withRegionName(v) }
-    val c3 = retryGetRecordsInSeconds.fold(c2) { v => c2.withRetryGetRecordsInSeconds(v.toSeconds.toInt) }
-    val c4 = maxGetRecordsThreadPool.fold(c3) { v => c3.withMaxGetRecordsThreadPool(v) }
-    val c5 = maxPendingProcessRecordsInput.fold(c4) { v => c4.withMaxPendingProcessRecordsInput(v) }
-    val c6 = maxCacheByteSize.fold(c5) { v => c5.withMaxCacheByteSize(v) }
-    val c7 = dataFetchingStrategy.fold(c6) { v => c6.withDataFetchingStrategy(v) }
-    val c8 = maxRecordsCount.fold(c7) { v => c7.withMaxRecordsCount(v) }
-    val c9 = timeout.fold(c8) { v => c8.withTimeoutInSeconds(v.toSeconds.toInt); c8 }
+    val c2  = regionName.fold(c1) { v => c1.withRegionName(v) }
+    val c3  = retryGetRecordsInSeconds.fold(c2) { v => c2.withRetryGetRecordsInSeconds(v.toSeconds.toInt) }
+    val c4  = maxGetRecordsThreadPool.fold(c3) { v => c3.withMaxGetRecordsThreadPool(v) }
+    val c5  = maxPendingProcessRecordsInput.fold(c4) { v => c4.withMaxPendingProcessRecordsInput(v) }
+    val c6  = maxCacheByteSize.fold(c5) { v => c5.withMaxCacheByteSize(v) }
+    val c7  = dataFetchingStrategy.fold(c6) { v => c6.withDataFetchingStrategy(v) }
+    val c8  = maxRecordsCount.fold(c7) { v => c7.withMaxRecordsCount(v) }
+    val c9  = timeout.fold(c8) { v => c8.withTimeoutInSeconds(v.toSeconds.toInt); c8 }
     val c10 = idleMillisBetweenCalls.fold(c9) { v => c9.withIdleMillisBetweenCalls(v) }
     logWarningForTaskAfterMillis.fold(c10) { v => c10.withLogWarningForTaskAfterMillis(v.toMillis) }
   }

@@ -21,7 +21,7 @@ import com.github.j5ik2o.adceet.domain.ThreadId
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
 import com.github.j5ik2o.adceet.test.{ ActorSpec, LocalstackSpecSupport }
-import com.github.j5ik2o.dockerController.DockerClientConfigUtil
+import com.github.j5ik2o.dockerController.{ DockerClientConfigUtil, DockerController }
 import com.typesafe.config.{ Config, ConfigFactory }
 
 object ThreadAggregateOnDynamoDBSpec {
@@ -66,6 +66,20 @@ class ThreadAggregateOnDynamoDBSpec extends ActorSpec(ThreadAggregateOnDynamoDBS
   override lazy val hostName: String       = ThreadAggregateOnDynamoDBSpec.dockerHost
   override lazy val dynamodbLocalPort: Int = ThreadAggregateOnDynamoDBSpec.dynamoDbPort
 
+  override protected val dockerControllers: Vector[DockerController] =
+    Vector(dynamodbLocalController, cloudwatchController)
+
+  override protected val waitPredicatesSettings: Map[DockerController, WaitPredicateSetting] =
+    Map(
+      dynamodbLocalController -> dynamodbWaitPredicateSetting,
+      cloudwatchController    -> cloudwatchWaitPredicateSetting
+    )
+
+  override def afterStartContainers: Unit = {
+    createJournalTable()
+    createSnapshotTable()
+  }
+
   val underlying: AbstractThreadAggregateTestBase = new AbstractThreadAggregateTestBase(testKit) {
     override def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest] = {
       ThreadAggregate.create(id) { (id, ref) =>
@@ -88,5 +102,4 @@ class ThreadAggregateOnDynamoDBSpec extends ActorSpec(ThreadAggregateOnDynamoDBS
       underlying.shouldAddMessage()
     }
   }
-
 }

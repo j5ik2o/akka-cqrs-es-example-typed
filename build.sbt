@@ -56,7 +56,10 @@ lazy val `test-base` = (project in file("test-base"))
       "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.14.34",
       "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.14.34",
       "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.14.34",
-      awssdk.v1.dynamodb
+      "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-flyway"         % "1.14.34",
+      awssdk.v1.dynamodb,
+      "com.typesafe.slick" %% "slick" % "3.4.1"
     )
   ).dependsOn(`infrastructure`)
 
@@ -95,6 +98,7 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     `read-model-updater-base` % "compile->compile;test->test",
     `test-base`               % "test",
     `write-api-server-scala`  % "test->test",
+    `read-api-base`,
     `domain-scala`
   )
 

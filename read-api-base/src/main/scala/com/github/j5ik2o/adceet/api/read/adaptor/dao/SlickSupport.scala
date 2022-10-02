@@ -15,8 +15,11 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.dao
 
+import slick.ast.TypedType
+
+import java.time.Instant
+
 trait SlickSupport {
   val profile: slick.jdbc.JdbcProfile
-
 
 }

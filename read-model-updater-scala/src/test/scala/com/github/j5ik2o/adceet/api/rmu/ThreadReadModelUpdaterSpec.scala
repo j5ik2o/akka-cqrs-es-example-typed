@@ -21,28 +21,24 @@ import akka.persistence.PersistentRepr
 import akka.serialization.SerializationExtension
 import akka.stream.scaladsl.Flow
 import com.github.dockerjava.core.DockerClientConfig
-import com.github.j5ik2o.adceet.api.write.aggregate.{
-  AbstractThreadAggregateTestBase,
-  ThreadAggregate,
-  ThreadAggregateProtocol,
-  ThreadPersist
-}
+import com.github.j5ik2o.adceet.api.read.adaptor.dao.ThreadsSupport
+import com.github.j5ik2o.adceet.api.write.aggregate.{AbstractThreadAggregateTestBase, ThreadAggregate, ThreadAggregateProtocol, ThreadPersist}
+import com.github.j5ik2o.adceet.domain.ThreadEvents.ThreadCreated
 import com.github.j5ik2o.adceet.domain.ThreadId
-import com.github.j5ik2o.adceet.infrastructure.aws.{
-  AmazonCloudWatchUtil,
-  AmazonDynamoDBStreamsUtil,
-  AmazonDynamoDBUtil,
-  CredentialsProviderUtil
-}
+import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
-import com.github.j5ik2o.adceet.test.{ ActorSpec, LocalstackSpecSupport }
+import com.github.j5ik2o.adceet.test.{ActorSpec, LocalstackSpecSupport, Slick3SpecSupport}
 import com.github.j5ik2o.ak.kcl.stage.CommittableRecord
-import com.github.j5ik2o.dockerController.DockerClientConfigUtil
+import com.github.j5ik2o.dockerController.flyway.{FlywayConfig, FlywaySpecSupport}
+import com.github.j5ik2o.dockerController.mysql.MySQLController
+import com.github.j5ik2o.dockerController.{DockerClientConfigUtil, DockerController, WaitPredicates}
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpecLike
 import wvlet.airframe.ulid.ULID
+
+import scala.concurrent.duration.{Duration, DurationDouble}
 
 object ThreadReadModelUpdaterSpec {
   val defaultAwsAccessKeyId = "x"
@@ -54,6 +50,7 @@ object ThreadReadModelUpdaterSpec {
 
   val dynamodbPort: Int   = RandomPortUtil.temporaryServerPort()
   val cloudwatchPort: Int = RandomPortUtil.temporaryServerPort()
+  val mysqlPort: Int = RandomPortUtil.temporaryServerPort()
 }
 
 class ThreadReadModelUpdaterSpec
@@ -115,11 +112,60 @@ class ThreadReadModelUpdaterSpec
     )
     with AnyFreeSpecLike
     with LocalstackSpecSupport
-    with ScalaFutures {
+    with Slick3SpecSupport
+    with ThreadsSupport
+    with ScalaFutures with FlywaySpecSupport {
 
   override lazy val hostName: String       = ThreadReadModelUpdaterSpec.dockerHost
   override lazy val dynamodbLocalPort: Int = ThreadReadModelUpdaterSpec.dynamodbPort
   override lazy val cloudwatchPort: Int    = ThreadReadModelUpdaterSpec.cloudwatchPort
+
+  override lazy val profile = slickJdbcProfile
+
+  override protected def tables: Seq[String] = Seq.empty
+
+  override lazy val jdbcDriverClassName: String = classOf[com.mysql.cj.jdbc.Driver].getName
+  override lazy val dbHost: String = hostName
+  override lazy val dbPort: Int = ThreadReadModelUpdaterSpec.mysqlPort
+  override lazy val dbName: String = "adceet"
+  override lazy val dbUserName: String = "root"
+  override lazy val dbPassword: String = "test"
+
+  override protected def flywayDriverClassName: String = classOf[com.mysql.cj.jdbc.Driver].getName
+  override protected def flywayDbHost: String = hostName
+  override protected def flywayDbHostPort: Int = dbPort
+  override protected def flywayDbName: String = dbName
+  override protected def flywayDbUserName: String = dbUserName
+  override protected def flywayDbPassword: String = dbPassword
+  override protected def flywayJDBCUrl: String = s"jdbc:mysql://$flywayDbHost:$flywayDbHostPort/$flywayDbName?allowPublicKeyRetrieval=true&useSSL=false&user=$flywayDbUserName&password=$flywayDbPassword"
+
+  val mysqlController: MySQLController = MySQLController(dockerClient)(dbPort, dbPassword, databaseName = Some(dbName))
+
+  val mysqlWaitPredicateSetting: WaitPredicateSetting =  WaitPredicateSetting(
+    Duration.Inf,
+    WaitPredicates.forLogMessageByRegex(
+      """.*MySQL init process done\. Ready for start up\.""".r,
+      Some((1 * testTimeFactor).seconds)
+    )
+  )
+
+  override protected val dockerControllers: Vector[DockerController] =
+    Vector(mysqlController, dynamodbLocalController, cloudwatchController)
+
+  override protected val waitPredicatesSettings: Map[DockerController, WaitPredicateSetting] =
+    Map(
+      dynamodbLocalController -> dynamodbWaitPredicateSetting,
+      cloudwatchController -> cloudwatchWaitPredicateSetting,
+      mysqlController -> mysqlWaitPredicateSetting
+    )
+
+  override def afterStartContainers: Unit = {
+    createJournalTable()
+    createSnapshotTable()
+    val flywayContext = createFlywayContext(FlywayConfig(Seq("flyway")))
+    flywayContext.flyway.migrate()
+    setUpSlick()
+  }
 
   val underlying: AbstractThreadAggregateTestBase = new AbstractThreadAggregateTestBase(testKit) {
     override def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest] = {
@@ -134,6 +180,7 @@ class ThreadReadModelUpdaterSpec
 
   "ThreadReadModelUpdaterSpec" - {
     "shouldCreateThread" in {
+
       implicit val scheduler = system.scheduler
       val rootConfig         = system.settings.config
 
@@ -165,8 +212,13 @@ class ThreadReadModelUpdaterSpec
           Flow[((String, Array[Byte]), CommittableRecord)].map { envelope =>
             val message = serialization
               .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
-            val domainEvent = message.payload
+            val domainEvent = message.payload.asInstanceOf[ThreadCreated]
             println(s"threadId = ${envelope._1._1}, domainEvent = $domainEvent")
+            import profile.api._
+
+            val q = ThreadsQuery.insertOrUpdate(ThreadRecord(id = domainEvent.threadId.asString, createdAt = domainEvent.occurredAt))
+            val f = slickDbConfig.db.run(q)
+            f.futureValue
             receivePid = envelope._1._1
             envelope._2
           },
@@ -178,11 +230,11 @@ class ThreadReadModelUpdaterSpec
 
       readModelUpdaterRef ! ThreadReadModelUpdaterProtocol.Start(streamArn)
 
-      Thread.sleep(10 * 1000)
+      java.lang.Thread.sleep(10 * 1000)
 
       underlying.shouldCreateThread()
 
-      Thread.sleep(10 * 1000)
+      java.lang.Thread.sleep(10 * 1000)
 
       eventually {
         assert(receivePid.nonEmpty)
@@ -200,5 +252,4 @@ class ThreadReadModelUpdaterSpec
 //      underlying.shouldAddMessage()
 //    }
   }
-
 }

@@ -15,15 +15,23 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.dao
 
-trait MembersSupport extends SlickSupport  {
+import slick.lifted.ProvenShape
 
+import java.time.Instant
+
+trait MembersSupport extends SlickSupport  {
   import profile.api._
 
-  final case class Member(id: String)
+  final case class MemberRecord(id: String, threadId: String, accountId: String, createdAt: Instant)
 
-  class Members(tag: Tag) extends Table[Member](tag, "MEMBERS") {
+  class Members(tag: Tag) extends Table[MemberRecord](tag, "members") {
     def id: Rep[String] = column[String]("id")
-
-    override def * = id <> (Member.apply, Member.unapply)
+    def threadId: Rep[String] = column[String]("thread_id")
+    def accountId: Rep[String] = column[String]("account_id")
+    def createdAt: Rep[Instant] = column[Instant]("created_at")
+    def pk         = primaryKey("pk", (id))
+    override def * : ProvenShape[MemberRecord] = (id, threadId, accountId, createdAt) <> (MemberRecord.tupled, MemberRecord.unapply)
   }
+
+  val MembersQuery = TableQuery[Members]
 }

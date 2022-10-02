@@ -32,7 +32,6 @@ import com.amazonaws.services.dynamodbv2.model.{
   StreamViewType
 }
 import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBClientBuilder }
-import com.github.j5ik2o.dockerController.WaitPredicates.WaitPredicate
 import com.github.j5ik2o.dockerController.dynamodbLocal.DynamoDBLocalController
 import com.github.j5ik2o.dockerController.{
   DockerContainerCreateRemoveLifecycle,
@@ -80,19 +79,16 @@ trait LocalstackSpecSupport extends DockerControllerSpecSupport {
     defaultRegion = Some(region.getName)
   )
 
-  override protected val dockerControllers: Vector[DockerController] =
-    Vector(dynamodbLocalController, cloudwatchController)
-
-  val waitPredicate: WaitPredicate = WaitPredicates.forLogMessageByRegex(
-    DynamoDBLocalController.RegexOfWaitPredicate,
-    Some((1 * testTimeFactor).seconds)
+  val dynamodbWaitPredicateSetting: WaitPredicateSetting = WaitPredicateSetting(
+    Duration.Inf,
+    WaitPredicates.forLogMessageByRegex(
+      DynamoDBLocalController.RegexOfWaitPredicate,
+      Some((1 * testTimeFactor).seconds)
+    )
   )
 
-  override protected val waitPredicatesSettings: Map[DockerController, WaitPredicateSetting] =
-    Map(
-      cloudwatchController    -> WaitPredicateSetting(Duration.Inf, WaitPredicates.forLogMessageExactly("Ready.")),
-      dynamodbLocalController -> WaitPredicateSetting(Duration.Inf, waitPredicate)
-    )
+  val cloudwatchWaitPredicateSetting: WaitPredicateSetting =
+    WaitPredicateSetting(Duration.Inf, WaitPredicates.forLogMessageExactly("Ready."))
 
   protected val dynamoDBClient: AmazonDynamoDB = {
     AmazonDynamoDBClientBuilder
@@ -102,11 +98,6 @@ trait LocalstackSpecSupport extends DockerControllerSpecSupport {
         new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKeyId, secretAccessKey))
       )
       .build()
-  }
-
-  override def afterStartContainers: Unit = {
-    createJournalTable()
-    createSnapshotTable()
   }
 
   val journalTableName  = "Journal"

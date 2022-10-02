@@ -18,6 +18,8 @@ package com.github.j5ik2o.adceet.domain
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import wvlet.airframe.ulid.ULID
 
+import java.time.Instant
+
 object ThreadEvents {
 
   trait ThreadEvent extends CborSerializable {
@@ -25,9 +27,9 @@ object ThreadEvents {
     def threadId: ThreadId
   }
 
-  final case class ThreadCreated(id: ULID, threadId: ThreadId, accountId: AccountId) extends ThreadEvent
-  final case class MemberAdd(id: ULID, threadId: ThreadId, accountId: AccountId) extends ThreadEvent
-  final case class MessageAdd(id: ULID, threadId: ThreadId, accountId: AccountId, messageId: MessageId, body: String)
+  final case class ThreadCreated(id: ULID, threadId: ThreadId, accountId: AccountId, occurredAt: Instant) extends ThreadEvent
+  final case class MemberAdd(id: ULID, threadId: ThreadId, accountId: AccountId, occurredAt: Instant) extends ThreadEvent
+  final case class MessageAdd(id: ULID, threadId: ThreadId, accountId: AccountId, messageId: MessageId, body: String, occurredAt: Instant)
       extends ThreadEvent
 
 }
