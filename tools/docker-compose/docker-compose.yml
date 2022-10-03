@@ -1,5 +1,13 @@
 version: '3.6'
 services:
+  mysql:
+    image: mysql:8.0
+    hostname: mysql-local
+    environment:
+      MYSQL_ROOT_PASSWORD: passwd
+      MYSQL_USER: adceet
+      MYSQL_PASSWORD: adceet
+      MYSQL_DATABASE: adceet
   dynamodb-local:
     image: amazon/dynamodb-local
     hostname: dynamodb-local

@@ -15,33 +15,33 @@
  */
 package com.github.j5ik2o.adceet.domain
 
-import com.github.j5ik2o.adceet.domain.ThreadEvents.{MemberAdd, MessageAdd, ThreadCreated, ThreadEvent}
+import com.github.j5ik2o.adceet.domain.ThreadEvents.{MemberAdded, MessageAdded, ThreadCreated, ThreadEvent}
 import wvlet.airframe.ulid.ULID
 
 import java.time.Instant
 
 final case class Thread(id: ThreadId, memberIds: Seq[AccountId], messagesIds: Seq[MessageIdWithAccountId]) {
-  def addMember(accountId: AccountId): Either[ThreadError, MemberAdd] = {
+  def addMember(accountId: AccountId): Either[ThreadError, MemberAdded] = {
     if (memberIds.contains(accountId)) {
       Left(ThreadError.ExistsMemberError(accountId))
     } else {
-      Right(MemberAdd(ULID.newULID, id, accountId, Instant.now()))
+      Right(MemberAdded(ULID.newULID, id, accountId, Instant.now()))
     }
   }
 
-  def addMessage(accountId: AccountId, messageId: MessageId, body: String): Either[ThreadError, MessageAdd] = {
+  def addMessage(accountId: AccountId, messageId: MessageId, body: String): Either[ThreadError, MessageAdded] = {
     if (!memberIds.contains(accountId)) {
       Left(ThreadError.NotMemberError(accountId))
     } else {
-      Right(MessageAdd(ULID.newULID, id, accountId, messageId, body, Instant.now()))
+      Right(MessageAdded(ULID.newULID, id, accountId, messageId, body, Instant.now()))
     }
   }
 
   def updateEvent(threadEvent: ThreadEvent): Thread = {
     threadEvent match {
-      case te: MemberAdd =>
+      case te: MemberAdded =>
         copy(memberIds = memberIds :+ te.accountId)
-      case te: MessageAdd =>
+      case te: MessageAdded =>
         copy(messagesIds = messagesIds :+ MessageIdWithAccountId(te.messageId, te.accountId))
     }
   }

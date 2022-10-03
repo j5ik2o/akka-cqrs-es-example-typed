@@ -17,7 +17,9 @@ package com.github.j5ik2o.adceet.domain
 
 import wvlet.airframe.ulid.ULID
 
-final case class MessageId(val value: ULID = ULID.newULID) extends ValueObject
+final case class MessageId(value: ULID = ULID.newULID) extends ValueObject {
+  def asString: String = value.toString()
+}
 
 object MessageId {
   def parseFromString(text: String): Either[Exception, MessageId] = {

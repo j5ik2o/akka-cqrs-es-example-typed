@@ -15,18 +15,15 @@
  */
 package com.github.j5ik2o.adceet.api.rmu
 
-import akka.actor.typed.{ActorSystem, PostStop}
 import akka.actor.typed.scaladsl.Behaviors
-import akka.serialization.SerializationExtension
-import akka.stream.scaladsl.Flow
-import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
-import com.github.j5ik2o.ak.kcl.stage.CommittableRecord
-import com.typesafe.config.ConfigFactory
-import wvlet.airframe.ulid.ULID
-import akka.persistence.PersistentRepr
+import akka.actor.typed.{ActorSystem, PostStop}
 import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
-import com.github.j5ik2o.adceet.domain.ThreadEvents.{MemberAdd, MessageAdd, ThreadCreated}
+import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
+import com.typesafe.config.ConfigFactory
 import net.ceedubs.ficus.Ficus._
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
+import wvlet.airframe.ulid.ULID
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -59,29 +56,17 @@ object Main extends App {
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
   def behavior = Behaviors.setup[Any]{ ctx =>
-
-    val serialization = SerializationExtension(ctx.system)
-
+    val databaseConfig = DatabaseConfig.forConfig[JdbcProfile]("slick", config)
     val childBehavior = ThreadReadModelUpdater(
       id,
       amazonDynamoDB,
       amazonDynamoDBStreams,
       amazonCloudwatch,
       credentialsProvider,
-      Flow[((String, Array[Byte]), CommittableRecord)].map { envelope =>
-        val message = serialization
-          .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
-        val domainEvent = message.payload
-        domainEvent match {
-          case event: ThreadCreated =>
-          case event: MemberAdd =>
-          case event: MessageAdd =>
-        }
-
-        println(s"domainEvent = $domainEvent")
-        envelope._2
-      },
       None,
+      None,
+      databaseConfig.profile,
+      databaseConfig.db,
       None,
       config
     )
