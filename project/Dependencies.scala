@@ -129,7 +129,7 @@ object Dependencies {
   }
 
   object mockk {
-    val mockk = "io.mockk" % "mockk" % "1.12.3"
+    val mockk = "io.mockk" % "mockk" % "1.12.8"
   }
 
   object aichler {
