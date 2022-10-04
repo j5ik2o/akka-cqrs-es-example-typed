@@ -157,7 +157,7 @@ object Dependencies {
       val sts = "com.amazonaws" % "aws-java-sdk-sts" % "1.12.315"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.17.286"
+      val sts = "software.amazon.awssdk" % "sts" % "2.17.287"
     }
 
   }
