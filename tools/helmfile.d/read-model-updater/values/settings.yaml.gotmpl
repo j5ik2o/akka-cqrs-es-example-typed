@@ -1,0 +1,163 @@
+image:
+  repository: '{{ .Values.writeApi.writeApiServer.backend.image.repository }}'
+  tags: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
+  pullPolicy: '{{ .Values.writeApi.writeApiServer.backend.image.pullPolicy}}'
+
+{{- if .Values.ecrCred.enabled }}
+imagePullSecrets:
+  - name: ecr-cred-regcred
+{{- end }}
+
+nameOverride: ""
+fullnameOverride: ""
+
+akka:
+  cluster:
+    enabled: true
+  discovery:
+    enabled: true
+  remote:
+    enabled: true
+  management:
+    enabled: true
+    port: 8558
+    nodePort: 30131
+    service:
+      type: NodePort
+      enabled: true
+    healthChecks:
+      livenessPath: health/alive
+      readinessPath: health/ready
+  http:
+    enabled: {{ .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
+    port: 8081
+    portName: http
+    service:
+      enabled: true
+      annotations: {}
+      labels: {}
+      type: NodePort
+      ports:
+        - targetPort: http
+          name: http
+          port: 8081
+          nodePort: 30031
+          protocol: TCP
+
+affinity: {}
+
+command:
+  - /opt/docker/bin/adceet-write-api-server-{{ env "MODE" | default "scala" }}
+  - -Dconfig.resource=application-cluster-backend.conf
+  - -Dconfig.override_with_env_vars=true
+  - --
+  - -e
+  - Development
+
+
+env:
+  {{- with .Values.writeApi.writeApiServer.backend.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with .Values.writeApi.env }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  - name: "AWS_REGION"
+    value: {{ requiredEnv "AWS_REGION" }}
+  {{- if .Values.writeApi.writeApiServer.backend.withFrontend.enabled }}
+  - name: "AKKA_CLUSTER_ROLE_OPTION"
+    value: "frontend"
+  {{- end }}
+  - name: CONFIG_FORCE_kamon_environment_tags_version
+    value: '{{ env "WRITE_API_SERVER_IMAGE_TAG" | default .Values.writeApi.writeApiServer.backend.image.tag}}'
+  - name: CONFIG_FORCE_akka_remote_artery_canonical_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  - name: CONFIG_FORCE_akka_management_http_hostname
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+
+lifecycle:
+  preStop:
+    exec:
+      command: [ "sh", "-c", "sleep {{ .Values.writeApi.writeApiServer.backend.processTimeoutInSec}}" ]
+
+startupProbe:
+  enabled: false
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podLabels:
+  adceet/akka-cluster-name: '{{ .Values.writeApi.akkaClusterName }}'
+
+podSecurityContext:
+  fsGroup: 0
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
+
+replicaCount: {{ .Values.writeApi.writeApiServer.backend.replicaCount }}
+
+resources:
+  {{- toYaml .Values.writeApi.writeApiServer.backend.resources | nindent 2 }}
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 10%
+    maxUnavailable: 0%
+
+terminationGracePeriodSeconds: {{ add .Values.writeApi.writeApiServer.backend.processTimeoutInSec 5 }}
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: {{ .Values.writeApi.writeApiServer.backend.serviceAccount.create }}
+  {{- if .Values.writeApi.writeApiServer.backend.serviceAccount.name }}
+  name: {{ .Values.writeApi.writeApiServer.backend.serviceAccount.name }}
+  {{- end }}
+
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 1
+
+autoscaling:
+  {{- toYaml .Values.writeApi.writeApiServer.backend.autoscaling | nindent 2 }}
+
+metrics:
+  enabled: false
+  port: 9095
+  path: "/"
+
+configmaps:
+  chart.conf: ""
+  akka.conf: ""
+  kamon.conf: ""
+
+useResourceApplicationConf: false
