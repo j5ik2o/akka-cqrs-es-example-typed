@@ -155,14 +155,14 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.316"
-      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.316"
-      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.316"
-      val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.316"
-      val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.316"
+      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.317"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.317"
+      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.317"
+      val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.317"
+      val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.317"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.17.287"
+      val sts = "software.amazon.awssdk" % "sts" % "2.17.288"
     }
   }
 
