@@ -49,7 +49,7 @@ https://github.com/GoogleCloudPlatform/terraformer
 ```shell
 adceet-root $ asdf plugin add terraformer https://github.com/grimoh/asdf-terraformer.git
 adceet-root $ asdf install terraformer 0.8.20
-adceet-root $ asdf local terrformer 0.8.20
+adceet-root $ asdf local terraformer 0.8.20
 adceet-root $ mkdir ./temp
 adceet-root/temp $ export GODEBUG=asyncpreemptoff=1
 adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer import datadog --resources=dashboard --filter=datadog_dashboard=XXXXX
@@ -60,17 +60,17 @@ adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer impor
 ```sh
 $ asdf plugin add java
 $ asdf list all java
-$ asdf instal java temurin-17.0.4+101
+$ asdf install java temurin-17.0.4+101
 $ asdf local java temurin-17.0.4+101
 # Set the appropriate settings for your environment.
-$ echo "export JAVA_OPTS='--enable-preiview'" >> ~/.bashrc
+$ echo "export JAVA_OPTS='--enable-preview'" >> ~/.bashrc
 $ java -version
 openjdk version "17.0.4.1" 2022-08-12
 OpenJDK Runtime Environment Temurin-17.0.4.1+1 (build 17.0.4.1+1)
 OpenJDK 64-Bit Server VM Temurin-17.0.4.1+1 (build 17.0.4.1+1, mixed mode)
 ```
 
-**CAUTION: If "export JAVA_OPTS='--enabled-preview'" is not set, compilation will fail.**
+**CAUTION: If "export JAVA_OPTS='--enable-preview'" is not set, compilation will fail.**
 
 ## sbt
 

@@ -8,8 +8,8 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.1"
 
-  val akkaPersistenceDynamoDB = "1.14.32"
 
+  val akkaPersistenceDynamoDB = "1.14.48"
   val akkaKinesis = "1.0.253"
 }
 
@@ -20,19 +20,19 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "22.9.1"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.9.1"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "22.9.3"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.9.3"
   }
 
   object logback {
-    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.1"
+    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.3"
   }
 
   object kodeinDI {
-    val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.11.0"
+    val kodeinDIJvm = "org.kodein.di" % "kodein-di-jvm" % "7.15.0"
   }
   object arrowKt {
-    val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.2"
+    val arrowCore = "io.arrow-kt" % "arrow-core" % "1.1.3"
   }
   object vavr {
     val vavr       = "io.vavr" % "vavr"        % "0.10.4"
@@ -125,9 +125,9 @@ object Dependencies {
   }
 
   object jupiter {
-    val jupiterApi              = "org.junit.jupiter" % "junit-jupiter-api"              % "5.8.2"
-    val jupiter                 = "org.junit.jupiter" % "junit-jupiter"                  % "5.8.2"
-    val jupiterMigrationSupport = "org.junit.jupiter" % "junit-jupiter-migrationsupport" % "5.8.2"
+    val jupiterApi              = "org.junit.jupiter" % "junit-jupiter-api"              % "5.9.1"
+    val jupiter                 = "org.junit.jupiter" % "junit-jupiter"                  % "5.9.1"
+    val jupiterMigrationSupport = "org.junit.jupiter" % "junit-jupiter-migrationsupport" % "5.9.1"
   }
 
   object mockk {
@@ -156,14 +156,14 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.311"
-      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.311"
-      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.311"
-      val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.311"
-      val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.311"
+      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.316"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.316"
+      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.316"
+      val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.316"
+      val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.316"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.17.276"
+      val sts = "software.amazon.awssdk" % "sts" % "2.17.287"
     }
   }
 
