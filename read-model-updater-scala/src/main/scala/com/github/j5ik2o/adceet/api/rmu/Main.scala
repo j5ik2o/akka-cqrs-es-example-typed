@@ -18,8 +18,9 @@ package com.github.j5ik2o.adceet.api.rmu
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorSystem, PostStop}
 import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
+import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest
 import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 import net.ceedubs.ficus.Ficus._
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
@@ -37,26 +38,28 @@ object Main extends App {
   val accessKeyIdOpt = config.getAs[String]("access-key-id")
   val secretAccessKeyOpt = config.getAs[String]("secret-access-key")
 
-  val accountEventRouterClientConfig = config.getConfig("dynamodb-client")
-  val accountEventRouterStreamClientConfig = config.getConfig("dynamodb-stream-client")
-  val accountEventRouterCloudWatchConfig = config.getConfig("cloudwatch-client")
+  val accountEventRouterClientConfig = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
+  val accountEventRouterStreamClientConfig = config.getAs[Config]("dynamodb-stream-client").getOrElse(ConfigFactory.empty())
+  val accountEventRouterCloudWatchConfig = config.getAs[Config]("cloudwatch-client").getOrElse(ConfigFactory.empty())
 
   val amazonDynamoDB = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
   val amazonDynamoDBStreams = AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
   val amazonCloudwatch = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
 
-  val credentialsProvider: AWSCredentialsProvider =
+  val credentialsProvider: AWSCredentialsProvider = {
   (accessKeyIdOpt, secretAccessKeyOpt) match {
     case (Some(accessKeyId), Some(secretAccessKey)) =>
         CredentialsProviderUtil.createCredentialsProvider(Some(accessKeyId), Some(secretAccessKey))
     case _ =>
       DefaultAWSCredentialsProviderChain.getInstance()
   }
+  }
 
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
   def behavior = Behaviors.setup[Any]{ ctx =>
-    val databaseConfig = DatabaseConfig.forConfig[JdbcProfile]("slick", config)
+    ctx.log.debug("start MainActor")
+    val databaseConfig = DatabaseConfig.forConfig[JdbcProfile]("slick", rootConfig)
     val childBehavior = ThreadReadModelUpdater(
       id,
       amazonDynamoDB,

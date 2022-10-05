@@ -95,3 +95,39 @@ services:
       - dynamodb-admin
       - dynamodb-setup
       - write-api-server-2
+  read-model-updater-1:
+    image: adceet-read-model-updater-${MODE}
+    container_name: read-model-updater-1
+    entrypoint: ["/opt/docker/bin/adceet-read-model-updater-${MODE}", "-e", "development"]
+    environment:
+      AWS_REGION: ap-northeast-1
+      CONFIG_RESOURCE: application.conf
+      ROOT_LOG_LEVEL: DEBUG
+      JVM_HEAP_MIN: 1G
+      JVM_HEAP_MAX: 1G
+      JVM_META_MAX: 512M
+      AWS_ACCESS_KEY_ID: x
+      AWS_SECRET_ACCESS_KEY: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_INITIAL_POSITION_IN_STREAM: LATEST
+      ADCEET_READ_MODEL_UPDATER_THREADS_JOURNAL_TABLE_NAME: Journal
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_CLIENT_ACCESS_KEY_ID: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_CLIENT_SECRET_ACCESS_KEY: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_CLIENT_ENDPOINT: http://dynamodb-local:8000
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_STREAM_CLIENT_ACCESS_KEY_ID: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_STREAM_CLIENT_SECRET_ACCESS_KEY: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_DYNAMODB_STREAM_CLIENT_ENDPOINT: http://dynamodb-local:8000
+      ADCEET_READ_MODEL_UPDATER_THREADS_CLOUDWATCH_CLIENT_ACCESS_KEY_ID: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_CLOUDWATCH_CLIENT_SECRET_ACCESS_KEY: x
+      ADCEET_READ_MODEL_UPDATER_THREADS_CLOUDWATCH_CLIENT_ENDPOINT: http://localstack-local:4566
+      ADCEET_READ_MODEL_UPDATER_THREADS_MAX_LEASE_FOR_WORKER: 64
+      SLICK_DB_URL: jdbc:mysql://mysql-local/adceet?allowPublicKeyRetrieval=true&useSSL=false
+      SLICK_DB_USER: adceet
+      SLICK_DB_PASSWORD: adceet
+    depends_on:
+      - mysql
+      - flyway
+      - dynamodb-local
+      - localstack
+      - write-api-server-1
+      - write-api-server-2
+      - write-api-server-3

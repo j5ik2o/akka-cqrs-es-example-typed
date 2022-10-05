@@ -35,7 +35,7 @@ lazy val `domain-scala` = (project in file("domain-scala"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-    name := "adceet-domain",
+    name := "adceet-domain-scala",
     libraryDependencies ++= Seq(
       airframe.ulid
     )
@@ -83,7 +83,7 @@ lazy val `read-model-updater-base` = (project in file("read-model-updater-base")
 lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .settings(
-    name := "read-model-updater-scala",
+    name := "adceet-read-model-updater-scala",
     Settings.baseSettings,
     Settings.scalaSettings,
     Settings.javaSettings,
@@ -91,7 +91,15 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     Settings.ecrSettings
   ).settings(
     libraryDependencies ++= Seq(
-      typesafeAkka.akkaPersistenceTyped
+      typesafeAkka.akkaPersistenceTyped,
+      typesafeAkka.akkaSerializationJackson,
+      fasterXmlJackson.scala,
+      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
+      awssdk.v1.sts,
+      awssdk.v2.sts,
+      logback.logbackClassic,
+      "jakarta.xml.bind" % "jakarta.xml.bind-api" % "4.0.0",
+      "com.sun.xml.bind" % "jaxb-impl" % "4.0.1"
     )
   )
   .dependsOn(
@@ -108,7 +116,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-    name := "adceet-read-api-base",
+    name := "adceet-adceet-read-api-base",
     libraryDependencies ++= Seq(
       iheart.ficus,
       "com.typesafe.slick" %% "slick"                % "3.4.1",
@@ -119,7 +127,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
 lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .settings(
-    name := "read-api-server-scala",
+    name := "adceet-read-api-server-scala",
     Settings.baseSettings,
     Settings.scalaSettings,
     Settings.javaSettings,

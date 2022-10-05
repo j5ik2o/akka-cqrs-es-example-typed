@@ -42,6 +42,7 @@ import com.github.j5ik2o.ak.kcl.dsl.KCLSource
 import com.github.j5ik2o.ak.kcl.stage.{CommittableRecord, KCLSourceStage}
 import com.github.j5ik2o.ak.kcl.stage.KCLSourceStage.RecordSet
 import com.typesafe.config.Config
+import org.slf4j.LoggerFactory
 import slick.jdbc.JdbcProfile
 import wvlet.airframe.ulid.ULID
 
@@ -107,32 +108,42 @@ final class ThreadReadModelUpdater(
 
   import profile.api._
 
+  private val logger = LoggerFactory.getLogger(getClass)
+
   protected def onThreadCreated(event: ThreadCreated): Future[Unit] = {
+    logger.debug("onThreadCreated: {}", event)
     val query = ThreadsQuery.insertOrUpdate(ThreadRecord(event.threadId.asString, event.occurredAt))
     db.run(query).map(_ => ())
   }
 
   protected def onMemberAdded(event: MemberAdded): Future[Unit] = {
+    logger.debug("onMemberAdded: {}", event)
    val query =  MembersQuery.insertOrUpdate(MemberRecord(event.threadId.asString, event.accountId.asString, event.occurredAt))
     db.run(query).map(_ => ())
   }
 
   protected def onMessageAdded(event: MessageAdded): Future[Unit] = {
+    logger.debug("onMessageAdded: {}", event)
     val query =  MessagesQuery.insertOrUpdate(MessageRecord(event.messageId.asString, event.threadId.asString, event.accountId.asString, event.body, event.occurredAt))
     db.run(query).map(_ => ())
   }
 
 
   protected def buildReadModelFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed] = Flow[((String, Array[Byte]), CommittableRecord)].mapAsync(1) { envelope =>
+    logger.info(">>> buildReadModelFlow: envelope = {}", envelope)
     val message = serialization
       .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
+    logger.info(">>> buildReadModelFlow: message = {}", message)
     val domainEvent = message.payload.asInstanceOf[ThreadEvent]
+    logger.info(">>> buildReadModelFlow: domainEvent = {}", domainEvent)
     eventListener.foreach(f => f(domainEvent))
+    logger.info(">>> foreach: domainEvent = {}", domainEvent)
     val future = domainEvent match {
       case event: ThreadCreated => onThreadCreated(event)
       case event: MemberAdded => onMemberAdded(event)
       case event: MessageAdded => onMessageAdded(event)
     }
+    logger.info(">>> future: domainEvent = {}", domainEvent)
     future.map(_ => envelope._2)
   }
 
@@ -172,18 +183,21 @@ final class ThreadReadModelUpdater(
   private val convertToPidWithMessageFlow
       : Flow[CommittableRecord, ((String, Array[Byte]), CommittableRecord), NotUsed] = Flow[CommittableRecord].map {
     committableRecord =>
+      logger.debug("committableRecord = {}", committableRecord)
       val dynamoDb = committableRecord.record.asInstanceOf[RecordAdapter].getInternalObject.getDynamodb
       val newImage = dynamoDb.getNewImage.asScala
       val pid      = newImage("persistence-id").getS
       val message  = newImage("message").getB.array()
+      logger.debug("persistence-id = {}, message = {}", pid, message)
       (pid -> message, committableRecord)
   }
 
   private def startWorker(streamArn: String): Unit = {
+    logger.debug("start worker")
     val describeStreamRequest = new DescribeStreamRequest().withStreamArn(streamArn)
     val describeStreamResult  = amazonDynamoDBStreams.describeStream(describeStreamRequest)
     val shards                = describeStreamResult.getStreamDescription.getShards.asScala
-    ctx.log.debug(s"shards.size = ${shards.size}, shards = $shards")
+    logger.debug(s"shards.size = ${shards.size}, shards = $shards")
 
     val result = KCLSource
       .ofCustomWorkerWithoutCheckpoint(
