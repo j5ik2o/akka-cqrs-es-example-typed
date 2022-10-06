@@ -11,6 +11,10 @@ lazy val root = (project in file("."))
     `write-api-server-scala`,
     `write-api-server-kotlin`,
     `write-api-server-java`,
+    `read-model-updater-base`,
+    `read-model-updater-scala`,
+    `domain-scala`,
+    `interface-adaptor`,
     `infrastructure`
   )
 
@@ -25,9 +29,35 @@ lazy val `infrastructure` = (project in file("infrastructure"))
       iheart.ficus,
       typesafeAkka.akkaActorTyped,
       awssdk.v1.dynamodb,
-      awssdk.v1.cloudwatch
+      awssdk.v1.cloudwatch,
+      cats.core,
     )
   )
+val circeVersion = "0.14.1"
+
+
+lazy val `interface-adaptor` = (project in file("interface-adaptor"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+  name := "adceet-interface-adaptor",
+  libraryDependencies ++= Seq(
+    typesafeAkka.akkaHttp,
+    typesafeAkka.akkaStreamTyped,
+    heikoseeberger.akkaHttpCirce,
+    scalatest.scalatest % Test,
+    typesafeAkka.actorTestkitTyped % Test,
+    typesafeAkka.httpTestkit                                   % Test,
+    logback.logbackClassic % Test,
+  ),
+  libraryDependencies ++= Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser"
+  ).map(_ % circeVersion)
+).dependsOn(`infrastructure`)
 
 lazy val `domain-scala` = (project in file("domain-scala"))
   .settings(
@@ -107,7 +137,8 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     `test-base`               % "test",
     `write-api-server-scala`  % "test->test",
     `read-api-base`,
-    `domain-scala`
+    `domain-scala`,
+    `interface-adaptor`
   )
 
 lazy val `read-api-base` = (project in file("read-api-base"))
@@ -182,7 +213,6 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       kamon.akka,
       kamon.akkaHttp,
       kamon.systemMetrics,
-      kamon.logback,
       kamon.datadog,
       aichler.jupiterInterface(JupiterKeys.jupiterVersion.value) % Test,
       mockito.mocktioScala                                       % Test,

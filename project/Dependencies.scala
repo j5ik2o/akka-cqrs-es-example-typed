@@ -6,10 +6,12 @@ object Version {
 
   val akkaHttp       = "10.2.9"
   val akkaManagement = "1.1.3"
-  val kamon          = "2.5.1"
+  val kamon          = "2.5.8"
 
   val akkaPersistenceDynamoDB = "1.14.48"
   val akkaKinesis             = "1.0.253"
+  val cats          = "2.8.0"
+
 }
 
 object Dependencies {
@@ -24,7 +26,7 @@ object Dependencies {
   }
 
   object logback {
-    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.3"
+    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.3.1"
   }
 
   object kodeinDI {
@@ -118,7 +120,7 @@ object Dependencies {
     val akka          = "io.kamon" %% "kamon-akka"           % Version.kamon
     val akkaHttp      = "io.kamon" %% "kamon-akka-http"      % Version.kamon
     val systemMetrics = "io.kamon" %% "kamon-system-metrics" % Version.kamon
-    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
+//    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
     val datadog       = "io.kamon" %% "kamon-datadog"        % Version.kamon
 //    val apmReporter   = "io.kamon" %% "kamon-apm-reporter"   % Version.kamon
   }
@@ -179,4 +181,9 @@ object Dependencies {
 
     val akkaKinesisKclDynamoDBStreams = "com.github.j5ik2o" %% "akka-kinesis-kcl-dynamodb-streams" % Version.akkaKinesis
   }
+
+  object cats {
+    val core = "org.typelevel" %% "cats-core" % Version.cats
+  }
+
 }
