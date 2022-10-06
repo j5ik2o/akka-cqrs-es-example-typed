@@ -52,7 +52,7 @@ class HealthCheckRoutesTest extends AnyFunSpec with Matchers with ScalatestRoute
       Get("/health?full=true") ~> HealthCheckRoutes.health(ok1, ok2) ~> check {
         status shouldEqual OK
         responseAs[String] shouldEqual
-          """
+        """
             |{
             |  "status": "healthy",
             |  "check_results": [
@@ -79,7 +79,7 @@ class HealthCheckRoutesTest extends AnyFunSpec with Matchers with ScalatestRoute
       Get("/health?full=true") ~> HealthCheckRoutes.health(ok1, failedButNonFatal) ~> check {
         status shouldEqual OK
         responseAs[String] shouldEqual
-          """
+        """
             |{
             |  "status": "healthy",
             |  "check_results": [
@@ -107,7 +107,7 @@ class HealthCheckRoutesTest extends AnyFunSpec with Matchers with ScalatestRoute
       Get("/health?full=true") ~> HealthCheckRoutes.health(ok, failedButNonFatal, failedFatal) ~> check {
         status shouldEqual ServiceUnavailable
         responseAs[String] shouldEqual
-          """
+        """
             |{
             |  "status": "unhealthy",
             |  "check_results": [

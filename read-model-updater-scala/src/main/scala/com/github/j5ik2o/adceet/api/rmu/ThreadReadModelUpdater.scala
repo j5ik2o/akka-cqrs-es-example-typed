@@ -16,30 +16,46 @@
 package com.github.j5ik2o.adceet.api.rmu
 
 import akka.actor.ActorSystem
-import akka.{Done, NotUsed}
+import akka.{ Done, NotUsed }
 import net.ceedubs.ficus.Ficus._
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
+import akka.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 import akka.persistence.PersistentRepr
-import akka.serialization.{Serialization, SerializationExtension}
-import akka.stream.{KillSwitches, UniqueKillSwitch}
-import akka.stream.scaladsl.{Flow, Keep, Sink}
+import akka.serialization.{ Serialization, SerializationExtension }
+import akka.stream.{ KillSwitches, UniqueKillSwitch }
+import akka.stream.scaladsl.{ Flow, Keep, Sink }
 import akka.stream.stage.AsyncCallback
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
-import com.amazonaws.services.dynamodbv2.model.{BillingMode, DescribeStreamRequest}
+import com.amazonaws.services.dynamodbv2.model.{ BillingMode, DescribeStreamRequest }
 import com.amazonaws.services.dynamodbv2.streamsadapter.model.RecordAdapter
-import com.amazonaws.services.dynamodbv2.streamsadapter.{AmazonDynamoDBStreamsAdapterClient, StreamsWorkerFactory}
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBStreams}
-import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{InitialPositionInStream, KinesisClientLibConfiguration, NoOpShardPrioritization, ShardSyncStrategyType, Worker}
-import com.amazonaws.services.kinesis.clientlibrary.types.{InitializationInput, ShutdownInput}
+import com.amazonaws.services.dynamodbv2.streamsadapter.{ AmazonDynamoDBStreamsAdapterClient, StreamsWorkerFactory }
+import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBStreams }
+import com.amazonaws.services.kinesis.clientlibrary.lib.worker.{
+  InitialPositionInStream,
+  KinesisClientLibConfiguration,
+  NoOpShardPrioritization,
+  ShardSyncStrategyType,
+  Worker
+}
+import com.amazonaws.services.kinesis.clientlibrary.types.{ InitializationInput, ShutdownInput }
 import com.amazonaws.services.kinesis.metrics.interfaces.MetricsLevel
-import com.github.j5ik2o.adceet.api.read.adaptor.dao.{MembersSupport, MessagesSupport, ThreadsSupport}
-import com.github.j5ik2o.adceet.api.rmu.ThreadReadModelUpdaterProtocol.{Command, Start, StartWithReply, Started, Stop, StopWithReply, Stopped, WrappedStartedResult, WrappedStoppedResult}
-import com.github.j5ik2o.adceet.domain.ThreadEvents.{MemberAdded, MessageAdded, ThreadCreated, ThreadEvent}
+import com.github.j5ik2o.adceet.api.read.adaptor.dao.{ MembersSupport, MessagesSupport, ThreadsSupport }
+import com.github.j5ik2o.adceet.api.rmu.ThreadReadModelUpdaterProtocol.{
+  Command,
+  Start,
+  StartWithReply,
+  Started,
+  Stop,
+  StopWithReply,
+  Stopped,
+  WrappedStartedResult,
+  WrappedStoppedResult
+}
+import com.github.j5ik2o.adceet.domain.ThreadEvents.{ MemberAdded, MessageAdded, ThreadCreated, ThreadEvent }
 import com.github.j5ik2o.ak.kcl.dsl.KCLSource
-import com.github.j5ik2o.ak.kcl.stage.{CommittableRecord, KCLSourceStage}
+import com.github.j5ik2o.ak.kcl.stage.{ CommittableRecord, KCLSourceStage }
 import com.github.j5ik2o.ak.kcl.stage.KCLSourceStage.RecordSet
 import com.typesafe.config.Config
 import org.slf4j.LoggerFactory
@@ -49,9 +65,9 @@ import wvlet.airframe.ulid.ULID
 import scala.concurrent.duration._
 import java.time.Instant
 import java.util.Date
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{ Future, Promise }
 import scala.jdk.CollectionConverters._
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 object ThreadReadModelUpdater {
   def apply(
@@ -97,7 +113,10 @@ final class ThreadReadModelUpdater(
     eventListener: Option[(ThreadEvent) => Future[Unit]],
     config: Config
 )(ctx: ActorContext[Command])
-    extends AbstractBehavior(ctx) with ThreadsSupport with MembersSupport with MessagesSupport {
+    extends AbstractBehavior(ctx)
+    with ThreadsSupport
+    with MembersSupport
+    with MessagesSupport {
   implicit val system: ActorSystem = ctx.system.toClassic
   import ctx.executionContext
 
@@ -118,34 +137,43 @@ final class ThreadReadModelUpdater(
 
   protected def onMemberAdded(event: MemberAdded): Future[Unit] = {
     logger.debug("onMemberAdded: {}", event)
-   val query =  MembersQuery.insertOrUpdate(MemberRecord(event.threadId.asString, event.accountId.asString, event.occurredAt))
+    val query =
+      MembersQuery.insertOrUpdate(MemberRecord(event.threadId.asString, event.accountId.asString, event.occurredAt))
     db.run(query).map(_ => ())
   }
 
   protected def onMessageAdded(event: MessageAdded): Future[Unit] = {
     logger.debug("onMessageAdded: {}", event)
-    val query =  MessagesQuery.insertOrUpdate(MessageRecord(event.messageId.asString, event.threadId.asString, event.accountId.asString, event.body, event.occurredAt))
+    val query = MessagesQuery.insertOrUpdate(
+      MessageRecord(
+        event.messageId.asString,
+        event.threadId.asString,
+        event.accountId.asString,
+        event.body,
+        event.occurredAt
+      )
+    )
     db.run(query).map(_ => ())
   }
 
-
-  protected def buildReadModelFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed] = Flow[((String, Array[Byte]), CommittableRecord)].mapAsync(1) { envelope =>
-    logger.info(">>> buildReadModelFlow: envelope = {}", envelope)
-    val message = serialization
-      .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
-    logger.info(">>> buildReadModelFlow: message = {}", message)
-    val domainEvent = message.payload.asInstanceOf[ThreadEvent]
-    logger.info(">>> buildReadModelFlow: domainEvent = {}", domainEvent)
-    eventListener.foreach(f => f(domainEvent))
-    logger.info(">>> foreach: domainEvent = {}", domainEvent)
-    val future = domainEvent match {
-      case event: ThreadCreated => onThreadCreated(event)
-      case event: MemberAdded => onMemberAdded(event)
-      case event: MessageAdded => onMessageAdded(event)
+  protected def buildReadModelFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed] =
+    Flow[((String, Array[Byte]), CommittableRecord)].mapAsync(1) { envelope =>
+      logger.info(">>> buildReadModelFlow: envelope = {}", envelope)
+      val message = serialization
+        .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
+      logger.info(">>> buildReadModelFlow: message = {}", message)
+      val domainEvent = message.payload.asInstanceOf[ThreadEvent]
+      logger.info(">>> buildReadModelFlow: domainEvent = {}", domainEvent)
+      eventListener.foreach(f => f(domainEvent))
+      logger.info(">>> foreach: domainEvent = {}", domainEvent)
+      val future = domainEvent match {
+        case event: ThreadCreated => onThreadCreated(event)
+        case event: MemberAdded   => onMemberAdded(event)
+        case event: MessageAdded  => onMessageAdded(event)
+      }
+      logger.info(">>> future: domainEvent = {}", domainEvent)
+      future.map(_ => envelope._2)
     }
-    logger.info(">>> future: domainEvent = {}", domainEvent)
-    future.map(_ => envelope._2)
-  }
 
   override def onMessage(msg: Command): Behavior[Command] = {
     msg match {

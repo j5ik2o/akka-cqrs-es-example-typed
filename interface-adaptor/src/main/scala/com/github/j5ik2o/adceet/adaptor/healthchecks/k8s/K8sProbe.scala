@@ -28,13 +28,13 @@ sealed abstract class K8sProbe protected (val checks: List[HealthCheck], val pat
 }
 
 case class LivenessProbe protected (
-                                     override val checks: List[HealthCheck],
-                                     override val path: String,
-                                     override val ec: ExecutionContext
-                                   ) extends K8sProbe(checks, path, ec)
+    override val checks: List[HealthCheck],
+    override val path: String,
+    override val ec: ExecutionContext
+) extends K8sProbe(checks, path, ec)
 
 case class ReadinessProbe protected (
-                                      override val checks: List[HealthCheck],
-                                      override val path: String,
-                                      override val ec: ExecutionContext
-                                    ) extends K8sProbe(checks, path, ec)
+    override val checks: List[HealthCheck],
+    override val path: String,
+    override val ec: ExecutionContext
+) extends K8sProbe(checks, path, ec)

@@ -15,23 +15,28 @@
  */
 package com.github.j5ik2o.adceet.api.rmu
 
-import akka.{Done, actor}
+import akka.{ actor, Done }
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorSystem, PostStop}
-import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{asyncHealthCheck, healthCheck, healthy}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{bindAndHandleProbes, livenessProbe, readinessProbe}
-import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
-import com.typesafe.config.{Config, ConfigFactory}
+import akka.actor.typed.{ ActorSystem, PostStop }
+import com.amazonaws.auth.{ AWSCredentialsProvider, DefaultAWSCredentialsProviderChain }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{ asyncHealthCheck, healthCheck, healthy }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{ bindAndHandleProbes, livenessProbe, readinessProbe }
+import com.github.j5ik2o.adceet.infrastructure.aws.{
+  AmazonCloudWatchUtil,
+  AmazonDynamoDBStreamsUtil,
+  AmazonDynamoDBUtil,
+  CredentialsProviderUtil
+}
+import com.typesafe.config.{ Config, ConfigFactory }
 import net.ceedubs.ficus.Ficus._
 import org.slf4j.LoggerFactory
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import wvlet.airframe.ulid.ULID
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 object Main extends App {
   sealed trait Command
@@ -39,37 +44,38 @@ object Main extends App {
   case class Abort(ex: Throwable) extends Command
   case class WrappedStarted(msg: ThreadReadModelUpdaterProtocol.Started) extends Command
 
-  val id = ULID.newULID
-  val logger = LoggerFactory.getLogger(getClass)
-  val rootConfig = ConfigFactory.load()
-  val adceetConfig = rootConfig.getConfig("adceet")
+  val id                      = ULID.newULID
+  val logger                  = LoggerFactory.getLogger(getClass)
+  val rootConfig              = ConfigFactory.load()
+  val adceetConfig            = rootConfig.getConfig("adceet")
   val terminationHardDeadLine = adceetConfig.getDuration("termination-hard-dead-line").toMillis.millis
-  val config = adceetConfig.getConfig("read-model-updater.threads")
-  val journalTableName = config.getString("journal-table-name")
+  val config                  = adceetConfig.getConfig("read-model-updater.threads")
+  val journalTableName        = config.getString("journal-table-name")
 
-  val accessKeyIdOpt = config.getAs[String]("access-key-id")
+  val accessKeyIdOpt     = config.getAs[String]("access-key-id")
   val secretAccessKeyOpt = config.getAs[String]("secret-access-key")
 
   val accountEventRouterClientConfig = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
-  val accountEventRouterStreamClientConfig = config.getAs[Config]("dynamodb-stream-client").getOrElse(ConfigFactory.empty())
+  val accountEventRouterStreamClientConfig =
+    config.getAs[Config]("dynamodb-stream-client").getOrElse(ConfigFactory.empty())
   val accountEventRouterCloudWatchConfig = config.getAs[Config]("cloudwatch-client").getOrElse(ConfigFactory.empty())
 
-  val amazonDynamoDB = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
+  val amazonDynamoDB        = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
   val amazonDynamoDBStreams = AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
-  val amazonCloudwatch = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
+  val amazonCloudwatch      = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
 
   val credentialsProvider: AWSCredentialsProvider = {
-  (accessKeyIdOpt, secretAccessKeyOpt) match {
-    case (Some(accessKeyId), Some(secretAccessKey)) =>
+    (accessKeyIdOpt, secretAccessKeyOpt) match {
+      case (Some(accessKeyId), Some(secretAccessKey)) =>
         CredentialsProviderUtil.createCredentialsProvider(Some(accessKeyId), Some(secretAccessKey))
-    case _ =>
-      DefaultAWSCredentialsProviderChain.getInstance()
-  }
+      case _ =>
+        DefaultAWSCredentialsProviderChain.getInstance()
+    }
   }
 
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
-  def behavior = Behaviors.setup[Command]{ ctx =>
+  def behavior = Behaviors.setup[Command] { ctx =>
     implicit val system: actor.ActorSystem = ctx.system.classicSystem
     ctx.log.debug("start MainActor")
 
@@ -90,28 +96,28 @@ object Main extends App {
 
     val rmuRef = ctx.spawn(childBehavior, "rmu")
 
-    val msgAdaptor = ctx.messageAdapter{ msg => WrappedStarted(msg) }
+    val msgAdaptor = ctx.messageAdapter { msg => WrappedStarted(msg) }
 
     rmuRef ! ThreadReadModelUpdaterProtocol.StartWithReply(streamArn, msgAdaptor)
 
-    Behaviors.receive[Command]{
-      case (_, WrappedStarted(_)) =>
-        val serverBinding = httpServer()
-        ctx.pipeToSelf(serverBinding) {
-          case Success(Done) => MeUp
-          case Failure(ex) => Abort(ex)
-        }
-        Behaviors.same
-      case (_, MeUp) =>
-        Behaviors.same
-      case (ctx, Abort(ex)) =>
-        ctx.log.error("occurred error", ex)
-        Behaviors.stopped
-    }.receiveSignal{
-      case (_, PostStop) =>
+    Behaviors
+      .receive[Command] {
+        case (_, WrappedStarted(_)) =>
+          val serverBinding = httpServer()
+          ctx.pipeToSelf(serverBinding) {
+            case Success(Done) => MeUp
+            case Failure(ex)   => Abort(ex)
+          }
+          Behaviors.same
+        case (_, MeUp) =>
+          Behaviors.same
+        case (ctx, Abort(ex)) =>
+          ctx.log.error("occurred error", ex)
+          Behaviors.stopped
+      }.receiveSignal { case (_, PostStop) =>
         rmuRef ! ThreadReadModelUpdaterProtocol.Stop
         Behaviors.same
-    }
+      }
   }
 
   private def httpServer()(implicit system: actor.ActorSystem): Future[Done] = {

@@ -27,9 +27,17 @@ object ThreadEvents {
     def threadId: ThreadId
   }
 
-  final case class ThreadCreated(id: ULID, threadId: ThreadId, accountId: AccountId, occurredAt: Instant) extends ThreadEvent
-  final case class MemberAdded(id: ULID,  threadId: ThreadId, accountId: AccountId, occurredAt: Instant) extends ThreadEvent
-  final case class MessageAdded(id: ULID, threadId: ThreadId, accountId: AccountId, messageId: MessageId, body: String, occurredAt: Instant)
+  final case class ThreadCreated(id: ULID, threadId: ThreadId, accountId: AccountId, occurredAt: Instant)
       extends ThreadEvent
+  final case class MemberAdded(id: ULID, threadId: ThreadId, accountId: AccountId, occurredAt: Instant)
+      extends ThreadEvent
+  final case class MessageAdded(
+      id: ULID,
+      threadId: ThreadId,
+      accountId: AccountId,
+      messageId: MessageId,
+      body: String,
+      occurredAt: Instant
+  ) extends ThreadEvent
 
 }

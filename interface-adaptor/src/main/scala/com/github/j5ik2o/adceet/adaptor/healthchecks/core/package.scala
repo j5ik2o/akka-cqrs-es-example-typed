@@ -30,14 +30,14 @@ package object core {
   def unhealthy(msg: String): HealthCheckResult = msg.invalidNel[Unit]
 
   def healthCheck(
-                   name: String,
-                   severity: Severity = Severity.Fatal
-                 )(c: => HealthCheckResult): HealthCheck =
+      name: String,
+      severity: Severity = Severity.Fatal
+  )(c: => HealthCheckResult): HealthCheck =
     new HealthCheck(name, Future.fromTry(Try(c)), severity)
 
   def asyncHealthCheck(
-                        name: String,
-                        severity: Severity = Severity.Fatal
-                      )(c: => Future[HealthCheckResult]): HealthCheck =
+      name: String,
+      severity: Severity = Severity.Fatal
+  )(c: => Future[HealthCheckResult]): HealthCheck =
     new HealthCheck(name, c, severity)
 }

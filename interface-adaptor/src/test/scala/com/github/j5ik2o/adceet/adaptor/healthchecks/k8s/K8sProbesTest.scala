@@ -17,13 +17,13 @@ package com.github.j5ik2o.adceet.adaptor.healthchecks.k8s
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{asyncHealthCheck, healthCheck, healthy}
+import akka.http.scaladsl.model.{ HttpRequest, HttpResponse, StatusCodes }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{ asyncHealthCheck, healthCheck, healthy }
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ Await, Future }
 
 class K8sProbesTest extends AnyFreeSpec with Matchers {
   private def fixture(probe: K8sProbe, probes: K8sProbe*) = new {}
@@ -38,11 +38,13 @@ class K8sProbesTest extends AnyFreeSpec with Matchers {
         livenessProbe(asyncHealthCheck("liveness_check")(Future(healthy)))
       )
 
-      def requestToReadinessProbe: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8086/ready"))
-      def requestToLivenessProbe: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8086/live"))
+      def requestToReadinessProbe: Future[HttpResponse] =
+        Http().singleRequest(HttpRequest(uri = "http://localhost:8086/ready"))
+      def requestToLivenessProbe: Future[HttpResponse] =
+        Http().singleRequest(HttpRequest(uri = "http://localhost:8086/live"))
 
       val readinessResponse = Await.result(requestToReadinessProbe, 10.seconds)
-      val livenessResponse = Await.result(requestToLivenessProbe, 10.seconds)
+      val livenessResponse  = Await.result(requestToLivenessProbe, 10.seconds)
 
       readinessResponse.status shouldEqual StatusCodes.OK
       livenessResponse.status shouldEqual StatusCodes.OK

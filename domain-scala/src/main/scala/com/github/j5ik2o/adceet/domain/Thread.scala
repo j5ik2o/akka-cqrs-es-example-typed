@@ -15,7 +15,7 @@
  */
 package com.github.j5ik2o.adceet.domain
 
-import com.github.j5ik2o.adceet.domain.ThreadEvents.{MemberAdded, MessageAdded, ThreadCreated, ThreadEvent}
+import com.github.j5ik2o.adceet.domain.ThreadEvents.{ MemberAdded, MessageAdded, ThreadCreated, ThreadEvent }
 import wvlet.airframe.ulid.ULID
 
 import java.time.Instant

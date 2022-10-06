@@ -10,7 +10,7 @@ object Version {
 
   val akkaPersistenceDynamoDB = "1.14.48"
   val akkaKinesis             = "1.0.253"
-  val cats          = "2.8.0"
+  val cats                    = "2.8.0"
 
 }
 
@@ -121,7 +121,7 @@ object Dependencies {
     val akkaHttp      = "io.kamon" %% "kamon-akka-http"      % Version.kamon
     val systemMetrics = "io.kamon" %% "kamon-system-metrics" % Version.kamon
 //    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
-    val datadog       = "io.kamon" %% "kamon-datadog"        % Version.kamon
+    val datadog = "io.kamon" %% "kamon-datadog" % Version.kamon
 //    val apmReporter   = "io.kamon" %% "kamon-apm-reporter"   % Version.kamon
   }
 

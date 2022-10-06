@@ -15,17 +15,17 @@
  */
 package com.github.j5ik2o.adceet.adaptor.healthchecks.core.route
 import akka.http.scaladsl.model.StatusCode
-import akka.http.scaladsl.model.StatusCodes.{OK, ServiceUnavailable}
+import akka.http.scaladsl.model.StatusCodes.{ OK, ServiceUnavailable }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.PathDirectives
-import akka.http.scaladsl.server.{PathMatchers, Route}
-import cats.data.Validated.{Invalid, Valid}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{HealthCheck, HealthCheckResult}
+import akka.http.scaladsl.server.{ PathMatchers, Route }
+import cats.data.Validated.{ Invalid, Valid }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{ HealthCheck, HealthCheckResult }
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.JsonObject
 import io.circe.generic.auto._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object HealthCheckRoutes extends FailFastCirceSupport {
 
@@ -43,25 +43,23 @@ object HealthCheckRoutes extends FailFastCirceSupport {
       check.severity.toString,
       status(result.isValid),
       result match {
-        case Valid(_) => List()
+        case Valid(_)        => List()
         case Invalid(errors) => errors.toList
       }
     )
 
   def health(
-              checks: HealthCheck*
-            )(
-              implicit
-              ec: ExecutionContext
-            ): Route = health("health", checks.toList)
+      checks: HealthCheck*
+  )(implicit
+      ec: ExecutionContext
+  ): Route = health("health", checks.toList)
 
   def health(
-              path: String,
-              checks: List[HealthCheck]
-            )(
-              implicit
-              ec: ExecutionContext
-            ): Route = {
+      path: String,
+      checks: List[HealthCheck]
+  )(implicit
+      ec: ExecutionContext
+  ): Route = {
     require(checks.nonEmpty, "checks must not empty.")
     require(
       checks.map(_.name).toSet.size == checks.length,
@@ -80,22 +78,20 @@ object HealthCheckRoutes extends FailFastCirceSupport {
               val healthy = isHealthy(checkAndResults)
               statusCode(healthy) -> ResponseJson(
                 status(healthy),
-                checkAndResults.map {
-                  case (check, result) => toResultJson(check, result)
+                checkAndResults.map { case (check, result) =>
+                  toResultJson(check, result)
                 }
               )
             }
-            onSuccess(result) {
-              (check, results) =>
-                complete(check, results)
+            onSuccess(result) { (check, results) =>
+              complete(check, results)
             }
           } else {
             val result = checkAndResultsFuture.map { checkAndResults =>
               statusCode(isHealthy(checkAndResults)) -> JsonObject.empty
             }
-            onSuccess(result) {
-              (check, results) =>
-                complete(check, results)
+            onSuccess(result) { (check, results) =>
+              complete(check, results)
             }
           }
         }

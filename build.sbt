@@ -30,11 +30,10 @@ lazy val `infrastructure` = (project in file("infrastructure"))
       typesafeAkka.akkaActorTyped,
       awssdk.v1.dynamodb,
       awssdk.v1.cloudwatch,
-      cats.core,
+      cats.core
     )
   )
 val circeVersion = "0.14.1"
-
 
 lazy val `interface-adaptor` = (project in file("interface-adaptor"))
   .settings(
@@ -42,22 +41,22 @@ lazy val `interface-adaptor` = (project in file("interface-adaptor"))
     Settings.scalaSettings,
     Settings.javaSettings
   ).settings(
-  name := "adceet-interface-adaptor",
-  libraryDependencies ++= Seq(
-    typesafeAkka.akkaHttp,
-    typesafeAkka.akkaStreamTyped,
-    heikoseeberger.akkaHttpCirce,
-    scalatest.scalatest % Test,
-    typesafeAkka.actorTestkitTyped % Test,
-    typesafeAkka.httpTestkit                                   % Test,
-    logback.logbackClassic % Test,
-  ),
-  libraryDependencies ++= Seq(
-    "io.circe" %% "circe-core",
-    "io.circe" %% "circe-generic",
-    "io.circe" %% "circe-parser"
-  ).map(_ % circeVersion)
-).dependsOn(`infrastructure`)
+    name := "adceet-interface-adaptor",
+    libraryDependencies ++= Seq(
+      typesafeAkka.akkaHttp,
+      typesafeAkka.akkaStreamTyped,
+      heikoseeberger.akkaHttpCirce,
+      scalatest.scalatest            % Test,
+      typesafeAkka.actorTestkitTyped % Test,
+      typesafeAkka.httpTestkit       % Test,
+      logback.logbackClassic         % Test
+    ),
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-core",
+      "io.circe" %% "circe-generic",
+      "io.circe" %% "circe-parser"
+    ).map(_ % circeVersion)
+  ).dependsOn(`infrastructure`)
 
 lazy val `domain-scala` = (project in file("domain-scala"))
   .settings(

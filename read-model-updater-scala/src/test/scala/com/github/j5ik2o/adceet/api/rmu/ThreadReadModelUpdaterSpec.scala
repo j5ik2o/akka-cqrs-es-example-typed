@@ -19,16 +19,26 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.AskPattern.Askable
 import com.github.dockerjava.core.DockerClientConfig
 import com.github.j5ik2o.adceet.api.read.adaptor.dao.ThreadsSupport
-import com.github.j5ik2o.adceet.api.write.aggregate.{AbstractThreadAggregateTestBase, ThreadAggregate, ThreadAggregateProtocol, ThreadPersist}
+import com.github.j5ik2o.adceet.api.write.aggregate.{
+  AbstractThreadAggregateTestBase,
+  ThreadAggregate,
+  ThreadAggregateProtocol,
+  ThreadPersist
+}
 import com.github.j5ik2o.adceet.domain.ThreadEvents.ThreadEvent
 import com.github.j5ik2o.adceet.domain.ThreadId
-import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
+import com.github.j5ik2o.adceet.infrastructure.aws.{
+  AmazonCloudWatchUtil,
+  AmazonDynamoDBStreamsUtil,
+  AmazonDynamoDBUtil,
+  CredentialsProviderUtil
+}
 import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
 import com.github.j5ik2o.adceet.test.util.RandomPortUtil
-import com.github.j5ik2o.adceet.test.{ActorSpec, LocalstackSpecSupport, Slick3SpecSupport}
-import com.github.j5ik2o.dockerController.flyway.{FlywayConfig, FlywaySpecSupport}
+import com.github.j5ik2o.adceet.test.{ ActorSpec, LocalstackSpecSupport, Slick3SpecSupport }
+import com.github.j5ik2o.dockerController.flyway.{ FlywayConfig, FlywaySpecSupport }
 import com.github.j5ik2o.dockerController.mysql.MySQLController
-import com.github.j5ik2o.dockerController.{DockerClientConfigUtil, DockerController, WaitPredicates}
+import com.github.j5ik2o.dockerController.{ DockerClientConfigUtil, DockerController, WaitPredicates }
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpecLike
@@ -36,7 +46,7 @@ import slick.jdbc.JdbcProfile
 import wvlet.airframe.ulid.ULID
 
 import scala.concurrent.Future
-import scala.concurrent.duration.{Duration, DurationDouble}
+import scala.concurrent.duration.{ Duration, DurationDouble }
 
 object ThreadReadModelUpdaterSpec {
   val defaultAwsAccessKeyId = "x"
