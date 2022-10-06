@@ -99,6 +99,8 @@ services:
     image: adceet-read-model-updater-${MODE}
     container_name: read-model-updater-1
     entrypoint: ["/opt/docker/bin/adceet-read-model-updater-${MODE}", "-e", "development"]
+    ports:
+      - 18083:8086
     environment:
       AWS_REGION: ap-northeast-1
       CONFIG_RESOURCE: application.conf

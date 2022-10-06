@@ -19,7 +19,6 @@ import akka.{Done, actor}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorSystem, PostStop}
 import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
-import com.amazonaws.services.dynamodbv2.model.DescribeTableRequest
 import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{asyncHealthCheck, healthCheck, healthy}
 import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{bindAndHandleProbes, livenessProbe, readinessProbe}
 import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
@@ -35,6 +34,11 @@ import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
 object Main extends App {
+  sealed trait Command
+  case object MeUp extends Command
+  case class Abort(ex: Throwable) extends Command
+  case class WrappedStarted(msg: ThreadReadModelUpdaterProtocol.Started) extends Command
+
   val id = ULID.newULID
   val logger = LoggerFactory.getLogger(getClass)
   val rootConfig = ConfigFactory.load()
@@ -65,10 +69,9 @@ object Main extends App {
 
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
-  def behavior = Behaviors.setup[Any]{ ctx =>
+  def behavior = Behaviors.setup[Command]{ ctx =>
     implicit val system: actor.ActorSystem = ctx.system.classicSystem
     ctx.log.debug("start MainActor")
-    httpServer()
 
     val databaseConfig = DatabaseConfig.forConfig[JdbcProfile]("slick", rootConfig)
     val childBehavior = ThreadReadModelUpdater(
@@ -87,11 +90,23 @@ object Main extends App {
 
     val rmuRef = ctx.spawn(childBehavior, "rmu")
 
-    rmuRef ! ThreadReadModelUpdaterProtocol.Start(streamArn)
+    val msgAdaptor = ctx.messageAdapter{ msg => WrappedStarted(msg) }
 
-    Behaviors.receive[Any]{
-      case _ =>
+    rmuRef ! ThreadReadModelUpdaterProtocol.StartWithReply(streamArn, msgAdaptor)
+
+    Behaviors.receive[Command]{
+      case (_, WrappedStarted(_)) =>
+        val serverBinding = httpServer()
+        ctx.pipeToSelf(serverBinding) {
+          case Success(Done) => MeUp
+          case Failure(ex) => Abort(ex)
+        }
         Behaviors.same
+      case (_, MeUp) =>
+        Behaviors.same
+      case (ctx, Abort(ex)) =>
+        ctx.log.error("occurred error", ex)
+        Behaviors.stopped
     }.receiveSignal{
       case (_, PostStop) =>
         rmuRef ! ThreadReadModelUpdaterProtocol.Stop
@@ -99,7 +114,7 @@ object Main extends App {
     }
   }
 
-  private def httpServer()(implicit system: actor.ActorSystem): Unit = {
+  private def httpServer()(implicit system: actor.ActorSystem): Future[Done] = {
     import system.dispatcher
     val http = bindAndHandleProbes(
       readinessProbe(healthCheck("readiness_check")(healthy)),
@@ -117,9 +132,7 @@ object Main extends App {
         logger.error(s"Failed to bind endpoint, terminating system: $ex")
         system.terminate()
     }
-    val result = http.map(_ => Done)
-    Await.result(result, 10.seconds)
-    logger.info(s" startHttpServer: finish")
+    http.map(_ => Done)
   }
 
   val system = ActorSystem(behavior, "adceet-read-model-updater", rootConfig)

@@ -95,7 +95,7 @@ object HealthCheckRoutes extends FailFastCirceSupport {
             }
             onSuccess(result) {
               (check, results) =>
-                complete(check, "{}")
+                complete(check, results)
             }
           }
         }
