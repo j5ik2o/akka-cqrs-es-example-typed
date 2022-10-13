@@ -7,6 +7,20 @@ localstack:
     requests:
       cpu: "0.5"
       memory: "500Mi"
+mysql:
+  enabled: true
+  auth:
+    rootPassword: passwd
+    database: adceet
+    username: adceet
+    password: adceet
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.5"
+      memory: "500Mi"
 regcred:
   enabled: false
   server:
@@ -43,7 +57,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: b44d42af8c6a7be92e5c31d8643ae3a0ad039be7
+        tag: e274cea7c5c1a036041a5d21a805080dc0d89173
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -173,3 +187,31 @@ writeApi:
           value: "16"
         - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__factor"
           value: "2.0"
+readModelUpdater:
+  enabled: true
+  image:
+    repository: adceet-read-model-updater-scala
+    tag: e274cea7c5c1a036041a5d21a805080dc0d89173
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+    requests:
+      cpu: "0.5"
+      memory: "1Gi"
+  service:
+    type: NodePort
+    port: 8086
+    nodePort: 30032
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    name: adceet-read-model-updater
+  env:
+    - name: "CONFIG_FORCE_kamon_environment_tags_version"
+      value: "adceet-read-model-updater"
+    - name: "CONFIG_FORCE_adceet__read_model_updater__threads__journal_table__name"
+      value: "aje8iz5k-Journal"
+    - name: "CONFIG_FORCE_slick_db_url"
+      value: "jdbc:mysql://localhost:3306/adceet?allowPublicKeyRetrieval=true&useSSL=false"

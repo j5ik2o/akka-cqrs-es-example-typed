@@ -1,6 +1,6 @@
 repositories:
-  - name: localstack
-    url: https://localstack.github.io/helm-charts
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
 environments:
   '{{ .Environment.Name }}':
     values:
@@ -8,13 +8,13 @@ environments:
 
 ---
 releases:
-  - name: localstack
+  - name: mysql
     namespace: '{{ .Namespace | default "adceet" }}'
     labels:
-      group: localstack
-    chart: localstack/localstack
-    version: 0.4.1
+      group: mysql
+    chart: bitnami/mysql
+    version: 9.4.1
     wait: true
-    installedTemplate: '{{ .Values.localstack.enabled }}'
+    installedTemplate: '{{ .Values.mysql.enabled }}'
     values:
       - values/settings.yaml.gotmpl

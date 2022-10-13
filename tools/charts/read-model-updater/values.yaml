@@ -80,3 +80,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+http:
+  port: 8086
+
+command: []
+
+env: []
+
+envFrom: []
+
+strategy: {}
