@@ -43,7 +43,7 @@ Please set the following items in the yaml file appropriately
 
 ## Prepare DynamoDB tabels
 
-Next deploy the dynamodb local.
+Next deploy dynamodb local.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-dynamodb.sh
@@ -53,6 +53,20 @@ Create the necessary tables.
 
 ```shell
 tools/scripts $ ./dynamodb-create-tables.sh -e dev
+```
+
+## Prepare MySQL tabels
+
+Next deploy mysql.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-mysql.sh
+```
+
+Create the necessary tables.
+
+```shell
+tools/scripts $ ./flyway-migrate.sh -e dev
 ```
 
 ## [About akka-cluster roles](DEBUG_ON_LOCAL_K8S.md#about-akka-cluster-roles)
@@ -90,6 +104,13 @@ $ stern 'write-api-server-frontend-*' -n adceet
 
 Make sure all pods are in Ready status.
 
+## Deploy Read Model Updater (if you need)
+
+Next deploy Read Model Updater.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-rmu.sh
+```
 
 ## Check the applications
 

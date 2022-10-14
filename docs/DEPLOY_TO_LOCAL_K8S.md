@@ -116,6 +116,14 @@ $ stern 'write-api-server-frontend-*' -n adceet
 
 Make sure all pods are in Ready status
 
+## Deploy Read Model Updater (if you need) 
+
+Next deploy Read Model Updater.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-rmu.sh
+```
+
 ## Check the applications
 
 After frontend is started, check the operation with the following commands.
