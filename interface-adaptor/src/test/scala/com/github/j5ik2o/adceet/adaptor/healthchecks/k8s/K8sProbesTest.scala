@@ -26,7 +26,6 @@ import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 
 class K8sProbesTest extends AnyFreeSpec with Matchers {
-  private def fixture(probe: K8sProbe, probes: K8sProbe*) = new {}
 
   "K8sProbes" - {
     "should start successfully and return correct response" in {

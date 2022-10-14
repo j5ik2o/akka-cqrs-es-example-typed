@@ -37,6 +37,10 @@ import wvlet.airframe.ulid.ULID
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
+import akka.actor.typed.Behavior
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch
+import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBStreams }
+import org.slf4j.Logger
 
 object Main extends App {
   sealed trait Command
@@ -44,25 +48,27 @@ object Main extends App {
   case class Abort(ex: Throwable) extends Command
   case class WrappedStarted(msg: ThreadReadModelUpdaterProtocol.Started) extends Command
 
-  val id                      = ULID.newULID
-  val logger                  = LoggerFactory.getLogger(getClass)
-  val rootConfig              = ConfigFactory.load()
-  val adceetConfig            = rootConfig.getConfig("adceet")
-  val terminationHardDeadLine = adceetConfig.getDuration("termination-hard-dead-line").toMillis.millis
-  val config                  = adceetConfig.getConfig("read-model-updater.threads")
-  val journalTableName        = config.getString("journal-table-name")
+  val id                                      = ULID.newULID
+  val logger: Logger                          = LoggerFactory.getLogger(getClass)
+  val rootConfig: Config                      = ConfigFactory.load()
+  val adceetConfig: Config                    = rootConfig.getConfig("adceet")
+  val terminationHardDeadLine: FiniteDuration = adceetConfig.getDuration("termination-hard-dead-line").toMillis.millis
+  val config: Config                          = adceetConfig.getConfig("read-model-updater.threads")
+  val journalTableName: String                = config.getString("journal-table-name")
 
-  val accessKeyIdOpt     = adceetConfig.getAs[String]("access-key-id")
-  val secretAccessKeyOpt = adceetConfig.getAs[String]("secret-access-key")
+  val accessKeyIdOpt: Option[String]     = adceetConfig.getAs[String]("access-key-id")
+  val secretAccessKeyOpt: Option[String] = adceetConfig.getAs[String]("secret-access-key")
 
-  val accountEventRouterClientConfig = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
-  val accountEventRouterStreamClientConfig =
+  val accountEventRouterClientConfig: Config = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
+  val accountEventRouterStreamClientConfig: Config =
     config.getAs[Config]("dynamodb-stream-client").getOrElse(ConfigFactory.empty())
-  val accountEventRouterCloudWatchConfig = config.getAs[Config]("cloudwatch-client").getOrElse(ConfigFactory.empty())
+  val accountEventRouterCloudWatchConfig: Config =
+    config.getAs[Config]("cloudwatch-client").getOrElse(ConfigFactory.empty())
 
-  val amazonDynamoDB        = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
-  val amazonDynamoDBStreams = AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
-  val amazonCloudwatch      = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
+  val amazonDynamoDB: AmazonDynamoDB = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
+  val amazonDynamoDBStreams: AmazonDynamoDBStreams =
+    AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
+  val amazonCloudwatch: AmazonCloudWatch = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
 
   val credentialsProvider: AWSCredentialsProvider = {
     (accessKeyIdOpt, secretAccessKeyOpt) match {
@@ -75,7 +81,7 @@ object Main extends App {
 
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
 
-  def behavior = Behaviors.setup[Command] { ctx =>
+  def behavior: Behavior[Command] = Behaviors.setup[Command] { ctx =>
     implicit val system: actor.ActorSystem = ctx.system.classicSystem
     ctx.log.debug("start MainActor")
 
@@ -141,6 +147,6 @@ object Main extends App {
     http.map(_ => Done)
   }
 
-  val system = ActorSystem(behavior, "adceet-read-model-updater", rootConfig)
+  val system: ActorSystem[Command] = ActorSystem(behavior, "adceet-read-model-updater", rootConfig)
   Await.result(system.whenTerminated, Duration.Inf)
 }
