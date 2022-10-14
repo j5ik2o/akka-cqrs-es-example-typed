@@ -7,5 +7,6 @@ helmfiles:
   - 'regcred/helmfile.yaml'
   - 'localstack/helmfile.yaml'
   - 'mysql/helmfile.yaml'
+  - 'read-model-updater/helmfile.yaml'
   - 'write-api-server-frontend/helmfile.yaml'
   - 'write-api-server-backend/helmfile.yaml'

@@ -52,8 +52,8 @@ object Main extends App {
   val config                  = adceetConfig.getConfig("read-model-updater.threads")
   val journalTableName        = config.getString("journal-table-name")
 
-  val accessKeyIdOpt     = config.getAs[String]("access-key-id")
-  val secretAccessKeyOpt = config.getAs[String]("secret-access-key")
+  val accessKeyIdOpt     = adceetConfig.getAs[String]("access-key-id")
+  val secretAccessKeyOpt = adceetConfig.getAs[String]("secret-access-key")
 
   val accountEventRouterClientConfig = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
   val accountEventRouterStreamClientConfig =

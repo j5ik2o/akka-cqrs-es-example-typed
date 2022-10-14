@@ -1,7 +1,7 @@
 image:
   repository: '{{ .Values.readModelUpdater.image.repository }}'
-  tags: '{{ env "READ_MODEL_UPDATER_IMAGE_TAG" | default .Values.readModelUpdater.image.tag}}'
-  pullPolicy: '{{ .Values.writeApi.writeApiServer.backend.image.pullPolicy}}'
+  tag: '{{ env "READ_MODEL_UPDATER_IMAGE_TAG" | default .Values.readModelUpdater.image.tag }}'
+  pullPolicy: '{{ .Values.readModelUpdater.image.pullPolicy}}'
 
 {{- if .Values.ecrCred.enabled }}
 imagePullSecrets:

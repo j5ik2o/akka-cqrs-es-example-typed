@@ -57,7 +57,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: e274cea7c5c1a036041a5d21a805080dc0d89173
+        tag: c1870ab743418a1f8991210cc36f57565b2bb8ab
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -104,7 +104,7 @@ writeApi:
         enabled: false
       image:
         repository: adceet-write-api-server-scala
-        tag: b44d42af8c6a7be92e5c31d8643ae3a0ad039be7
+        tag: c1870ab743418a1f8991210cc36f57565b2bb8ab
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -189,9 +189,10 @@ writeApi:
           value: "2.0"
 readModelUpdater:
   enabled: true
+  version: 0.0.1
   image:
     repository: adceet-read-model-updater-scala
-    tag: e274cea7c5c1a036041a5d21a805080dc0d89173
+    tag: c1870ab743418a1f8991210cc36f57565b2bb8ab
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -200,6 +201,9 @@ readModelUpdater:
     requests:
       cpu: "0.5"
       memory: "1Gi"
+  processTimeoutInSec: 10
+  autoscaling:
+    enabled: false
   service:
     type: NodePort
     port: 8086
@@ -211,7 +215,33 @@ readModelUpdater:
   env:
     - name: "CONFIG_FORCE_kamon_environment_tags_version"
       value: "adceet-read-model-updater"
-    - name: "CONFIG_FORCE_adceet__read_model_updater__threads__journal_table__name"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_journal__table__name"
       value: "aje8iz5k-Journal"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_access__key__id"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_secret__access__key"
+      value: "x"
+
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__client_access__key__id"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__client_secret__access__key"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__client_endpoint"
+      value: "http://localstack:4566"
+
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_access__key__id"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_secret__access__key"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_endpoint"
+      value: "http://localstack:4566"
+
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_cloudwatch__client_access__key__id"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_cloudwatch__client_secret__access__key"
+      value: "x"
+    - name: "CONFIG_FORCE_adceet_read__model__updater_threads_cloudwatch__client_endpoint"
+      value: "http://localstack:4566"
+
     - name: "CONFIG_FORCE_slick_db_url"
-      value: "jdbc:mysql://localhost:3306/adceet?allowPublicKeyRetrieval=true&useSSL=false"
+      value: "jdbc:mysql://mysql:3306/adceet?allowPublicKeyRetrieval=true&useSSL=false"
