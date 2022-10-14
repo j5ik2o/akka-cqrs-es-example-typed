@@ -28,7 +28,7 @@ Please set the following items in the yaml file appropriately
 
 ## Prepare DynamoDB tabels
 
-Next deploy the dynamodb local.
+Next deploy dynamodb local.
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-dynamodb.sh
@@ -38,6 +38,20 @@ Create the necessary tables.
 
 ```shell
 tools/scripts $ ./dynamodb-create-tables.sh -e dev
+```
+
+## Prepare MySQL tabels
+
+Next deploy mysql.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-mysql.sh
+```
+
+Create the necessary tables.
+
+```shell
+tools/scripts $ ./flyway-migrate.sh -e dev
 ```
 
 ## About akka-cluster roles
