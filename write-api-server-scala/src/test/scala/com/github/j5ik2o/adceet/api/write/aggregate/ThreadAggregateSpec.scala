@@ -16,8 +16,9 @@
 package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.typed.Behavior
-import com.github.j5ik2o.adceet.api.write.CborSerializable
-import com.github.j5ik2o.adceet.api.write.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.ThreadId
+import com.github.j5ik2o.adceet.infrastructure.serde.CborSerializable
+import com.github.j5ik2o.adceet.test.ActorSpec
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import java.util.UUID

@@ -18,8 +18,9 @@ package com.github.j5ik2o.adceet.api.write.aggregate
 import akka.actor.typed.scaladsl.Behaviors.Receive
 import akka.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors, StashBuffer }
 import akka.actor.typed.{ ActorRef, Behavior }
-import com.github.j5ik2o.adceet.api.write.domain.ThreadEvents.ThreadEvent
-import com.github.j5ik2o.adceet.api.write.domain.{ Thread, ThreadId }
+import com.github.j5ik2o.adceet.domain.ThreadEvents.ThreadEvent
+import com.github.j5ik2o.adceet.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.Thread
 import wvlet.airframe.ulid.ULID
 
 final class ThreadAggregate private (

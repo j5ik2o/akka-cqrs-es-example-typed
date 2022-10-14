@@ -17,7 +17,7 @@ package com.github.j5ik2o.adceet.api.write.aggregate
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ ActorRef, Behavior }
-import com.github.j5ik2o.adceet.api.write.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.ThreadId
 
 object ThreadAggregates {
   final val name = "threads"

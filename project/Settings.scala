@@ -67,7 +67,8 @@ object Settings {
       "jitpack" at "https://jitpack.io",
       Resolver.jcenterRepo,
       Resolver.sonatypeRepo("snapshots"),
-      Resolver.sonatypeRepo("releases")
+      Resolver.sonatypeRepo("releases"),
+      "Seasar Repository" at "https://maven.seasar.org/maven2/"
     )
   )
 

@@ -20,8 +20,8 @@ import akka.actor.typed.{ ActorRef, Behavior }
 import akka.persistence.typed.{ PersistenceId, RecoveryCompleted }
 import akka.persistence.typed.scaladsl.{ Effect, EventSourcedBehavior }
 import com.github.j5ik2o.adceet.api.write.aggregate.ThreadAggregateProtocol.StateRecoveryCompleted
-import com.github.j5ik2o.adceet.api.write.domain.ThreadEvents.ThreadEvent
-import com.github.j5ik2o.adceet.api.write.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.ThreadEvents.ThreadEvent
+import com.github.j5ik2o.adceet.domain.ThreadId
 import wvlet.airframe.ulid.ULID
 
 object ThreadPersist {

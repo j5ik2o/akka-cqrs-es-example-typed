@@ -15,8 +15,9 @@
  */
 package com.github.j5ik2o.adceet.api.write.aggregate
 
-import com.github.j5ik2o.adceet.api.write.domain.ThreadEvents.{ ThreadCreated, ThreadEvent }
-import com.github.j5ik2o.adceet.api.write.domain.{ Thread, ThreadId }
+import com.github.j5ik2o.adceet.domain.ThreadEvents.{ ThreadCreated, ThreadEvent }
+import com.github.j5ik2o.adceet.domain.ThreadId
+import com.github.j5ik2o.adceet.domain.Thread
 
 sealed trait ThreadState {
   def applyEvent(threadEvent: ThreadEvent): ThreadState = {

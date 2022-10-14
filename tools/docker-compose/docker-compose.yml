@@ -1,7 +1,40 @@
 version: '3.6'
 services:
+  mysql:
+    image: mysql:8.0
+    hostname: mysql-local
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --ngram_token_size=2
+    healthcheck:
+      test: MYSQL_PWD=passwd mysql -h127.0.0.1 -P3306 -uroot -e "quit"
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: passwd
+      MYSQL_USER: adceet
+      MYSQL_PASSWORD: adceet
+      MYSQL_DATABASE: adceet
+  flyway:
+    image: flyway/flyway:9.2.1
+    command: -url=jdbc:mysql://mysql-local/adceet -user=root -password=passwd migrate -X
+    volumes:
+      - ../../read-model-updater-scala/src/test/resources/flyway:/flyway/sql
+      - ./flyway/drivers:/flyway/drivers
+    depends_on:
+      mysql:
+        condition: service_healthy
+  localstack:
+    image: localstack/localstack:1.0.4
+    hostname: localstack-local
+    ports:
+      - "4566:4566"
+    environment:
+      DEBUG: 1
+      EAGER_SERVICE_LOADING: 1
+      SERVICES: cloudwatch,dynamodb,dynamodbstreams
+      HOSTNAME_EXTERNAL: localstack-local
+      DEFAULT_REGION: ap-northeast-1
   dynamodb-local:
-    image: amazon/dynamodb-local
+    image: amazon/dynamodb-local:1.18.0
     hostname: dynamodb-local
     environment:
       JAVA_OPTS: -Xms2g -Xmx2g
@@ -31,6 +64,6 @@ services:
       - "8003:8001"
     environment:
       DYNAMO_ENDPOINT: dynamodb-local:8000
-      AWS_DEFAULT_REGION: us-east-1
+      AWS_DEFAULT_REGION: ap-northeast-1
     depends_on:
-      - dynamodb-local
+      - dynamodb-setup

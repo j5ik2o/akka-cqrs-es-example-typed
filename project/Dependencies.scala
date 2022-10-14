@@ -6,9 +6,11 @@ object Version {
 
   val akkaHttp       = "10.2.9"
   val akkaManagement = "1.1.3"
-  val kamon          = "2.5.1"
+  val kamon          = "2.5.8"
 
   val akkaPersistenceDynamoDB = "1.14.55"
+  val akkaKinesis             = "1.0.253"
+  val cats                    = "2.8.0"
 }
 
 object Dependencies {
@@ -23,7 +25,7 @@ object Dependencies {
   }
 
   object logback {
-    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.4.4"
+    val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.3.1"
   }
 
   object kodeinDI {
@@ -117,8 +119,8 @@ object Dependencies {
     val akka          = "io.kamon" %% "kamon-akka"           % Version.kamon
     val akkaHttp      = "io.kamon" %% "kamon-akka-http"      % Version.kamon
     val systemMetrics = "io.kamon" %% "kamon-system-metrics" % Version.kamon
-    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
-    val datadog       = "io.kamon" %% "kamon-datadog"        % Version.kamon
+//    val logback       = "io.kamon" %% "kamon-logback"        % Version.kamon
+    val datadog = "io.kamon" %% "kamon-datadog" % Version.kamon
 //    val apmReporter   = "io.kamon" %% "kamon-apm-reporter"   % Version.kamon
   }
 
@@ -154,12 +156,15 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts = "com.amazonaws" % "aws-java-sdk-sts" % "1.12.320"
+      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.320"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.320"
+      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.320"
+      val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.320"
+      val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.320"
     }
     object v2 {
       val sts = "software.amazon.awssdk" % "sts" % "2.17.291"
     }
-
   }
 
   object j5ik2o {
@@ -172,5 +177,12 @@ object Dependencies {
       "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v1" % Version.akkaPersistenceDynamoDB
     val akkaPersistenceDynamoDBSnapshotV2 =
       "com.github.j5ik2o" %% "akka-persistence-dynamodb-snapshot-v2" % Version.akkaPersistenceDynamoDB
+
+    val akkaKinesisKclDynamoDBStreams = "com.github.j5ik2o" %% "akka-kinesis-kcl-dynamodb-streams" % Version.akkaKinesis
   }
+
+  object cats {
+    val core = "org.typelevel" %% "cats-core" % Version.cats
+  }
+
 }

@@ -21,8 +21,8 @@ import akka.http.scaladsl.server.Route
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json._
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation
 import com.github.j5ik2o.adceet.api.write.adaptor.http.validation.Validator
-import com.github.j5ik2o.adceet.api.write.domain.{ Message, MessageId, ThreadId }
 import com.github.j5ik2o.adceet.api.write.use.`case`.{ AddMemberUseCase, AddMessageUseCase, CreateThreadUseCase }
+import com.github.j5ik2o.adceet.domain.{ Message, MessageId, ThreadId }
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 import io.swagger.v3.oas.annotations.enums.ParameterIn

@@ -5,7 +5,165 @@ lazy val root = (project in file("."))
     Settings.baseSettings,
     Settings.scalaSettings,
     name := "adceet-root"
-  ).aggregate(`write-api-base`, `write-api-server-scala`, `write-api-server-kotlin`, `write-api-server-java`)
+  ).aggregate(
+    `test-base`,
+    `write-api-base`,
+    `write-api-server-scala`,
+    `write-api-server-kotlin`,
+    `write-api-server-java`,
+    `read-model-updater-base`,
+    `read-model-updater-scala`,
+    `domain-scala`,
+    `interface-adaptor`,
+    `infrastructure`
+  )
+
+lazy val `infrastructure` = (project in file("infrastructure"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-infrastructure",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      typesafeAkka.akkaActorTyped,
+      awssdk.v1.dynamodb,
+      awssdk.v1.cloudwatch,
+      cats.core
+    )
+  )
+val circeVersion = "0.14.1"
+
+lazy val `interface-adaptor` = (project in file("interface-adaptor"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-interface-adaptor",
+    libraryDependencies ++= Seq(
+      typesafeAkka.akkaHttp,
+      typesafeAkka.akkaStreamTyped,
+      heikoseeberger.akkaHttpCirce,
+      scalatest.scalatest            % Test,
+      typesafeAkka.actorTestkitTyped % Test,
+      typesafeAkka.httpTestkit       % Test,
+      logback.logbackClassic         % Test
+    ),
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-core",
+      "io.circe" %% "circe-generic",
+      "io.circe" %% "circe-parser"
+    ).map(_ % circeVersion)
+  ).dependsOn(`infrastructure`)
+
+lazy val `domain-scala` = (project in file("domain-scala"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-domain-scala",
+    libraryDependencies ++= Seq(
+      airframe.ulid
+    )
+  ).dependsOn(`infrastructure`)
+
+lazy val `test-base` = (project in file("test-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-test-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      typesafeAkka.akkaActorTyped,
+      typesafeAkka.actorTestkitTyped,
+      scalatest.scalatest,
+      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.14.34",
+      "com.github.j5ik2o" %% "docker-controller-scala-flyway"         % "1.14.34",
+      awssdk.v1.dynamodb,
+      "com.typesafe.slick" %% "slick" % "3.4.1"
+    )
+  ).dependsOn(`infrastructure`)
+
+lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-read-model-updater-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      j5ik2o.akkaKinesisKclDynamoDBStreams,
+      typesafeAkka.akkaActorTyped,
+      airframe.ulid,
+      mockito.mocktioScala % Test,
+      scalatest.scalatest  % Test
+    )
+  )
+
+lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala"))
+  .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .settings(
+    name := "adceet-read-model-updater-scala",
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings,
+    Settings.dockerCommonSettings,
+    Settings.ecrSettings
+  ).settings(
+    libraryDependencies ++= Seq(
+      typesafeAkka.akkaPersistenceTyped,
+      typesafeAkka.akkaSerializationJackson,
+      fasterXmlJackson.scala,
+      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
+      awssdk.v1.sts,
+      awssdk.v2.sts,
+      logback.logbackClassic,
+      "jakarta.xml.bind" % "jakarta.xml.bind-api" % "4.0.0",
+      "com.sun.xml.bind" % "jaxb-impl"            % "4.0.1"
+    )
+  )
+  .dependsOn(
+    `read-model-updater-base` % "compile->compile;test->test",
+    `test-base`               % "test",
+    `write-api-server-scala`  % "test->test",
+    `read-api-base`,
+    `domain-scala`,
+    `interface-adaptor`
+  )
+
+lazy val `read-api-base` = (project in file("read-api-base"))
+  .settings(
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings
+  ).settings(
+    name := "adceet-adceet-read-api-base",
+    libraryDependencies ++= Seq(
+      iheart.ficus,
+      "com.typesafe.slick" %% "slick"                % "3.4.1",
+      "mysql"               % "mysql-connector-java" % "8.0.30"
+    )
+  )
+
+lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
+  .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
+  .settings(
+    name := "adceet-read-api-server-scala",
+    Settings.baseSettings,
+    Settings.scalaSettings,
+    Settings.javaSettings,
+    Settings.dockerCommonSettings,
+    Settings.ecrSettings
+  ).dependsOn(`read-api-base`)
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
@@ -54,7 +212,6 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       kamon.akka,
       kamon.akkaHttp,
       kamon.systemMetrics,
-      kamon.logback,
       kamon.datadog,
       aichler.jupiterInterface(JupiterKeys.jupiterVersion.value) % Test,
       mockito.mocktioScala                                       % Test,
@@ -72,7 +229,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       fusesource.leveldbjniAll % Test,
       iq80LevelDb.leveldb      % Test
     )
-  )
+  ).dependsOn(`infrastructure`)
 
 lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
@@ -115,7 +272,7 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
       "com.github.scopt" %% "scopt"      % "4.0.1",
       "com.beachape"     %% "enumeratum" % "1.7.0"
     )
-  ).dependsOn(`write-api-base` % "compile->compile;test->test")
+  ).dependsOn(`write-api-base` % "compile->compile;test->test", `domain-scala`, `test-base` % "test")
 
 lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)

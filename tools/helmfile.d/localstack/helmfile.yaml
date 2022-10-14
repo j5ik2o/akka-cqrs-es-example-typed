@@ -17,4 +17,4 @@ releases:
     wait: true
     installedTemplate: '{{ .Values.localstack.enabled }}'
     values:
-      - localstack/settings.yaml.gotmpl
+      - values/settings.yaml.gotmpl
