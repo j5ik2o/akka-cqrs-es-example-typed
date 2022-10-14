@@ -42,7 +42,7 @@ object Settings {
   )
 
   val scalaSettings: Seq[Def.Setting[_]] = Seq(
-    scalaVersion := "2.13.9",
+    scalaVersion := "2.13.10",
     Compile / scalacOptions ++= Seq(
       "-target:jvm-17",
       "-encoding",
