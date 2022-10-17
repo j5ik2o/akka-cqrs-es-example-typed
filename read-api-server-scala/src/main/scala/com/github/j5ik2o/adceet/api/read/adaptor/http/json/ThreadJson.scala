@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
+package com.github.j5ik2o.adceet.api.read.adaptor.http.json
 
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
-import com.github.j5ik2o.adceet.api.read.use.`case`.GetThreadsUseCase
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import java.time.Instant
 
-final class ThreadController(private val getThreadsInteractor: GetThreadsUseCase) extends FailFastCirceSupport {
-  def getThreads(accountId: String): Route = {
-    path("threads" / Segment ) { threadIdString =>
-      get {
-        complete("getThreads")
-      }
-    }
-  }
-}
+final case class ThreadJson(id: String, owner_id: String, created_at: Instant)
+

@@ -150,7 +150,14 @@ lazy val `read-api-base` = (project in file("read-api-base"))
     libraryDependencies ++= Seq(
       iheart.ficus,
       "com.typesafe.slick" %% "slick"                % "3.4.1",
-      "mysql"               % "mysql-connector-java" % "8.0.30"
+      "mysql"               % "mysql-connector-java" % "8.0.30",
+      megard.akkaHttpCors,
+      typesafeAkka.akkaHttp,
+      heikoseeberger.akkaHttpCirce,
+      typesafeAkka.akkaHttpSprayJson,
+      typesafeAkka.akkaHttpJackson,
+      typesafeAkka.akkaSlf4j,
+      typesafeAkka.akkaStreamTyped
     )
   )
 
