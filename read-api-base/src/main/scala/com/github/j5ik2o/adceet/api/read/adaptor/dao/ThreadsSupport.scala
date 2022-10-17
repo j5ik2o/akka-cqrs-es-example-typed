@@ -22,13 +22,14 @@ import java.time.Instant
 trait ThreadsSupport extends SlickSupport {
   import profile.api._
 
-  final case class ThreadRecord(id: String, createdAt: Instant)
+  final case class ThreadRecord(id: String, ownerId: String, createdAt: Instant)
 
   class Threads(tag: Tag) extends Table[ThreadRecord](tag, "threads") {
     def id: Rep[String]         = column[String]("id")
+    def ownerId: Rep[String]    = column[String]("owner_id")
     def createdAt: Rep[Instant] = column[Instant]("created_at")
     def pk         = primaryKey("pk", (id))
-    override def * : ProvenShape[ThreadRecord] = (id,createdAt) <> (ThreadRecord.tupled, ThreadRecord.unapply)
+    override def * : ProvenShape[ThreadRecord] = (id,ownerId,createdAt) <> (ThreadRecord.tupled, ThreadRecord.unapply)
   }
 
   val ThreadsQuery = TableQuery[Threads]

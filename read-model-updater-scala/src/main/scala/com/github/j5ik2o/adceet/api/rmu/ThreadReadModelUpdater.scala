@@ -131,7 +131,7 @@ final class ThreadReadModelUpdater(
 
   protected def onThreadCreated(event: ThreadCreated): Future[Unit] = {
     logger.debug("onThreadCreated: {}", event)
-    val query = ThreadsQuery.insertOrUpdate(ThreadRecord(event.threadId.asString, event.occurredAt))
+    val query = ThreadsQuery.insertOrUpdate(ThreadRecord(event.threadId.asString, event.accountId.asString, event.occurredAt))
     db.run(query).map(_ => ())
   }
 
