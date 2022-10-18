@@ -15,21 +15,22 @@
  */
 package com.github.j5ik2o.adceet.api.read
 
-sealed trait Environment extends EnumEntry
+import akka.actor.typed.Behavior
+import akka.actor.typed.scaladsl.Behaviors
+import com.github.j5ik2o.adceet.api.read.MainActor.Command
+import wvlet.log.io.StopWatch
 
-object Environments extends Enum[Environment] {
-  case object Development extends Environment
-  case object Production extends Environment
-
-  override def values: IndexedSeq[Environment] = findValues
-
-  implicit val weekDaysRead: scopt.Read[Environment] =
-    scopt.Read.reads(Environments.withNameInsensitive)
-
+object MainActor {
+  sealed trait Command
 }
 
-final case class Args(environment: Environment = Environments.Production)
-
-object Main extends App {
-
+class MainActor(stopWatch: StopWatch) {
+  def create(args: Args): Behavior[Command] = {
+    Behaviors.setup { context =>
+      Behaviors.receiveMessage {
+        case _ =>
+          Behaviors.same
+      }
+    }
+  }
 }

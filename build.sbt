@@ -149,6 +149,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
     name := "adceet-adceet-read-api-base",
     libraryDependencies ++= Seq(
       iheart.ficus,
+      airframe.di,
       "com.typesafe.slick" %% "slick"                % "3.4.1",
       "mysql"               % "mysql-connector-java" % "8.0.30",
       megard.akkaHttpCors,
@@ -170,7 +171,14 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
     Settings.javaSettings,
     Settings.dockerCommonSettings,
     Settings.ecrSettings
-  ).dependsOn(`read-api-base`)
+  ).settings(
+    libraryDependencies ++= Seq(
+      circre.core,
+      circre.generic,
+      circre.parser
+    )
+  )
+  .dependsOn(`read-api-base`)
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(

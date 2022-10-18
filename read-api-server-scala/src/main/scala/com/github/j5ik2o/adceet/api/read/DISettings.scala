@@ -15,21 +15,18 @@
  */
 package com.github.j5ik2o.adceet.api.read
 
-sealed trait Environment extends EnumEntry
+import akka.actor.typed.{ActorSystem, Scheduler}
+import com.typesafe.config.{Config, ConfigFactory}
+import wvlet.airframe.{DesignWithContext, Session, newDesign}
+import wvlet.log.io.StopWatch
 
-object Environments extends Enum[Environment] {
-  case object Development extends Environment
-  case object Production extends Environment
-
-  override def values: IndexedSeq[Environment] = findValues
-
-  implicit val weekDaysRead: scopt.Read[Environment] =
-    scopt.Read.reads(Environments.withNameInsensitive)
-
-}
-
-final case class Args(environment: Environment = Environments.Production)
-
-object Main extends App {
-
+object DISettings {
+  def di(args: Args, stopWatch: StopWatch): DesignWithContext[_] = newDesign
+    .bind[Config].toInstance(ConfigFactory.load())
+    .bind[ActorSystem[MainActor.Command]].toProvider[Config] { config =>
+    ActorSystem(new MainActor(stopWatch).create(args), "adceet", config)
+  }
+    .bind[Scheduler].toProvider[ActorSystem[MainActor.Command]] { system =>
+    system.scheduler
+  }
 }

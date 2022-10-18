@@ -15,16 +15,26 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.github.j5ik2o.adceet.api.read.adaptor.http.json.ThreadJson
 import com.github.j5ik2o.adceet.api.read.use.`case`.GetThreadsUseCase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import io.circe.generic.auto._
 
 final class ThreadController(private val getThreadsInteractor: GetThreadsUseCase) extends FailFastCirceSupport {
-  def getThreads(accountId: String): Route = {
-    path("threads" / Segment ) { threadIdString =>
-      get {
-        complete("getThreads")
+  def getThreads(): Route = {
+    path("threads") {
+      parameter("owner_id") { ownerId =>
+        get {
+          extractExecutionContext { implicit ec =>
+            val result = getThreadsInteractor.execute(ownerId)
+            onSuccess(result) { threads =>
+              complete(StatusCodes.OK, threads.map(thread => ThreadJson(thread.id, thread.ownerId, thread.createdAt)))
+            }
+          }
+        }
       }
     }
   }
