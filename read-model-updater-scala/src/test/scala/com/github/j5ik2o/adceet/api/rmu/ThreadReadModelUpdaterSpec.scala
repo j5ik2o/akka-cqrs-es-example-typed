@@ -172,7 +172,7 @@ class ThreadReadModelUpdaterSpec
   override def afterStartContainers: Unit = {
     createJournalTable()
     createSnapshotTable()
-    val flywayContext = createFlywayContext(FlywayConfig(Seq("flyway")))
+    val flywayContext = createFlywayContext(FlywayConfig(Seq("classpath:flyway")))
     flywayContext.flyway.migrate()
     setUpSlick()
   }

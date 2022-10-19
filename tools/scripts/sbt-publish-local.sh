@@ -19,5 +19,6 @@ pushd ../../
 
 sbt clean "write-api-server-${MODE}/docker:publishLocal"
 sbt clean "read-model-updater-${MODE}/docker:publishLocal"
+sbt clean "read-api-server-${MODE}/docker:publishLocal"
 
 popd

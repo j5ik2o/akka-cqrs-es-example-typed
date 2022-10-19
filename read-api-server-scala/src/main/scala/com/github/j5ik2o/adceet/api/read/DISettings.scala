@@ -15,18 +15,26 @@
  */
 package com.github.j5ik2o.adceet.api.read
 
-import akka.actor.typed.{ActorSystem, Scheduler}
-import com.typesafe.config.{Config, ConfigFactory}
-import wvlet.airframe.{DesignWithContext, Session, newDesign}
+import akka.actor.typed.{ ActorSystem, Scheduler }
+import com.github.j5ik2o.adceet.api.read.use.`case`.{ GetThreadsInteractor, GetThreadsUseCase }
+import com.typesafe.config.{ Config, ConfigFactory }
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
+import wvlet.airframe.{ newDesign, DesignWithContext, Session }
 import wvlet.log.io.StopWatch
 
 object DISettings {
   def di(args: Args, stopWatch: StopWatch): DesignWithContext[_] = newDesign
     .bind[Config].toInstance(ConfigFactory.load())
-    .bind[ActorSystem[MainActor.Command]].toProvider[Config] { config =>
-    ActorSystem(new MainActor(stopWatch).create(args), "adceet", config)
-  }
+    .bind[ActorSystem[MainActor.Command]].toProvider[Session, Config] { (session, config) =>
+      ActorSystem(new MainActor(session, stopWatch).create(args), "adceet", config)
+    }
     .bind[Scheduler].toProvider[ActorSystem[MainActor.Command]] { system =>
-    system.scheduler
-  }
+      system.scheduler
+    }.bind[DatabaseConfig[JdbcProfile]].toProvider[Config] { config =>
+      DatabaseConfig.forConfig[JdbcProfile]("slick", config)
+    }
+    .bind[GetThreadsUseCase].toProvider[DatabaseConfig[JdbcProfile]] { databaseConfig =>
+      new GetThreadsInteractor(databaseConfig.profile, databaseConfig.db)
+    }
 }

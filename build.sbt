@@ -124,7 +124,6 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
       typesafeAkka.akkaPersistenceTyped,
       typesafeAkka.akkaSerializationJackson,
       fasterXmlJackson.scala,
-      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
       awssdk.v1.sts,
       awssdk.v2.sts,
       logback.logbackClassic,
@@ -138,7 +137,7 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     `write-api-server-scala`  % "test->test",
     `read-api-base`,
     `domain-scala`,
-    `interface-adaptor`
+    `interface-adaptor` % "compile->compile;test->test"
   )
 
 lazy val `read-api-base` = (project in file("read-api-base"))
@@ -152,14 +151,17 @@ lazy val `read-api-base` = (project in file("read-api-base"))
       iheart.ficus,
       airframe.di,
       "com.typesafe.slick" %% "slick"                % "3.4.1",
+      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
       "mysql"               % "mysql-connector-java" % "8.0.30",
       megard.akkaHttpCors,
       typesafeAkka.akkaHttp,
       heikoseeberger.akkaHttpCirce,
       typesafeAkka.akkaHttpSprayJson,
       typesafeAkka.akkaHttpJackson,
+      typesafeAkka.akkaSerializationJackson,
       typesafeAkka.akkaSlf4j,
-      typesafeAkka.akkaStreamTyped
+      typesafeAkka.akkaStreamTyped,
+      fasterXmlJackson.scala,
     )
   ).dependsOn(`interface-adaptor`)
 
@@ -174,6 +176,7 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
     Settings.ecrSettings
   ).settings(
     libraryDependencies ++= Seq(
+      logback.logbackClassic,
       circre.core,
       circre.generic,
       circre.parser,
@@ -184,7 +187,9 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
       kamon.datadog,
       "com.github.scopt" %% "scopt"      % "4.0.1",
       "com.beachape"     %% "enumeratum" % "1.7.0",
-      swaggerAkkaHttp.swaggerAkkaHttp
+      swaggerAkkaHttp.swaggerAkkaHttp,
+      awssdk.v1.sts,
+      awssdk.v2.sts,
     )
   )
   .dependsOn(`read-api-base`)
