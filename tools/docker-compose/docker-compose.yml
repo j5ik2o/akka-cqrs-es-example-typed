@@ -17,7 +17,7 @@ services:
     image: flyway/flyway:9.2.1
     command: -url=jdbc:mysql://mysql-local/adceet -user=root -password=passwd migrate -X
     volumes:
-      - ../../read-model-updater-scala/src/test/resources/flyway:/flyway/sql
+      - ../../read-api-base/src/test/resources/flyway:/flyway/sql
       - ./flyway/drivers:/flyway/drivers
     depends_on:
       mysql:

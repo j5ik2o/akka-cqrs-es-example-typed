@@ -34,7 +34,7 @@ class SwaggerDocService(private val hostName: String, private val port: Int, _ap
 
     override def info: model.Info = {
       val info = model.Info()
-      info.setTitle("thread service api")
+      info.setTitle("thread write api")
       info.setVersion("v1")
       info
     }

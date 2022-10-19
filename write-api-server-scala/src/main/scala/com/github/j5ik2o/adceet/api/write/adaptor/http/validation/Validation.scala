@@ -36,7 +36,7 @@ object Validator {
   }
 
   def validateAccountId(value: String): ValidatedNel[ValidationError, AccountId] = {
-    return AccountId
+    AccountId
       .parseFromString(value).fold(
         { ex => ValidationError.ParseError(ex.toString).invalidNel }, {
           _.validNel

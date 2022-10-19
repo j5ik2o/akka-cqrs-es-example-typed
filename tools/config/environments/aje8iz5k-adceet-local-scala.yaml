@@ -245,3 +245,34 @@ readModelUpdater:
 
     - name: "CONFIG_FORCE_slick_db_url"
       value: "jdbc:mysql://mysql:3306/adceet?allowPublicKeyRetrieval=true&useSSL=false"
+readApiServer:
+  enabled: true
+  version: 0.0.1
+  image:
+    repository: adceet-read-api-server-scala
+    tag: c1870ab743418a1f8991210cc36f57565b2bb8ab
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+    requests:
+      cpu: "0.5"
+      memory: "1Gi"
+  processTimeoutInSec: 10
+  autoscaling:
+    enabled: false
+  service:
+    type: NodePort
+    port: 8081
+    nodePort: 30033
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    name: adceet-read-api-server
+  env:
+    - name: "CONFIG_FORCE_kamon_environment_tags_version"
+      value: "adceet-read-model-updater"
+
+    - name: "CONFIG_FORCE_slick_db_url"
+      value: "jdbc:mysql://mysql:3306/adceet?allowPublicKeyRetrieval=true&useSSL=false"
