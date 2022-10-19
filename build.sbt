@@ -151,7 +151,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
       iheart.ficus,
       airframe.di,
       "com.typesafe.slick" %% "slick"                % "3.4.1",
-      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
+      "com.typesafe.slick" %% "slick-hikaricp"       % "3.4.1",
       "mysql"               % "mysql-connector-java" % "8.0.30",
       megard.akkaHttpCors,
       typesafeAkka.akkaHttp,
@@ -161,7 +161,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
       typesafeAkka.akkaSerializationJackson,
       typesafeAkka.akkaSlf4j,
       typesafeAkka.akkaStreamTyped,
-      fasterXmlJackson.scala,
+      fasterXmlJackson.scala
     )
   ).dependsOn(`interface-adaptor`)
 
@@ -189,7 +189,7 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
       "com.beachape"     %% "enumeratum" % "1.7.0",
       swaggerAkkaHttp.swaggerAkkaHttp,
       awssdk.v1.sts,
-      awssdk.v2.sts,
+      awssdk.v2.sts
     )
   )
   .dependsOn(`read-api-base`)
