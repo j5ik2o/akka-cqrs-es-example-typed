@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.write.adaptor.http
+package com.github.j5ik2o.adceet.api.read.adaptor.http
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -34,7 +34,7 @@ class SwaggerDocService(private val hostName: String, private val port: Int, _ap
 
     override def info: model.Info = {
       val info = model.Info()
-      info.setTitle("thread write api")
+      info.setTitle("thread read api")
       info.setVersion("v1")
       info
     }
@@ -62,3 +62,4 @@ class SwaggerDocService(private val hostName: String, private val port: Int, _ap
   }
 
 }
+

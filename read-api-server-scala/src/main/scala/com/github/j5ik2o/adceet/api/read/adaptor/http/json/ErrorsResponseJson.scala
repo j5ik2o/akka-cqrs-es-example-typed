@@ -13,13 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.use.`case`
+package com.github.j5ik2o.adceet.api.read.adaptor.http.json
 
-import com.github.j5ik2o.adceet.api.read.adaptor.dao.ThreadsSupport
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.AccountId
-
-import scala.concurrent.{ExecutionContext, Future}
-
-trait GetThreadsUseCase extends ThreadsSupport {
-    def execute(ownerId: AccountId)(implicit ec: ExecutionContext): Future[Seq[ThreadRecord]]
-}
+final case class ErrorsResponseJson(errorMessages: List[String])

@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.use.`case`
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.AccountId
-import slick.jdbc.JdbcProfile
+package com.github.j5ik2o.adceet.api.read.adaptor.http
 
-import scala.concurrent.{ExecutionContext, Future}
+import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.server.Directives.complete
+import akka.http.scaladsl.server.ExceptionHandler
 
-final class GetThreadsInteractor(override val profile: JdbcProfile,
-                                 db: JdbcProfile#Backend#Database) extends GetThreadsUseCase {
-  import profile.api._
-  override def execute(ownerId: AccountId)(implicit ec: ExecutionContext): Future[Seq[ThreadRecord]] = {
-    val query = ThreadsQuery.filter(_.ownerId === ownerId.asString).result
-    db.run(query)
+object ExceptionHandlers {
+
+  val defaultHandler: ExceptionHandler = ExceptionHandler { case ex: Exception =>
+    complete(StatusCodes.BadRequest, ex.getMessage)
   }
+
 }

@@ -15,6 +15,15 @@
  */
 package com.github.j5ik2o.adceet.api.read
 
+import akka.actor.typed.ActorSystem
+import enumeratum._
+import org.slf4j.{Logger, LoggerFactory}
+import wvlet.airframe.{DesignWithContext, Session}
+import wvlet.log.io.StopWatch
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 sealed trait Environment extends EnumEntry
 
 object Environments extends Enum[Environment] {
@@ -31,5 +40,37 @@ object Environments extends Enum[Environment] {
 final case class Args(environment: Environment = Environments.Production)
 
 object Main extends App {
+  val stopWatch = new StopWatch()
 
+  import Environments._
+  import scopt._
+
+  val logger: Logger = LoggerFactory.getLogger(getClass)
+
+  logger.info(s"[${stopWatch.reportElapsedTime}] start")
+
+  val builder: OParserBuilder[Args] = OParser.builder[Args]
+  val parser: OParser[Unit, Args] = {
+    import builder._
+    OParser.sequence(
+      programName("read-api-server"),
+      opt[Environment]('e', "env")
+        .text("Environment value")
+        .action { (x, c) =>
+          c.copy(environment = x)
+        }
+    )
+  }
+
+  val parsedArgs: Args = OParser.parse(parser, args, Args()).get
+
+  val design: DesignWithContext[_] = DISettings.di(parsedArgs, stopWatch)
+  val session: Session = design.newSession
+  try {
+    val system = session.build[ActorSystem[MainActor.Command]]
+    Await.result(system.whenTerminated, Duration.Inf)
+  } finally {
+    session.shutdown
+    logger.info("finish")
+  }
 }

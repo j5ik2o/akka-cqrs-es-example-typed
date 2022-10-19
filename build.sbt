@@ -26,6 +26,7 @@ lazy val `infrastructure` = (project in file("infrastructure"))
   ).settings(
     name := "adceet-infrastructure",
     libraryDependencies ++= Seq(
+      airframe.ulid,
       iheart.ficus,
       typesafeAkka.akkaActorTyped,
       awssdk.v1.dynamodb,
@@ -160,7 +161,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
       typesafeAkka.akkaSlf4j,
       typesafeAkka.akkaStreamTyped
     )
-  )
+  ).dependsOn(`interface-adaptor`)
 
 lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
@@ -175,7 +176,15 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
     libraryDependencies ++= Seq(
       circre.core,
       circre.generic,
-      circre.parser
+      circre.parser,
+      kamon.statusPage,
+      kamon.akka,
+      kamon.akkaHttp,
+      kamon.systemMetrics,
+      kamon.datadog,
+      "com.github.scopt" %% "scopt"      % "4.0.1",
+      "com.beachape"     %% "enumeratum" % "1.7.0",
+      swaggerAkkaHttp.swaggerAkkaHttp
     )
   )
   .dependsOn(`read-api-base`)
@@ -199,7 +208,6 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       j5ik2o.akkaPersistenceDynamoDBSnapshotV1,
       j5ik2o.akkaPersistenceDynamoDBSnapshotV2,
       kamon.core,
-      airframe.ulid,
       logback.logbackClassic,
       jakarta.rsApi,
       swaggerAkkaHttp.swaggerAkkaHttp,

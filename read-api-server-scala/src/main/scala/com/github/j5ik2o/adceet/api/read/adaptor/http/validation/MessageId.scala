@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.use.`case`
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.AccountId
-import slick.jdbc.JdbcProfile
+package com.github.j5ik2o.adceet.api.read.adaptor.http.validation
 
-import scala.concurrent.{ExecutionContext, Future}
+import wvlet.airframe.ulid.ULID
 
-final class GetThreadsInteractor(override val profile: JdbcProfile,
-                                 db: JdbcProfile#Backend#Database) extends GetThreadsUseCase {
-  import profile.api._
-  override def execute(ownerId: AccountId)(implicit ec: ExecutionContext): Future[Seq[ThreadRecord]] = {
-    val query = ThreadsQuery.filter(_.ownerId === ownerId.asString).result
-    db.run(query)
+final case class MessageId(value: ULID = ULID.newULID) extends ValueDto {
+  def asString: String = value.toString()
+}
+
+object MessageId {
+  def parseFromString(text: String): Either[Exception, MessageId] = {
+    try {
+      Right(MessageId(ULID.fromString(text)))
+    } catch {
+      case ex: NumberFormatException    => Left(ex)
+      case ex: IllegalArgumentException => Left(ex)
+      case ex: Throwable                => throw ex
+    }
   }
 }
