@@ -19,7 +19,6 @@ import com.github.j5ik2o.adceet.api.write.domain.errors.ThreadError;
 import com.github.j5ik2o.adceet.api.write.domain.events.ThreadCreated;
 import io.vavr.collection.Vector;
 import io.vavr.control.Either;
-
 import java.util.UUID;
 
 public final class ThreadFactory {
