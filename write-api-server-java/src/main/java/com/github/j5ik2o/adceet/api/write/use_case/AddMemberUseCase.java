@@ -17,7 +17,6 @@ package com.github.j5ik2o.adceet.api.write.use_case;
 
 import com.github.j5ik2o.adceet.api.write.domain.AccountId;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
-
 import java.util.concurrent.CompletionStage;
 
 public interface AddMemberUseCase {
