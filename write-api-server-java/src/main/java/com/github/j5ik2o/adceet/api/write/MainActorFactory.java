@@ -26,11 +26,12 @@ import com.github.j5ik2o.adceet.api.write.adaptor.http.controller.ThreadControll
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wvlet.log.io.StopWatch;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
 
 public final class MainActorFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(MainActorFactory.class);

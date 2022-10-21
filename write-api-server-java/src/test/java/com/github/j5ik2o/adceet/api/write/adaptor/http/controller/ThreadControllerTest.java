@@ -15,8 +15,6 @@
  */
 package com.github.j5ik2o.adceet.api.write.adaptor.http.controller;
 
-import static org.mockito.Mockito.*;
-
 import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.ContentTypes;
 import akka.http.javadsl.model.HttpEntities;
@@ -36,10 +34,13 @@ import com.github.j5ik2o.adceet.api.write.use_case.AddMessageUseCase;
 import com.github.j5ik2o.adceet.api.write.use_case.CreateThreadUseCase;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import org.junit.jupiter.api.*;
 import org.mockito.stubbing.Answer;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ThreadControllerTest {

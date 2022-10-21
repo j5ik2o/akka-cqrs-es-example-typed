@@ -29,6 +29,7 @@ import com.github.j5ik2o.adceet.api.write.use_case.CreateThreadInteractor;
 import com.github.j5ik2o.adceet.api.write.use_case.CreateThreadUseCase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+
 import java.util.Optional;
 
 public class MainActorModule extends AbstractModule {

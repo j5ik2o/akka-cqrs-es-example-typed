@@ -18,6 +18,9 @@ package com.github.j5ik2o.adceet.api.write;
 import akka.cluster.Member;
 import io.vavr.collection.Seq;
 import io.vavr.collection.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public final class RoleNames {
