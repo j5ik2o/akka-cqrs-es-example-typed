@@ -29,11 +29,9 @@ import akka.serialization.jackson.JacksonObjectMapperProviderSetup;
 import akka.stream.Materializer;
 import akka.stream.SystemMaterializer;
 import com.typesafe.config.Config;
+import java.util.function.Supplier;
 import org.junit.Assert;
 import scala.concurrent.Future;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class RouteTestHelper extends RouteTest {
   private final Config additionalConfig;
