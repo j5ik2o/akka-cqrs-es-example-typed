@@ -19,7 +19,6 @@ import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.Behaviors;
 import com.github.j5ik2o.adceet.api.write.adaptor.aggregate.protocol.ThreadAggregateProtocol;
 import com.github.j5ik2o.adceet.api.write.domain.ThreadId;
-
 import java.util.function.Function;
 
 public final class ThreadAggregates {
