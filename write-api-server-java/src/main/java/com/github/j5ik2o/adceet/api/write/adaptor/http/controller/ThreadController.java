@@ -15,12 +15,11 @@
  */
 package com.github.j5ik2o.adceet.api.write.adaptor.http.controller;
 
+import static akka.http.javadsl.server.PathMatchers.segment;
+
 import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.StatusCodes;
 import akka.http.javadsl.server.AllDirectives;
-
-import static akka.http.javadsl.server.PathMatchers.segment;
-
 import akka.http.javadsl.server.Route;
 import com.github.j5ik2o.adceet.api.write.JacksonObjectMappers;
 import com.github.j5ik2o.adceet.api.write.adaptor.http.json.*;
