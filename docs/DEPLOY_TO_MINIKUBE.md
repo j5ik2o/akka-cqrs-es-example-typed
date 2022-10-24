@@ -40,6 +40,10 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.frontend.image.tag
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag
+- readModelUpdater.image.repository
+- readModelUpdater.image.tag
+- readApiServer.image.repository
+- readApiServer.image.tag
 
 ## Prepare DynamoDB tabels
 
