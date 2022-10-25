@@ -20,8 +20,12 @@ import akka.actor.typed.{ ActorRef, Behavior }
 import com.github.j5ik2o.adceet.domain.{ AccountId, Message, MessageId, ThreadId }
 import wvlet.airframe.ulid.ULID
 
+import scala.concurrent.duration.DurationInt
+
 abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
   val inMemoryMode: Boolean = false
+
+  val testTimeFactor: Double = testKit.testKitSettings.TestTimeFactor
 
   def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest]
 
@@ -41,7 +45,9 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       accountId,
       createThreadReplyProbe.ref
     )
-    val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
+    val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
+      (3 * testTimeFactor).toInt.seconds
+    )
     assert(id == createThreadReply.threadId)
   }
 
@@ -58,13 +64,17 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       accountId1,
       createThreadReplyProbe.ref
     )
-    val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
+    val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
+      (3 * testTimeFactor).toInt.seconds
+    )
     assert(id == createThreadReply.threadId)
 
     val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]()
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
-      addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded]
+      addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded](
+        (3 * testTimeFactor).toInt.seconds
+      )
     assert(id == addMemberReply.threadId)
   }
 
@@ -84,13 +94,17 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       createThreadReplyProbe.ref
     )
     val createThreadReply =
-      createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded]
+      createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
+        (3 * testTimeFactor).toInt.seconds
+      )
     assert(id == createThreadReply.threadId)
 
     val addMemberReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMemberReply]()
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
-      addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded]
+      addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded](
+        (3 * testTimeFactor).toInt.seconds
+      )
     assert(id == addMemberReply.threadId)
 
     val addMessageReplyProbe = testKit.createTestProbe[ThreadAggregateProtocol.AddMessageReply]()
@@ -106,7 +120,9 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       addMessageReplyProbe.ref
     )
     val addMessageReply =
-      addMessageReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMessageSucceeded]
+      addMessageReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMessageSucceeded](
+        (3 * testTimeFactor).toInt.seconds
+      )
     assert(id == addMessageReply.threadId)
   }
 }
