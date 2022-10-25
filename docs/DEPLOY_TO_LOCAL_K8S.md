@@ -128,6 +128,14 @@ Next deploy Read Model Updater.
 tools/scripts $ ./helmfile-apply-local-rmu.sh
 ```
 
+## Deploy Read API Server (if you need)
+
+Next deploy Read API Server
+
+```shell
+tools/scripts $ ./helmfile-apply-local-read-api.sh
+```
+
 ## Check the applications
 
 After frontend is started, check the operation with the following commands.
@@ -163,6 +171,22 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 ```
 
 ```shell
-$ curl -v -X GET -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
-
+$ curl -v -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
+*   Trying 127.0.0.1:30033...
+* Connected to localhost (127.0.0.1) port 30033 (#0)
+> GET /threads?owner_id=01G41J1A2GVT5HE45AH7GP711P HTTP/1.1
+> Host: localhost:30033
+> User-Agent: curl/7.79.1
+> Accept: */*
+> Content-Type: application/json
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: akka-http/10.2.9
+< Date: Tue, 25 Oct 2022 07:59:31 GMT
+< Content-Type: application/json
+< Content-Length: 123
+<
+* Connection #0 to host localhost left intact
+[{"id":"01GG72CT9B62DRMH31F8SQX3H9","owner_id":"01G41J1A2GVT5HE45AH7GP711P","created_at":"2022-10-25T07:58:31.096808590Z"}]%
 ```
