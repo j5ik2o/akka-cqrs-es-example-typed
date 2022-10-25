@@ -8,7 +8,7 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.8"
 
-  val akkaPersistenceDynamoDB = "1.14.63"
+  val akkaPersistenceDynamoDB = "1.14.64"
   val akkaKinesis             = "1.0.273"
   val cats                    = "2.8.0"
 }
@@ -163,7 +163,7 @@ object Dependencies {
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.320"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.18.1"
+      val sts = "software.amazon.awssdk" % "sts" % "2.18.2"
     }
   }
 
