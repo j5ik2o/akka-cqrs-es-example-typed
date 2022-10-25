@@ -36,6 +36,7 @@ spec:
             {{- toYaml .Values.env | nindent 12 }}
           envFrom:
             {{- toYaml .Values.envFrom | nindent 12 }}
+          name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

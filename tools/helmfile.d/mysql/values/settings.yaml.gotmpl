@@ -6,6 +6,8 @@ primary:
     type: "NodePort"
     nodePorts:
       mysql: 30306
+  persistence:
+    enabled: false
 auth:
   rootPassword: {{ .Values.mysql.auth.rootPassword | quote }}
   createDatabase: true
