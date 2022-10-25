@@ -1,14 +1,32 @@
-# Default values for read-api-server.
+# Copyright 2020 Keyporttech Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#     http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Default values for dynamodb-helm-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+dynamodb:
+  image:
+    repository: amazon/dynamodb-local
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart version.
+    tag: "1.12.0"
+admin:
+  image:
+    repository: aaronshaf/dynamodb-admin
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart version.
+    tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,20 +56,12 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
-  nodePort:
 
 ingress:
   enabled: false
-  className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  host: chart-example.local
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -82,13 +92,16 @@ tolerations: []
 
 affinity: {}
 
-http:
-  port: 8081
+# type of storage pvc, directVolume -defaults to emptyDir
+storageType: emptyDir
 
-command: []
+# example pvc values
+# storage: "500Mi"
+# storageClassName: ""
+# buildID: "123"
 
-env: []
-
-envFrom: []
-
-strategy: {}
+# example directVolume mount values
+# directVolume:
+#   nfs:
+#     server: 10.10.10.10
+#     path: "/dynamodb-data"

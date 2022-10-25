@@ -22,8 +22,10 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDBStreams, AmazonDynamoDBStreamsClientBuilder }
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
+import org.slf4j.{ Logger, LoggerFactory }
 
 object AmazonDynamoDBStreamsUtil {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def createFromConfig(config: Config): AmazonDynamoDBStreams = {
     val awsRegion: Regions =
@@ -32,6 +34,11 @@ object AmazonDynamoDBStreamsUtil {
     val dynamoDBStreamsSecretAccessKey: Option[String] = config.getAs[String]("secret-access-key")
     val dynamoDBStreamsEndpoint: Option[String]        = config.getAs[String]("endpoint")
     val clientConfigurationConfig                      = config.getAs[Config]("client-configuration")
+    logger.info("dynamoDBStreamsAccessKeyId = {}", dynamoDBStreamsAccessKeyId)
+    logger.info("dynamoDBStreamsSecretAccessKey = {}", dynamoDBStreamsSecretAccessKey)
+    logger.info("dynamoDBStreamsEndpoint = {}", dynamoDBStreamsEndpoint)
+    logger.info("clientConfigurationConfig = {}", clientConfigurationConfig)
+
     create(
       awsRegion,
       dynamoDBStreamsAccessKeyId,
