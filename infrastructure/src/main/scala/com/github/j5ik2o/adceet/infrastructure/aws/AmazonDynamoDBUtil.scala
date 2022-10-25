@@ -22,8 +22,11 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBClientBuilder }
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
+import org.slf4j.{ Logger, LoggerFactory }
 
 object AmazonDynamoDBUtil {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
+
   def createFromConfig(config: Config): AmazonDynamoDB = {
     val awsRegion: Regions =
       config.getAs[String]("region").map(s => Regions.fromName(s)).getOrElse(Regions.AP_NORTHEAST_1)
@@ -31,6 +34,10 @@ object AmazonDynamoDBUtil {
     val dynamoDBSecretAccessKey: Option[String] = config.getAs[String]("secret-access-key")
     val dynamoDBEndpoint: Option[String]        = config.getAs[String]("endpoint")
     val clientConfigurationConfig               = config.getAs[Config]("client-configuration")
+    logger.info("dynamoDBAccessKeyId = {}", dynamoDBAccessKeyId)
+    logger.info("dynamoDBSecretAccessKey = {}", dynamoDBSecretAccessKey)
+    logger.info("dynamoDBEndpoint = {}", dynamoDBEndpoint)
+    logger.info("clientConfigurationConfig = {}", clientConfigurationConfig)
 
     create(
       awsRegion,
