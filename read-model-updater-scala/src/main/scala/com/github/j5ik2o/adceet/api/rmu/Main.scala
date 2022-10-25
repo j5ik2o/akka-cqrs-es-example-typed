@@ -15,25 +15,30 @@
  */
 package com.github.j5ik2o.adceet.api.rmu
 
-import akka.{Done, actor}
+import akka.{ actor, Done }
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorSystem, Behavior, PostStop, Terminated}
-import com.amazonaws.auth.{AWSCredentialsProvider, DefaultAWSCredentialsProviderChain}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{asyncHealthCheck, healthCheck, healthy}
-import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{bindAndHandleProbes, livenessProbe, readinessProbe}
-import com.github.j5ik2o.adceet.infrastructure.aws.{AmazonCloudWatchUtil, AmazonDynamoDBStreamsUtil, AmazonDynamoDBUtil, CredentialsProviderUtil}
-import com.typesafe.config.{Config, ConfigFactory}
+import akka.actor.typed.{ ActorSystem, Behavior, PostStop, Terminated }
+import com.amazonaws.auth.{ AWSCredentialsProvider, DefaultAWSCredentialsProviderChain }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{ asyncHealthCheck, healthCheck, healthy }
+import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{ bindAndHandleProbes, livenessProbe, readinessProbe }
+import com.github.j5ik2o.adceet.infrastructure.aws.{
+  AmazonCloudWatchUtil,
+  AmazonDynamoDBStreamsUtil,
+  AmazonDynamoDBUtil,
+  CredentialsProviderUtil
+}
+import com.typesafe.config.{ Config, ConfigFactory }
 import net.ceedubs.ficus.Ficus._
 import org.slf4j.LoggerFactory
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import wvlet.airframe.ulid.ULID
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBStreams}
+import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBStreams }
 import org.slf4j.Logger
 
 object Main extends App {
@@ -42,8 +47,8 @@ object Main extends App {
   case class Abort(ex: Throwable) extends Command
   case class WrappedStarted(msg: ThreadReadModelUpdaterProtocol.Started) extends Command
 
-  val id                                      = ULID.newULID
-  val logger: Logger                          = LoggerFactory.getLogger(getClass)
+  val id             = ULID.newULID
+  val logger: Logger = LoggerFactory.getLogger(getClass)
   logger.debug("Starting the system...")
 
   val rootConfig: Config                      = ConfigFactory.load()
@@ -52,7 +57,7 @@ object Main extends App {
   val config: Config                          = adceetConfig.getConfig("read-model-updater.threads")
   val journalTableName: String                = config.getString("journal-table-name")
 
-  val accessKeyIdOpt: Option[String]     = config.getAs[String]("access-key-id")
+  val accessKeyIdOpt: Option[String] = config.getAs[String]("access-key-id")
   logger.debug("accessKeyIdOpt = {}", accessKeyIdOpt)
   val secretAccessKeyOpt: Option[String] = config.getAs[String]("secret-access-key")
   logger.debug("secretAccessKeyOpt = {}", secretAccessKeyOpt)
@@ -84,7 +89,6 @@ object Main extends App {
   logger.debug("get the streamArn...")
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
   logger.debug("streamArn: {}", streamArn)
-
 
   def behavior: Behavior[Command] = Behaviors.setup[Command] { ctx =>
     implicit val system: actor.ActorSystem = ctx.system.classicSystem
@@ -132,13 +136,13 @@ object Main extends App {
           Behaviors.stopped
       }.receiveSignal {
 
-      case (_, PostStop) =>
-        logger.debug("Stopping the thread read model updater...")
-        rmuRef ! ThreadReadModelUpdaterProtocol.Stop
-        Behaviors.same
-      case (_, Terminated(ref)) if ref == rmuRef =>
-        logger.debug("Stopped the thread read model updater.")
-        Behaviors.stopped
+        case (_, PostStop) =>
+          logger.debug("Stopping the thread read model updater...")
+          rmuRef ! ThreadReadModelUpdaterProtocol.Stop
+          Behaviors.same
+        case (_, Terminated(ref)) if ref == rmuRef =>
+          logger.debug("Stopped the thread read model updater.")
+          Behaviors.stopped
       }
   }
 

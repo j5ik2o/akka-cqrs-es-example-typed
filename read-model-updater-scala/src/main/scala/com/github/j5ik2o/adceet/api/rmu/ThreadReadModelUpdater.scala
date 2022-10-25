@@ -256,13 +256,13 @@ final class ThreadReadModelUpdater(
       .run()
     sw = result._1
     future = result._2
-    future.onComplete{
-        case Success(_) =>
-          logger.debug("success")
-          ctx.self ! Stop
-        case Failure(ex) =>
-          logger.error("error", ex)
-          ctx.self ! Stop
+    future.onComplete {
+      case Success(_) =>
+        logger.debug("success")
+        ctx.self ! Stop
+      case Failure(ex) =>
+        logger.error("error", ex)
+        ctx.self ! Stop
     }
   }
 
