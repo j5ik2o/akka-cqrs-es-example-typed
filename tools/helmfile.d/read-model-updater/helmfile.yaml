@@ -1,6 +1,3 @@
-repositories:
-  - name: chatwork
-    url: https://chatwork.github.io/charts
 environments:
   '{{ .Environment.Name }}':
     values:

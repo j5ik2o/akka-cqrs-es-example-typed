@@ -1,0 +1,4 @@
+service:
+    type: "NodePort"
+resources:
+  {{- toYaml .Values.localstack.resources | nindent 2 }}

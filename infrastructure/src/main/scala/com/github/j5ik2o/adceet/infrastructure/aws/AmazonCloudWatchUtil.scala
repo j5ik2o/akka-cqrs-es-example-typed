@@ -22,8 +22,11 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.cloudwatch.{ AmazonCloudWatch, AmazonCloudWatchClientBuilder }
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 
 object AmazonCloudWatchUtil {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
   def createFromConfig(config: Config): AmazonCloudWatch = {
     val awsRegion: Regions =
       config.getAs[String]("region").map(s => Regions.fromName(s)).getOrElse(Regions.AP_NORTHEAST_1)
@@ -31,6 +34,10 @@ object AmazonCloudWatchUtil {
     val secretAccessKey: Option[String] = config.getAs[String]("secret-access-key")
     val endpoint: Option[String]        = config.getAs[String]("endpoint")
     val clientConfigurationConfig       = config.getAs[Config]("client-configuration")
+    logger.info("accessKeyId = {}", accessKeyId)
+    logger.info("dynamoDBSecretAccessKey = {}", secretAccessKey)
+    logger.info("endpoint = {}", endpoint)
+    logger.info("clientConfigurationConfig = {}", clientConfigurationConfig)
     create(
       awsRegion,
       accessKeyId,

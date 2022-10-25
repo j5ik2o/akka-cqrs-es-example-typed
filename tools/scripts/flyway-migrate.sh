@@ -29,8 +29,16 @@ OUTPUT_ENV=1
 # shellcheck disable=SC2039
 source ../../env.sh
 
+HOST_IP=host.docker.internal
+
 docker run --rm \
   -v $(pwd)/flyway/sql:/flyway/sql \
   -v $(pwd)/flyway/drivers:/flyway/drivers \
   flyway/flyway \
-  -url='jdbc:mysql://host.docker.internal:30306/adceet?allowPublicKeyRetrieval=true&useSSL=false' -user=root -password=passwd migrate -X
+  -url="jdbc:mysql://${HOST_IP}:30306/adceet?allowPublicKeyRetrieval=true&useSSL=false" -user=root -password=passwd repair -X
+
+docker run --rm \
+  -v $(pwd)/flyway/sql:/flyway/sql \
+  -v $(pwd)/flyway/drivers:/flyway/drivers \
+  flyway/flyway \
+  -url="jdbc:mysql://${HOST_IP}:30306/adceet?allowPublicKeyRetrieval=true&useSSL=false" -user=root -password=passwd migrate -X

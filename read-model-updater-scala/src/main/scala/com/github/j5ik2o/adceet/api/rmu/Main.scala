@@ -17,7 +17,7 @@ package com.github.j5ik2o.adceet.api.rmu
 
 import akka.{ actor, Done }
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ ActorSystem, PostStop }
+import akka.actor.typed.{ ActorSystem, Behavior, PostStop, Terminated }
 import com.amazonaws.auth.{ AWSCredentialsProvider, DefaultAWSCredentialsProviderChain }
 import com.github.j5ik2o.adceet.adaptor.healthchecks.core.{ asyncHealthCheck, healthCheck, healthy }
 import com.github.j5ik2o.adceet.adaptor.healthchecks.k8s.{ bindAndHandleProbes, livenessProbe, readinessProbe }
@@ -37,7 +37,6 @@ import wvlet.airframe.ulid.ULID
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
-import akka.actor.typed.Behavior
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
 import com.amazonaws.services.dynamodbv2.{ AmazonDynamoDB, AmazonDynamoDBStreams }
 import org.slf4j.Logger
@@ -48,16 +47,20 @@ object Main extends App {
   case class Abort(ex: Throwable) extends Command
   case class WrappedStarted(msg: ThreadReadModelUpdaterProtocol.Started) extends Command
 
-  val id                                      = ULID.newULID
-  val logger: Logger                          = LoggerFactory.getLogger(getClass)
+  val id             = ULID.newULID
+  val logger: Logger = LoggerFactory.getLogger(getClass)
+  logger.debug("Starting the system...")
+
   val rootConfig: Config                      = ConfigFactory.load()
   val adceetConfig: Config                    = rootConfig.getConfig("adceet")
   val terminationHardDeadLine: FiniteDuration = adceetConfig.getDuration("termination-hard-dead-line").toMillis.millis
   val config: Config                          = adceetConfig.getConfig("read-model-updater.threads")
   val journalTableName: String                = config.getString("journal-table-name")
 
-  val accessKeyIdOpt: Option[String]     = adceetConfig.getAs[String]("access-key-id")
-  val secretAccessKeyOpt: Option[String] = adceetConfig.getAs[String]("secret-access-key")
+  val accessKeyIdOpt: Option[String] = config.getAs[String]("access-key-id")
+  logger.debug("accessKeyIdOpt = {}", accessKeyIdOpt)
+  val secretAccessKeyOpt: Option[String] = config.getAs[String]("secret-access-key")
+  logger.debug("secretAccessKeyOpt = {}", secretAccessKeyOpt)
 
   val accountEventRouterClientConfig: Config = config.getAs[Config]("dynamodb-client").getOrElse(ConfigFactory.empty())
   val accountEventRouterStreamClientConfig: Config =
@@ -65,11 +68,15 @@ object Main extends App {
   val accountEventRouterCloudWatchConfig: Config =
     config.getAs[Config]("cloudwatch-client").getOrElse(ConfigFactory.empty())
 
+  logger.debug("Creating an amazonDynamoDBClient...")
   val amazonDynamoDB: AmazonDynamoDB = AmazonDynamoDBUtil.createFromConfig(accountEventRouterClientConfig)
+  logger.debug("Creating an amazonDynamoDBStreamsClient...")
   val amazonDynamoDBStreams: AmazonDynamoDBStreams =
     AmazonDynamoDBStreamsUtil.createFromConfig(accountEventRouterStreamClientConfig)
+  logger.debug("Creating an amazonCloudWatchClient...")
   val amazonCloudwatch: AmazonCloudWatch = AmazonCloudWatchUtil.createFromConfig(accountEventRouterCloudWatchConfig)
 
+  logger.debug("Creating an credentialsProvider...")
   val credentialsProvider: AWSCredentialsProvider = {
     (accessKeyIdOpt, secretAccessKeyOpt) match {
       case (Some(accessKeyId), Some(secretAccessKey)) =>
@@ -79,7 +86,9 @@ object Main extends App {
     }
   }
 
+  logger.debug("get the streamArn...")
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
+  logger.debug("streamArn: {}", streamArn)
 
   def behavior: Behavior[Command] = Behaviors.setup[Command] { ctx =>
     implicit val system: actor.ActorSystem = ctx.system.classicSystem
@@ -102,13 +111,17 @@ object Main extends App {
 
     val rmuRef = ctx.spawn(childBehavior, "rmu")
 
+    ctx.watch(rmuRef)
+
     val msgAdaptor = ctx.messageAdapter { msg => WrappedStarted(msg) }
 
+    logger.debug("Starting the thread read model updater...")
     rmuRef ! ThreadReadModelUpdaterProtocol.StartWithReply(streamArn, msgAdaptor)
 
     Behaviors
       .receive[Command] {
         case (_, WrappedStarted(_)) =>
+          logger.debug("Started the thread read model updater.")
           val serverBinding = httpServer()
           ctx.pipeToSelf(serverBinding) {
             case Success(Done) => MeUp
@@ -116,18 +129,26 @@ object Main extends App {
           }
           Behaviors.same
         case (_, MeUp) =>
+          logger.debug("Started the health checks.")
           Behaviors.same
         case (ctx, Abort(ex)) =>
           ctx.log.error("occurred error", ex)
           Behaviors.stopped
-      }.receiveSignal { case (_, PostStop) =>
-        rmuRef ! ThreadReadModelUpdaterProtocol.Stop
-        Behaviors.same
+      }.receiveSignal {
+
+        case (_, PostStop) =>
+          logger.debug("Stopping the thread read model updater...")
+          rmuRef ! ThreadReadModelUpdaterProtocol.Stop
+          Behaviors.same
+        case (_, Terminated(ref)) if ref == rmuRef =>
+          logger.debug("Stopped the thread read model updater.")
+          Behaviors.stopped
       }
   }
 
   private def httpServer()(implicit system: actor.ActorSystem): Future[Done] = {
     import system.dispatcher
+    logger.debug("Starting the health checks...")
     val http = bindAndHandleProbes(
       readinessProbe(healthCheck("readiness_check")(healthy)),
       livenessProbe(asyncHealthCheck("liveness_check")(Future(healthy)))

@@ -89,6 +89,11 @@ serviceAccount:
   name: {{ .Values.readApiServer.serviceAccount.name }}
   {{- end }}
 
+service:
+  type: {{ .Values.readApiServer.service.type }}
+  port: {{ .Values.readApiServer.service.port }}
+  nodePort: {{ .Values.readApiServer.service.nodePort }}
+
 podDisruptionBudget:
   enabled: true
   maxUnavailable: 1
