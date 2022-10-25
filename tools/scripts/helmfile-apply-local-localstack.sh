@@ -19,7 +19,7 @@ export AWS_DEFAULT_REGION=$AWS_REGION
 
 pushd ../helmfile.d
 
-helmfile --namespace adceet --selector group=dynamodb -e "${PREFIX}-${APPLICATION_NAME}-local-${MODE}" apply
+helmfile --namespace adceet --selector group=localstack -e "${PREFIX}-${APPLICATION_NAME}-local-${MODE}" apply
 
 popd
 
