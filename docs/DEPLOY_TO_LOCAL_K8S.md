@@ -162,3 +162,7 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 {"threadId":"01GBCN25M496HB4PK9EWQMH28J"}
 ```
 
+```shell
+$ curl -v -X GET -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
+
+```

@@ -1,3 +1,12 @@
+dynamodb:
+  enabled: true
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.5"
+      memory: "500Mi"
 localstack:
   enabled: true
   resources:
@@ -57,7 +66,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: 021d50683c88a7ac4bd2814473f5c1ea1d7e632d
+        tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -104,7 +113,7 @@ writeApi:
         enabled: false
       image:
         repository: adceet-write-api-server-scala
-        tag: 021d50683c88a7ac4bd2814473f5c1ea1d7e632d
+        tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -167,7 +176,7 @@ writeApi:
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_secret__access__key"
           value: "x"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__journal_dynamo__db__client_endpoint"
-          value: "http://localstack:4566"
+          value: "http://dynamodb:8000"
 
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_table__name"
           value: "aje8iz5k-Snapshot"
@@ -180,7 +189,7 @@ writeApi:
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_secret__access__key"
           value: "x"
         - name: "CONFIG_FORCE_j5ik2o_dynamo__db__snapshot_dynamo__db__client_endpoint"
-          value: "http://localstack:4566"
+          value: "http://dynamodb:8000"
         - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__min"
           value: "4"
         - name: "CONFIG_FORCE_cluster__dispatcher_fork__join__executor_parallelism__max"
@@ -192,12 +201,12 @@ readModelUpdater:
   version: 0.0.1
   image:
     repository: adceet-read-model-updater-scala
-    tag: 021d50683c88a7ac4bd2814473f5c1ea1d7e632d
+    tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
     pullPolicy: IfNotPresent
   resources:
     limits:
-      cpu: "1"
-      memory: "2Gi"
+      cpu: "2"
+      memory: "1Gi"
     requests:
       cpu: "0.5"
       memory: "1Gi"
@@ -227,14 +236,14 @@ readModelUpdater:
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__client_secret__access__key"
       value: "x"
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__client_endpoint"
-      value: "http://localstack:4566"
+      value: "http://dynamodb:8000"
 
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_access__key__id"
       value: "x"
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_secret__access__key"
       value: "x"
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_dynamodb__stream__client_endpoint"
-      value: "http://localstack:4566"
+      value: "http://dynamodb:8000"
 
     - name: "CONFIG_FORCE_adceet_read__model__updater_threads_cloudwatch__client_access__key__id"
       value: "x"
@@ -250,12 +259,12 @@ readApiServer:
   version: 0.0.1
   image:
     repository: adceet-read-api-server-scala
-    tag: 021d50683c88a7ac4bd2814473f5c1ea1d7e632d
+    tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
     pullPolicy: IfNotPresent
   resources:
     limits:
       cpu: "1"
-      memory: "2Gi"
+      memory: "1Gi"
     requests:
       cpu: "0.5"
       memory: "1Gi"

@@ -24,7 +24,7 @@ import akka.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 import akka.persistence.PersistentRepr
 import akka.serialization.{ Serialization, SerializationExtension }
 import akka.stream.{ KillSwitches, UniqueKillSwitch }
-import akka.stream.scaladsl.{ Flow, Keep, Sink }
+import akka.stream.scaladsl.{ Flow, Keep, Sink, Source }
 import akka.stream.stage.AsyncCallback
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
@@ -160,20 +160,26 @@ final class ThreadReadModelUpdater(
   protected def buildReadModelFlow: Flow[((String, Array[Byte]), CommittableRecord), CommittableRecord, NotUsed] =
     Flow[((String, Array[Byte]), CommittableRecord)].mapAsync(1) { envelope =>
       logger.info(">>> buildReadModelFlow: envelope = {}", envelope)
-      val message = serialization
-        .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither.getOrElse(throw new Exception())
-      logger.info(">>> buildReadModelFlow: message = {}", message)
-      val domainEvent = message.payload.asInstanceOf[ThreadEvent]
-      logger.info(">>> buildReadModelFlow: domainEvent = {}", domainEvent)
-      eventListener.foreach(f => f(domainEvent))
-      logger.info(">>> foreach: domainEvent = {}", domainEvent)
-      val future = domainEvent match {
-        case event: ThreadCreated => onThreadCreated(event)
-        case event: MemberAdded   => onMemberAdded(event)
-        case event: MessageAdded  => onMessageAdded(event)
+      val messageEither = serialization
+        .deserialize(envelope._1._2, classOf[PersistentRepr]).toEither
+      messageEither match {
+        case Right(message) =>
+          logger.info(">>> buildReadModelFlow: message = {}", message)
+          val domainEvent = message.payload.asInstanceOf[ThreadEvent]
+          logger.info(">>> buildReadModelFlow: domainEvent = {}", domainEvent)
+          eventListener.foreach(f => f(domainEvent))
+          logger.info(">>> foreach: domainEvent = {}", domainEvent)
+          val future = domainEvent match {
+            case event: ThreadCreated => onThreadCreated(event)
+            case event: MemberAdded   => onMemberAdded(event)
+            case event: MessageAdded  => onMessageAdded(event)
+          }
+          logger.info(">>> future: domainEvent = {}", domainEvent)
+          future.map(_ => envelope._2)
+        case Left(ex) =>
+          logger.error("Failed to deserialize message.", ex)
+          throw ex
       }
-      logger.info(">>> future: domainEvent = {}", domainEvent)
-      future.map(_ => envelope._2)
     }
 
   override def onMessage(msg: Command): Behavior[Command] = {
@@ -233,12 +239,31 @@ final class ThreadReadModelUpdater(
         workerF = newWorker(streamArn)
       ).viaMat(KillSwitches.single)(Keep.right)
       .via(convertToPidWithMessageFlow)
-      .via(buildReadModelFlow)
+      .flatMapConcat { element =>
+        val source = Source.single(element)
+        source
+          .via(buildReadModelFlow)
+          .recoverWithRetries(
+            3,
+            { case ex =>
+              logger.error("error", ex)
+              source.via(buildReadModelFlow)
+            }
+          )
+      }
       .map(_.checkpoint())
       .toMat(Sink.ignore)(Keep.both)
       .run()
     sw = result._1
     future = result._2
+    future.onComplete{
+        case Success(_) =>
+          logger.debug("success")
+          ctx.self ! Stop
+        case Failure(ex) =>
+          logger.error("error", ex)
+          ctx.self ! Stop
+    }
   }
 
   private def newWorker(streamArn: String)(

@@ -6,6 +6,7 @@ helmDefaults:
 helmfiles:
   - 'regcred/helmfile.yaml'
   - 'localstack/helmfile.yaml'
+  - 'dynamodb/helmfile.yaml'
   - 'mysql/helmfile.yaml'
   - 'read-api-server/helmfile.yaml'
   - 'read-model-updater/helmfile.yaml'
