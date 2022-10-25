@@ -25,7 +25,7 @@ import scala.concurrent.duration.DurationInt
 abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
   val inMemoryMode: Boolean = false
 
-  val testTimeFactor: Double = testKit.testKitSettings.TestTimeFactor
+  private val testTimeFactor: Int = sys.env.getOrElse("TEST_TIME_FACTOR", "1").toInt
 
   def behavior(id: ThreadId, inMemoryMode: Boolean): Behavior[ThreadAggregateProtocol.CommandRequest]
 
@@ -46,7 +46,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       createThreadReplyProbe.ref
     )
     val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
-      (3 * testTimeFactor).toInt.seconds
+      (3 * testTimeFactor).seconds
     )
     assert(id == createThreadReply.threadId)
   }
@@ -65,7 +65,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
       createThreadReplyProbe.ref
     )
     val createThreadReply = createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
-      (3 * testTimeFactor).toInt.seconds
+      (3 * testTimeFactor).seconds
     )
     assert(id == createThreadReply.threadId)
 
@@ -73,7 +73,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
       addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded](
-        (3 * testTimeFactor).toInt.seconds
+        (3 * testTimeFactor).seconds
       )
     assert(id == addMemberReply.threadId)
   }
@@ -95,7 +95,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     )
     val createThreadReply =
       createThreadReplyProbe.expectMessageType[ThreadAggregateProtocol.CreateThreadSucceeded](
-        (3 * testTimeFactor).toInt.seconds
+        (3 * testTimeFactor).seconds
       )
     assert(id == createThreadReply.threadId)
 
@@ -103,7 +103,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     threadRef ! ThreadAggregateProtocol.AddMember(ULID.newULID, id, accountId2, addMemberReplyProbe.ref)
     val addMemberReply =
       addMemberReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMemberSucceeded](
-        (3 * testTimeFactor).toInt.seconds
+        (3 * testTimeFactor).seconds
       )
     assert(id == addMemberReply.threadId)
 
@@ -121,7 +121,7 @@ abstract class AbstractThreadAggregateTestBase(testKit: ActorTestKit) {
     )
     val addMessageReply =
       addMessageReplyProbe.expectMessageType[ThreadAggregateProtocol.AddMessageSucceeded](
-        (3 * testTimeFactor).toInt.seconds
+        (3 * testTimeFactor).seconds
       )
     assert(id == addMessageReply.threadId)
   }
