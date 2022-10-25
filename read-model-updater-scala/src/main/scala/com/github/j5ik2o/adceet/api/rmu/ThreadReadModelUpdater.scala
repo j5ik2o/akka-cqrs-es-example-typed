@@ -24,7 +24,7 @@ import akka.actor.typed.scaladsl.{ AbstractBehavior, ActorContext, Behaviors }
 import akka.persistence.PersistentRepr
 import akka.serialization.{ Serialization, SerializationExtension }
 import akka.stream.{ KillSwitches, UniqueKillSwitch }
-import akka.stream.scaladsl.{ Flow, Keep, Sink, Source }
+import akka.stream.scaladsl.{ Flow, Keep, Sink }
 import akka.stream.stage.AsyncCallback
 import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch
