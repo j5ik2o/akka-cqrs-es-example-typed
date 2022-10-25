@@ -239,18 +239,7 @@ final class ThreadReadModelUpdater(
         workerF = newWorker(streamArn)
       ).viaMat(KillSwitches.single)(Keep.right)
       .via(convertToPidWithMessageFlow)
-      .flatMapConcat { element =>
-        val source = Source.single(element)
-        source
-          .via(buildReadModelFlow)
-          .recoverWithRetries(
-            3,
-            { case ex =>
-              logger.error("error", ex)
-              source.via(buildReadModelFlow)
-            }
-          )
-      }
+      .via(buildReadModelFlow)
       .map(_.checkpoint())
       .toMat(Sink.ignore)(Keep.both)
       .run()
