@@ -163,7 +163,7 @@ object Dependencies {
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.320"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.18.1"
+      val sts = "software.amazon.awssdk" % "sts" % "2.18.2"
     }
   }
 
