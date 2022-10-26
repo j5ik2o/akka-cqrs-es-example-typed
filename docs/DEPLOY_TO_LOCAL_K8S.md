@@ -58,7 +58,7 @@ tools/scripts $ ./helmfile-apply-local-mysql.sh
 Create the necessary tables.
 
 ```shell
-tools/scripts $ ./flyway-migrate.sh -e dev
+tools/scripts $ ./helmfile-apply-local-flyway.sh
 ```
 
 ## About akka-cluster roles
