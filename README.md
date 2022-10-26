@@ -33,6 +33,15 @@ Note: Akka is implemented in Scala, so even if you use Kotlin or Java, you may n
 
 ## Architecture
 
+### Project Layout
+
+This project is divided into the following parts. For example, if you want to read Scala code, read the code under common, scala.
+
+- common
+- scala
+- kotlin
+- java
+
 ### Main Framework/Library
 
 - Akka
