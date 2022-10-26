@@ -18,6 +18,7 @@ while getopts e: OPT; do
   esac
 done
 
+# shellcheck disable=SC2039
 if [[ ! -e ../../env.sh ]]; then
     echo "env.sh is not found."
     exit 1
@@ -29,7 +30,12 @@ OUTPUT_ENV=1
 # shellcheck disable=SC2039
 source ../../env.sh
 
-HOST_IP=host.docker.internal
+# shellcheck disable=SC2039
+if [[ "${MINIKUBE}" = "1" ]]; then
+  HOST_IP=$(minikube ip)
+else
+  HOST_IP="host.docker.internal"
+fi
 
 docker run --rm \
   -v $(pwd)/../flyway/sql:/flyway/sql \

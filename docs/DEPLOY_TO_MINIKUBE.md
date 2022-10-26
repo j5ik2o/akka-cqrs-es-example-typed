@@ -164,7 +164,7 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 Execute the following command if you use RMU and Read API Server.
 
 ```shell
-$ curl -v -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
+$ curl -v -H "Content-Type: application/json" http://127.0.0.1:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
 *   Trying 127.0.0.1:30033...
 * Connected to localhost (127.0.0.1) port 30033 (#0)
 > GET /threads?owner_id=01G41J1A2GVT5HE45AH7GP711P HTTP/1.1
