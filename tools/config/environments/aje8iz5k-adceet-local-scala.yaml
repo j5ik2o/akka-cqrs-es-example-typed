@@ -16,6 +16,15 @@ localstack:
     requests:
       cpu: "0.5"
       memory: "500Mi"
+flyway:
+  enabled: true
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.5"
+      memory: "500Mi"
 mysql:
   enabled: true
   auth:
@@ -66,7 +75,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
+        tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -113,7 +122,7 @@ writeApi:
         enabled: false
       image:
         repository: adceet-write-api-server-scala
-        tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
+        tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -201,7 +210,7 @@ readModelUpdater:
   version: 0.0.1
   image:
     repository: adceet-read-model-updater-scala
-    tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
+    tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -259,7 +268,7 @@ readApiServer:
   version: 0.0.1
   image:
     repository: adceet-read-api-server-scala
-    tag: 903f7ed5800a7b35be92bca2b6ae69ad510b249b
+    tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
     pullPolicy: IfNotPresent
   resources:
     limits:
