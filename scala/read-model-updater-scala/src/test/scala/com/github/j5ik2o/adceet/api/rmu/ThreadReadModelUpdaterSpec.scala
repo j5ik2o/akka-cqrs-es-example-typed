@@ -16,7 +16,6 @@
 package com.github.j5ik2o.adceet.api.rmu
 
 import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.AskPattern.Askable
 import com.github.dockerjava.core.DockerClientConfig
 import com.github.j5ik2o.adceet.api.read.adaptor.dao.ThreadsSupport
 import com.github.j5ik2o.adceet.api.write.aggregate.{
