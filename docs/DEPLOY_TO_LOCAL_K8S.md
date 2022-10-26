@@ -25,6 +25,9 @@ Please set the following items in the yaml file appropriately
 - writeApi.writeApiServer.frontend.image.tag
 - writeApi.writeApiServer.backend.image.repository
 - writeApi.writeApiServer.backend.image.tag
+
+Set the following items in the yaml file appropriately(if you use Read API Server)
+
 - readModelUpdater.image.repository
 - readModelUpdater.image.tag
 - readApiServer.image.repository
@@ -169,6 +172,8 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 * Connection #0 to host localhost left intact
 {"threadId":"01GBCN25M496HB4PK9EWQMH28J"}
 ```
+
+Execute the following command if you use RMU and Read API Server.
 
 ```shell
 $ curl -v -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P

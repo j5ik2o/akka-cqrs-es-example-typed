@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
     Settings.scalaSettings,
     name := "adceet-root"
   ).aggregate(
-    `test-base`,
+    `test-base-scala`,
     `write-api-base`,
     `write-api-server-scala`,
     `write-api-server-kotlin`,
@@ -15,10 +15,10 @@ lazy val root = (project in file("."))
     `read-model-updater-scala`,
     `domain-scala`,
     `interface-adaptor`,
-    `infrastructure`
+    `infrastructure-scala`
   )
 
-lazy val `infrastructure` = (project in file("infrastructure"))
+lazy val `infrastructure-scala` = (project in file("scala/infrastructure-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -34,9 +34,10 @@ lazy val `infrastructure` = (project in file("infrastructure"))
       cats.core
     )
   )
+
 val circeVersion = "0.14.1"
 
-lazy val `interface-adaptor` = (project in file("interface-adaptor"))
+lazy val `interface-adaptor` = (project in file("common/interface-adaptor"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -57,9 +58,9 @@ lazy val `interface-adaptor` = (project in file("interface-adaptor"))
       "io.circe" %% "circe-generic",
       "io.circe" %% "circe-parser"
     ).map(_ % circeVersion)
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
-lazy val `domain-scala` = (project in file("domain-scala"))
+lazy val `domain-scala` = (project in file("scala/domain-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -69,9 +70,9 @@ lazy val `domain-scala` = (project in file("domain-scala"))
     libraryDependencies ++= Seq(
       airframe.ulid
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
-lazy val `test-base` = (project in file("test-base"))
+lazy val `test-base-scala` = (project in file("scala/test-base-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -91,9 +92,9 @@ lazy val `test-base` = (project in file("test-base"))
       awssdk.v1.dynamodb,
       "com.typesafe.slick" %% "slick" % "3.4.1"
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
-lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
+lazy val `read-model-updater-base` = (project in file("common/read-model-updater-base"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -110,7 +111,7 @@ lazy val `read-model-updater-base` = (project in file("read-model-updater-base")
     )
   )
 
-lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala"))
+lazy val `read-model-updater-scala` = (project in file("scala/read-model-updater-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .settings(
     name := "adceet-read-model-updater-scala",
@@ -133,14 +134,14 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
   )
   .dependsOn(
     `read-model-updater-base` % "compile->compile;test->test",
-    `test-base`               % "test",
+    `test-base-scala`         % "test",
     `write-api-server-scala`  % "test->test",
-    `read-api-base`,
+    `read-api-base-scala`,
     `domain-scala`,
     `interface-adaptor` % "compile->compile;test->test"
   )
 
-lazy val `read-api-base` = (project in file("read-api-base"))
+lazy val `read-api-base-scala` = (project in file("scala/read-api-base-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -165,7 +166,7 @@ lazy val `read-api-base` = (project in file("read-api-base"))
     )
   ).dependsOn(`interface-adaptor`)
 
-lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
+lazy val `read-api-server-scala` = (project in file("scala/read-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .settings(
     name := "adceet-read-api-server-scala",
@@ -192,9 +193,9 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
       awssdk.v2.sts
     )
   )
-  .dependsOn(`read-api-base`)
+  .dependsOn(`read-api-base-scala`)
 
-lazy val `write-api-base` = (project in file("write-api-base"))
+lazy val `write-api-base` = (project in file("common/write-api-base"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -257,9 +258,9 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       fusesource.leveldbjniAll % Test,
       iq80LevelDb.leveldb      % Test
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
-lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
+lazy val `write-api-server-scala` = (project in file("scala/write-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(
@@ -300,9 +301,9 @@ lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
       "com.github.scopt" %% "scopt"      % "4.0.1",
       "com.beachape"     %% "enumeratum" % "1.7.0"
     )
-  ).dependsOn(`write-api-base` % "compile->compile;test->test", `domain-scala`, `test-base` % "test")
+  ).dependsOn(`write-api-base` % "compile->compile;test->test", `domain-scala`, `test-base-scala` % "test")
 
-lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin"))
+lazy val `write-api-server-kotlin` = (project in file("kotlin/write-api-server-kotlin"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .configs(MultiJvm)
   .settings(
@@ -353,7 +354,7 @@ lazy val `write-api-server-kotlin` = (project in file("write-api-server-kotlin")
     Global / cancelable := false
   ).dependsOn(`write-api-base` % "compile->compile;test->test")
 
-lazy val `write-api-server-java` = (project in file("write-api-server-java"))
+lazy val `write-api-server-java` = (project in file("java/write-api-server-java"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
   .disablePlugins(KotlinPlugin)
   .configs(MultiJvm)
