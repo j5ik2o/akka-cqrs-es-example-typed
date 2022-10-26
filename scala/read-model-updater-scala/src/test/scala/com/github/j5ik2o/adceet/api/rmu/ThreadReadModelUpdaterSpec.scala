@@ -233,8 +233,6 @@ class ThreadReadModelUpdaterSpec
 
       java.lang.Thread.sleep(10 * 1000)
 
-//      underlying.shouldCreateThread()
-//      underlying.shouldAddMember()
       underlying.shouldAddMessage()
 
       java.lang.Thread.sleep(10 * 1000)
@@ -242,11 +240,9 @@ class ThreadReadModelUpdaterSpec
       eventually {
         assert(receivePid.nonEmpty)
       }
-
-      readModelUpdaterRef
-        .ask[ThreadReadModelUpdaterProtocol.Stopped](ref =>
-          ThreadReadModelUpdaterProtocol.StopWithReply(ref)
-        ).futureValue
+//      val stopProbe = testKit.createTestProbe[ThreadReadModelUpdaterProtocol.Stopped]()
+//      readModelUpdaterRef ! ThreadReadModelUpdaterProtocol.StopWithReply(stopProbe.ref)
+//      stopProbe.expectMessage((10 * testTimeFactor).seconds, ThreadReadModelUpdaterProtocol.Stopped())
     }
   }
 }
