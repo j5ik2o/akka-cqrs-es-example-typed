@@ -15,10 +15,10 @@ lazy val root = (project in file("."))
     `read-model-updater-scala`,
     `domain-scala`,
     `interface-adaptor`,
-    `infrastructure`
+    `infrastructure-scala`
   )
 
-lazy val `infrastructure` = (project in file("infrastructure"))
+lazy val `infrastructure-scala` = (project in file("infrastructure-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -57,7 +57,7 @@ lazy val `interface-adaptor` = (project in file("interface-adaptor"))
       "io.circe" %% "circe-generic",
       "io.circe" %% "circe-parser"
     ).map(_ % circeVersion)
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
 lazy val `domain-scala` = (project in file("domain-scala"))
   .settings(
@@ -69,7 +69,7 @@ lazy val `domain-scala` = (project in file("domain-scala"))
     libraryDependencies ++= Seq(
       airframe.ulid
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
 lazy val `test-base` = (project in file("test-base"))
   .settings(
@@ -91,7 +91,7 @@ lazy val `test-base` = (project in file("test-base"))
       awssdk.v1.dynamodb,
       "com.typesafe.slick" %% "slick" % "3.4.1"
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
 lazy val `read-model-updater-base` = (project in file("read-model-updater-base"))
   .settings(
@@ -135,12 +135,12 @@ lazy val `read-model-updater-scala` = (project in file("read-model-updater-scala
     `read-model-updater-base` % "compile->compile;test->test",
     `test-base`               % "test",
     `write-api-server-scala`  % "test->test",
-    `read-api-base`,
+    `read-api-base-scala`,
     `domain-scala`,
     `interface-adaptor` % "compile->compile;test->test"
   )
 
-lazy val `read-api-base` = (project in file("read-api-base"))
+lazy val `read-api-base-scala` = (project in file("read-api-base-scala"))
   .settings(
     Settings.baseSettings,
     Settings.scalaSettings,
@@ -192,7 +192,7 @@ lazy val `read-api-server-scala` = (project in file("read-api-server-scala"))
       awssdk.v2.sts
     )
   )
-  .dependsOn(`read-api-base`)
+  .dependsOn(`read-api-base-scala`)
 
 lazy val `write-api-base` = (project in file("write-api-base"))
   .settings(
@@ -257,7 +257,7 @@ lazy val `write-api-base` = (project in file("write-api-base"))
       fusesource.leveldbjniAll % Test,
       iq80LevelDb.leveldb      % Test
     )
-  ).dependsOn(`infrastructure`)
+  ).dependsOn(`infrastructure-scala`)
 
 lazy val `write-api-server-scala` = (project in file("write-api-server-scala"))
   .enablePlugins(JavaAgent, JavaAppPackaging, EcrPlugin, MultiJvmPlugin)
