@@ -15,8 +15,10 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.github.j5ik2o.adceet.api.read.adaptor.http.json.MemberJson
 import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ValidationRejection, Validator}
 import com.github.j5ik2o.adceet.api.read.use.`case`.GetMembersUseCase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
@@ -27,7 +29,7 @@ final class MemberController(private val membersInteractor: GetMembersUseCase) e
     concat(getMembers)
   }
 
-  def getMembers(): Route = {
+  def getMembers: Route = {
     path("members") {
       get {
         extractExecutionContext { implicit ec =>
@@ -40,7 +42,9 @@ final class MemberController(private val membersInteractor: GetMembersUseCase) e
                 { threadId =>
                   val result = membersInteractor.execute(threadId)
                   onSuccess(result) { members =>
-                    complete(members)
+                    complete(
+                      StatusCodes.OK,
+                      members.map(member => MemberJson(member.threadId, member.accountId, member.createdAt)))
                   }
                 }
               )

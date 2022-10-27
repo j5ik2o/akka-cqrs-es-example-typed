@@ -29,7 +29,7 @@ final class ThreadController(private val getThreadsInteractor: GetThreadsUseCase
     concat(getThreads)
   }
 
-  def getThreads(): Route = {
+  def getThreads: Route = {
     path("threads") {
       get {
         extractExecutionContext { implicit ec =>

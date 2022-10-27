@@ -15,8 +15,10 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.github.j5ik2o.adceet.api.read.adaptor.http.json.MessageJson
 import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ValidationRejection, Validator}
 import com.github.j5ik2o.adceet.api.read.use.`case`.GetMessagesUseCase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
@@ -39,8 +41,10 @@ final class MessageController(private val getMessagesInteractor: GetMessagesUseC
               },
               { threadId =>
                 val result = getMessagesInteractor.execute(threadId)
-                onSuccess(result) { members =>
-                  complete(members)
+                onSuccess(result) { messages =>
+                  complete(
+                    StatusCodes.OK,
+                    messages.map(message => MessageJson(message.id, message.threadId, message.accountId, message.text, message.createdAt)))
                 }
               }
             )

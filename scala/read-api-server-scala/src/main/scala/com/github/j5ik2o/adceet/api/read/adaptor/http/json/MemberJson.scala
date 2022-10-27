@@ -15,4 +15,6 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.http.json
 
-final case class ErrorsResponseJson(error_messages: List[String])
+import java.time.Instant
+
+final case class MemberJson(thread_id: String, account_id: String, created_at: Instant)
