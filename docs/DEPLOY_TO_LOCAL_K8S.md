@@ -145,12 +145,24 @@ Next deploy Read Model Updater.
 tools/scripts $ ./helmfile-apply-local-rmu.sh
 ```
 
+Wait a few moments. Make sure there are no errors in the log.
+
+```shell
+$ stern 'read-model-updater-*' -n adceet
+```
+
 ## Deploy Read API Server (if you need)
 
 Next deploy Read API Server
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-read-api.sh
+```
+
+Wait a few moments. Make sure there are no errors in the log.
+
+```shell
+$ stern 'read-api-server-*' -n adceet
 ```
 
 ## Check the applications
@@ -165,7 +177,7 @@ Say hello to akka-http
 Call API to check operation.
 
 ```shell
-$ curl -v -X POST -H "Content-Type: application/json" -d "{ \"accountId\": \"01G41J1A2GVT5HE45AH7GP711P\" }" http://localhost:30031/threads
+$ curl -v -X POST -H "Content-Type: application/json" -d "{ \"accountId\": \"01G41J1A2GVT5HE45AH7GP711P\" }" http://127.0.0.1:30031/threads
 Note: Unnecessary use of -X or --request, POST is already inferred.
 *   Trying 127.0.0.1:30031...
 * Connected to localhost (127.0.0.1) port 30031 (#0)
@@ -192,7 +204,7 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 Execute the following command if you use RMU and Read API Server.
 
 ```shell
-$ curl -v -H "Content-Type: application/json" http://localhost:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
+$ curl -v -H "Content-Type: application/json" http://127.0.0.1:30033/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
 *   Trying 127.0.0.1:30033...
 * Connected to localhost (127.0.0.1) port 30033 (#0)
 > GET /threads?owner_id=01G41J1A2GVT5HE45AH7GP711P HTTP/1.1
