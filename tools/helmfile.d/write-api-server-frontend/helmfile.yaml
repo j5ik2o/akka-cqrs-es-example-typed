@@ -1,12 +1,7 @@
-repositories:
-  - name: chatwork
-    url: https://chatwork.github.io/charts
-
 environments:
   '{{ .Environment.Name }}':
     values:
       - '../../config/environments/{{ .Environment.Name }}.yaml'
-
 ---
 releases:
   - name: write-api-server-frontend

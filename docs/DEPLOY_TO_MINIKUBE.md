@@ -48,6 +48,18 @@ Set the following items in the yaml file appropriately(if you use Read API Serve
 - readApiServer.image.repository
 - readApiServer.image.tag
 
+---
+
+**NOTE**
+
+All components can be deployed with a single command below, but it is recommended that you run each step at least once to get a feel for the process.
+
+```shell
+tools/scripts $ ./helmfile-apply-local-all.sh
+```
+
+---
+
 ## Prepare DynamoDB tabels
 
 Next deploy dynamodb local.
@@ -59,7 +71,7 @@ tools/scripts $ ./helmfile-apply-local-dynamodb.sh
 Create the necessary tables.
 
 ```shell
-tools/scripts $ ./dynamodb-create-tables.sh -e dev
+tools/scripts $ ./helmfile-apply-local-dynamodb-setup.sh
 ```
 
 ## Prepare MySQL tabels
