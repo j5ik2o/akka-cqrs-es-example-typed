@@ -133,12 +133,24 @@ Next deploy Read Model Updater.
 tools/scripts $ ./helmfile-apply-local-rmu.sh
 ```
 
+Wait a few moments. Make sure there are no errors in the log.
+
+```shell
+$ stern 'read-model-updater-*' -n adceet
+```
+
 ## Deploy Read API Server (if you need)
 
 Next deploy Read API Server
 
 ```shell
 tools/scripts $ ./helmfile-apply-local-read-api.sh
+```
+
+Wait a few moments. Make sure there are no errors in the log.
+
+```shell
+$ stern 'read-api-server-*' -n adceet
 ```
 
 ## Check the applications
