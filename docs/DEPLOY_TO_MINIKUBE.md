@@ -74,6 +74,8 @@ Create the necessary tables.
 tools/scripts $ ./helmfile-apply-local-dynamodb-setup.sh
 ```
 
+Open `http://127.0.0.1:31567/` if you want to use DynamoDB Admin.
+
 ## Prepare MySQL tabels
 
 Next deploy mysql.
