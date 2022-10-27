@@ -7,7 +7,7 @@ dynamodb:
     requests:
       cpu: "0.5"
       memory: "500Mi"
-localstack:
+dynamodbSetup:
   enabled: true
   resources:
     limits:
@@ -16,7 +16,22 @@ localstack:
     requests:
       cpu: "0.5"
       memory: "500Mi"
-flyway:
+  env:
+    - name: "AWS_ACCESS_KEY_ID"
+      value: "x"
+    - name: "AWS_SECRET_ACCESS_KEY"
+      value: "x"
+    - name: "DYNAMODB_ENDPOINT"
+      value: "dynamodb:8000"
+    - name: "JOURNAL_TABLE_NAME"
+      value: "aje8iz5k-Journal"
+    - name: "JOURNAL_GSI_NAME"
+      value: "aje8iz5k-GetJournalRowsIndex"
+    - name: "SNAPSHOT_TABLE_NAME"
+      value: "aje8iz5k-Snapshot"
+    - name: "SNAPSHOT_GSI_NAME"
+      value: "aje8iz5k-GetSnapshotRowsIndex"
+localstack:
   enabled: true
   resources:
     limits:
@@ -32,6 +47,15 @@ mysql:
     database: adceet
     username: adceet
     password: adceet
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.5"
+      memory: "500Mi"
+flyway:
+  enabled: true
   resources:
     limits:
       cpu: "1"
@@ -75,7 +99,7 @@ writeApi:
       version: 0.0.1
       image:
         repository: adceet-write-api-server-scala
-        tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
+        tag: a67d1dd43130c22f3a52328007fed3e9f8170fec
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -122,7 +146,7 @@ writeApi:
         enabled: false
       image:
         repository: adceet-write-api-server-scala
-        tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
+        tag: a67d1dd43130c22f3a52328007fed3e9f8170fec
         pullPolicy: IfNotPresent
       resources:
         limits:
@@ -210,7 +234,7 @@ readModelUpdater:
   version: 0.0.1
   image:
     repository: adceet-read-model-updater-scala
-    tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
+    tag: a67d1dd43130c22f3a52328007fed3e9f8170fec
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -268,7 +292,7 @@ readApiServer:
   version: 0.0.1
   image:
     repository: adceet-read-api-server-scala
-    tag: d3a4f397ad1157b57c800545ba38b0d164c9dfd3
+    tag: a67d1dd43130c22f3a52328007fed3e9f8170fec
     pullPolicy: IfNotPresent
   resources:
     limits:

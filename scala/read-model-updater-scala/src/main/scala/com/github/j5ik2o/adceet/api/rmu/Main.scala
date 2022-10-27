@@ -86,7 +86,7 @@ object Main extends App {
     }
   }
 
-  logger.debug("get the streamArn...")
+  logger.debug("get the streamArn...: {}", journalTableName)
   val streamArn: String = amazonDynamoDB.describeTable(journalTableName).getTable.getLatestStreamArn
   logger.debug("streamArn: {}", streamArn)
 

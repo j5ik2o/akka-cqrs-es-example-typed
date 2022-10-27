@@ -8,15 +8,12 @@ export $(shell sed 's/=.*//' $(cnf))
 
 # import deploy config
 # You can change the default deploy config with `make cnf="deploy_special.env" release`
-dpl ?= deploy.env
-include $(dpl)
-export $(shell sed 's/=.*//' $(dpl))
+#dpl ?= deploy.env
+#include $(dpl)
+#export $(shell sed 's/=.*//' $(dpl))
 
 # grep the version from the mix file
 VERSION=$(shell ./version.sh)
-
-ACCOUNT_ID=$(shell aws sts get-caller-identity --profile $(AWS_CLI_PROFILE) | jq -r '.Account')
-DOCKER_REPO=$(ACCOUNT_ID).dkr.ecr.$(AWS_CLI_REGION).amazonaws.com
 
 # HELP
 # This will output the help for each task
@@ -37,9 +34,12 @@ build: ## Build the container
 build-nc: ## Build the container without caching
 	docker build --no-cache -t $(APP_NAME) .
 
+build-x: ## Build
+	@echo 'buildx $(APP_NAME)'
+	docker buildx build --platform=linux/amd64 --load -t $(APP_NAME) .
+
 run: ## Run container on port configured in `config.env`
 	docker run -i -t --rm --env-file=./config.env -p=$(PORT):$(PORT) --name="$(APP_NAME)" $(APP_NAME)
-
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
@@ -47,6 +47,8 @@ stop: ## Stop and remove a running container
 	docker stop $(APP_NAME); docker rm $(APP_NAME)
 
 release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to ECR
+
+release-x: build-x publish
 
 # Docker publish
 publish: repo-login publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
@@ -69,24 +71,6 @@ tag-latest: ## Generate container `{version}` tag
 tag-version: ## Generate container `latest` tag
 	@echo 'create tag $(VERSION)'
 	docker tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
-
-# generate script to login to aws docker repo
-CMD_REPOLOGIN := "aws ecr get-login-password"
-ifdef AWS_CLI_PROFILE
-CMD_REPOLOGIN += " --profile $(AWS_CLI_PROFILE)"
-endif
-ifdef AWS_CLI_REGION
-CMD_REPOLOGIN += " --region $(AWS_CLI_REGION)"
-endif
-CMD_REPOLOGIN += " | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(AWS_CLI_REGION).amazonaws.com/$(APP_NAME)"
-
-# login to AWS-ECR
-repo-login: ## Auto login to AWS-ECR unsing aws-cli
-	@eval $(CMD_REPOLOGIN)
-
-# HELPERS
-account-id: ## Output the current version
-	@echo $(ACCOUNT_ID)
 
 version: ## Output the current version
 	@echo $(VERSION)

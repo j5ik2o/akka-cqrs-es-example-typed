@@ -7,6 +7,7 @@ helmfiles:
   - 'regcred/helmfile.yaml'
   - 'localstack/helmfile.yaml'
   - 'dynamodb/helmfile.yaml'
+  - 'dynamodb-setup/helmfile.yaml'
   - 'mysql/helmfile.yaml'
   - 'flyway/helmfile.yaml'
   - 'read-api-server/helmfile.yaml'

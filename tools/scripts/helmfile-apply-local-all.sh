@@ -6,20 +6,21 @@ cd $(dirname "$0") || exit
 pushd ../flyway
 make build
 popd
+pushd ../dynamodb-setup
+make build
+popd
 pushd $(pwd)
 ./helmfile-apply-local-dynamodb.sh
 popd
+sleep 5
 pushd $(pwd)
-./dynamodb-create-tables.sh -e dev
+./helmfile-apply-local-dynamodb-setup.sh
 popd
 pushd $(pwd)
 ./helmfile-apply-local-localstack.sh
 popd
 pushd $(pwd)
 ./helmfile-apply-local-mysql.sh
-popd
-pushd $(pwd)
-./dynamodb-create-tables.sh -e dev
 popd
 pushd $(pwd)
 ./helmfile-apply-local-flyway.sh

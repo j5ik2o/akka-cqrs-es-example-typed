@@ -8,9 +8,9 @@ export $(shell sed 's/=.*//' $(cnf))
 
 # import deploy config
 # You can change the default deploy config with `make cnf="deploy_special.env" release`
-dpl ?= deploy.env
-include $(dpl)
-export $(shell sed 's/=.*//' $(dpl))
+#dpl ?= deploy.env
+#include $(dpl)
+#export $(shell sed 's/=.*//' $(dpl))
 
 # grep the version from the mix file
 VERSION=$(shell ./version.sh)
@@ -39,7 +39,7 @@ build-x: ## Build
 	docker buildx build --platform=linux/amd64 --load -t $(APP_NAME) .
 
 run: ## Run container on port configured in `config.env`
-	docker run -i -t --rm --env-file=./config.env -p=$(PORT):$(PORT) --name="$(APP_NAME)" $(APP_NAME)
+	docker run -i -t --rm --env-file=./config.env --name="$(APP_NAME)" $(APP_NAME)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
