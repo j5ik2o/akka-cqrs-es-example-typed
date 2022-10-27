@@ -190,7 +190,11 @@ lazy val `read-api-server-scala` = (project in file("scala/read-api-server-scala
       "com.beachape"     %% "enumeratum" % "1.7.0",
       swaggerAkkaHttp.swaggerAkkaHttp,
       awssdk.v1.sts,
-      awssdk.v2.sts
+      awssdk.v2.sts,
+      mockito.mocktioScala       % Test,
+      scalatest.scalatest        % Test,
+      typesafeAkka.streamTestkit % Test,
+      typesafeAkka.httpTestkit   % Test
     )
   )
   .dependsOn(`read-api-base-scala`)

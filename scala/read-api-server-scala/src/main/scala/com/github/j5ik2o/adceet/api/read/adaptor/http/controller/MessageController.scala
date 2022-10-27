@@ -49,8 +49,8 @@ final class MessageController(private val getMessagesInteractor: GetMessagesUseC
               }
             )
           }
+        }
       }
-
     }
 
   }
