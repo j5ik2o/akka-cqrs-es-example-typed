@@ -10,7 +10,7 @@ releases:
       subsystem: write-api
       group: write-api-server
       role: frontend
-    chart: ../../charts/akka
+    chart: ../../charts/write-api-server
     version: '{{ .Values.writeApi.writeApiServer.frontend.version }}'
     installedTemplate: '{{ .Values.writeApi.writeApiServer.frontend.enabled }}'
     values:

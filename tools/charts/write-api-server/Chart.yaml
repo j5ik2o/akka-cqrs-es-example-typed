@@ -1,5 +1,5 @@
 apiVersion: v2
-name: akka
+name: write-api-server
 description: Build highly concurrent, distributed, and resilient message-driven applications on the JVM
 
 # A chart can be either an 'application' or a 'library' chart.

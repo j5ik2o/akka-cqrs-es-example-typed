@@ -53,8 +53,7 @@ akka:
     ingresses:
       - annotations:
           alb.ingress.kubernetes.io/target-type: ip
-          alb.ingress.kubernetes.io/backend-protocol-version: HTTP1 # GRPC
-          # alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true
+          alb.ingress.kubernetes.io/backend-protocol-version: HTTP1
           alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
           alb.ingress.kubernetes.io/certificate-arn: {{ .Values.writeApi.writeApiServer.frontend.ingress.alb.certificateArn }}
           alb.ingress.kubernetes.io/healthcheck-interval-seconds: "10"
@@ -63,8 +62,6 @@ akka:
           alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
           alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
           alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-          # alb.ingress.kubernetes.io/healthcheck-path: /chatwork.protobuf.writeApi.internalApi.healthCheck.HealthCheckService/Check
-          # alb.ingress.kubernetes.io/success-codes: '0'
           alb.ingress.kubernetes.io/scheme: {{ .Values.writeApi.writeApiServer.frontend.ingress.alb.scheme }}
           external-dns.alpha.kubernetes.io/hostname: {{ .Values.writeApi.writeApiServer.frontend.hostname }}
           external-dns.alpha.kubernetes.io/set-identifier: {{ .Environment.Name }}
