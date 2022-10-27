@@ -3,26 +3,26 @@
 ## asdf
 
 ```sh
-$ brew install asdf
+adceet-root $ brew install asdf
 ```
 
 ## jq
 
 ```shell
-$ asdf plugin-add jq https://github.com/AZMCode/asdf-jq.git
-$ asdf install jq 1.6
-$ asdf local jq 1.6
-$ jq --version
+adceet-root $ asdf plugin-add jq https://github.com/AZMCode/asdf-jq.git
+adceet-root $ asdf install jq 1.6
+adceet-root $ asdf local jq 1.6
+adceet-root $ jq --version
 jq-1.6
 ```
 
 ## awscli
 
 ```shell
-$ asdf plugin add awscli
-$ asdf install awscli 2.7.6
-$ asdf local  awscli 2.7.6
-$ aws --version
+adceet-root $ asdf plugin add awscli
+adceet-root $ asdf install awscli 2.7.6
+adceet-root $ asdf local  awscli 2.7.6
+adceet-root $ aws --version
 aws-cli/2.7.6 Python/3.9.11 Darwin/21.5.0 exe/x86_64 prompt/off
 ```
 
@@ -58,13 +58,13 @@ adceet-root/temp $ DATADOG_API_KEY="xxx" DATADOG_APP_KEY="xxx" terraformer impor
 ## Java Development Kit
 
 ```sh
-$ asdf plugin add java
-$ asdf list all java
-$ asdf install java temurin-17.0.4+101
-$ asdf local java temurin-17.0.4+101
+adceet-root $ asdf plugin add java
+adceet-root $ asdf list all java
+adceet-root $ asdf install java temurin-17.0.4+101
+adceet-root $ asdf local java temurin-17.0.4+101
 # Set the appropriate settings for your environment.
-$ echo "export JAVA_OPTS='--enable-preview'" >> ~/.bashrc
-$ java -version
+adceet-root $ echo "export JAVA_OPTS='--enable-preview'" >> ~/.bashrc
+adceet-root $ java -version
 openjdk version "17.0.4.1" 2022-08-12
 OpenJDK Runtime Environment Temurin-17.0.4.1+1 (build 17.0.4.1+1)
 OpenJDK 64-Bit Server VM Temurin-17.0.4.1+1 (build 17.0.4.1+1, mixed mode)
@@ -75,9 +75,9 @@ OpenJDK 64-Bit Server VM Temurin-17.0.4.1+1 (build 17.0.4.1+1, mixed mode)
 ## sbt
 
 ```shell
-$ asdf plugin add sbt
-$ asdf install sbt 1.6.2
-$ asdf local sbt 1.6.2
+adceet-root $ asdf plugin add sbt
+adceet-root $ asdf install sbt 1.6.2
+adceet-root $ asdf local sbt 1.6.2
 # Set the appropriate settings for your environment.
 $ echo "export SBT_OPTS='-Xms8g -Xmx12g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=1000m'" >> ~/.bashrc
 ```
@@ -89,37 +89,45 @@ $ echo "export SBT_OPTS='-Xms8g -Xmx12g -XX:MaxMetaspaceSize=1g -XX:ReservedCode
 Please install the same version of kubectl as the server side to avoid trouble.
 
 ```shell
-$ KUBECTL_VERSION=1.21.13
-$ asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
-$ asdf install kubectl $KUBECTL_VERSION
-akka-ddd-cqrs-es-example-typed $ asdf local kubectl $KUBECTL_VERSION # Always set up in the project root.
-$ kubectl version
+adceet-root $ KUBECTL_VERSION=1.21.13
+adceet-root $ asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git
+adceet-root $ asdf install kubectl $KUBECTL_VERSION
+adceet-root $ asdf local kubectl $KUBECTL_VERSION # Always set up in the project root.
+adceet-root $ kubectl version
 Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.13", GitCommit:"80ec6572b15ee0ed2e6efa97a4dcd30f57e68224", GitTreeState:"clean", BuildDate:"2022-05-24T12:40:44Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"darwin/arm64"}
 Server Version: version.Info{Major:"1", Minor:"21+", GitVersion:"v1.21.12-eks-a64ea69", GitCommit:"d4336843ba36120e9ed1491fddff5f2fec33eb77", GitTreeState:"clean", BuildDate:"2022-05-12T18:29:27Z", GoVersion:"go1.16.15", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+### stern
+
+```shell
+adceet-root $ asdf plugin-add stern https://github.com/looztra/asdf-stern
+adceet-root $ asdf install stern 1.22.0
+adceet-root $ asdf local stern 1.22.0
 ```
 
 ### helm
 
 ```shell
-$ asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
-$ asdf install helm 3.9.0
-$ asdf local helm 3.9.0
+adceet-root $ asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git
+adceet-root $ asdf install helm 3.9.0
+adceet-root $ asdf local helm 3.9.0
 # Required plug-ins in helmfile
-$ helm plugin install https://github.com/databus23/helm-diff
+adceet-root $ helm plugin install https://github.com/databus23/helm-diff
 ```
 
 ### helmfile
 
 ```shell
-$ asdf plugin-add helmfile https://github.com/feniix/asdf-helmfile.git
-$ asdf install helmfile 0.144.0
-$ asdf local helmfile 0.144.0
+adceet-root $ asdf plugin-add helmfile https://github.com/feniix/asdf-helmfile.git
+adceet-root $ asdf install helmfile 0.144.0
+adceet-root $ asdf local helmfile 0.144.0
 ```
 
 ### minikube (optional)
 
 ```shell
-$ asdf plugin-add minikube https://github.com/alvarobp/asdf-minikube.git
-$ asdf install minikube 1.26.1
-$ asdf local minikube 1.26.1
+adceet-root $ asdf plugin-add minikube https://github.com/alvarobp/asdf-minikube.git
+adceet-root $ asdf install minikube 1.26.1
+adceet-root $ asdf local minikube 1.26.1
 ```
