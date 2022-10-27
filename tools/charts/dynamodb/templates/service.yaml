@@ -29,6 +29,7 @@ spec:
       protocol: TCP
       name: dynamodb
     - port: 8001
+      nodePort: 31567
       targetPort: 8001
       protocol: TCP
       name: admin

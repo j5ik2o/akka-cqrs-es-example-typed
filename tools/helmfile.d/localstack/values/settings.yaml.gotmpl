@@ -1,7 +1,4 @@
 startServices: "cloudwatch"
-service:
-  edgeService:
-    nodePort: 31567
 replicaCount: 1
 resources:
   {{- toYaml .Values.localstack.resources | nindent 2 }}
