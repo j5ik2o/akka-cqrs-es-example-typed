@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.use.`case`
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.ThreadId
-import slick.jdbc.JdbcProfile
+package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 
-import scala.concurrent.Future
+import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
+import akka.util.ByteString
+import io.circe.Encoder
+import io.circe.syntax.EncoderOps
 
-final class GetMessagesInteractor(override val profile: JdbcProfile,
-                            db: JdbcProfile#Backend#Database) extends GetMessagesUseCase {
-    import profile.api._
-  override def execute(threadId: ThreadId): Future[Seq[MessageRecord]] = {
-    val query = MessagesQuery.filter(_.threadId === threadId.asString).result
-    db.run(query)
+trait HttpTestSupport {
+
+  implicit class ToHttpEntityOps[A: Encoder](json: A) {
+
+    def toHttpEntity: HttpEntity.Strict = {
+      val jsonAsByteString = ByteString(json.asJson.noSpaces)
+      HttpEntity(MediaTypes.`application/json`, jsonAsByteString)
+    }
+
   }
-
 }

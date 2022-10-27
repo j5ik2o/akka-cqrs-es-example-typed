@@ -13,7 +13,7 @@ releases:
       subsystem: write-api
       group: write-api-server
       role: backend
-    chart: ../../charts/akka
+    chart: ../../charts/write-api-server
     version: '{{ .Values.writeApi.writeApiServer.backend.version }}'
     installedTemplate: '{{ .Values.writeApi.writeApiServer.backend.enabled }}'
     values:

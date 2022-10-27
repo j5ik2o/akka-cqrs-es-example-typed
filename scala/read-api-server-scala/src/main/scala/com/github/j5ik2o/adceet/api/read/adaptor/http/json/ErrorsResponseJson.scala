@@ -15,4 +15,4 @@
  */
 package com.github.j5ik2o.adceet.api.read.adaptor.http.json
 
-final case class ErrorsResponseJson(errorMessages: List[String])
+final case class ErrorsResponseJson(error_messages: List[String])

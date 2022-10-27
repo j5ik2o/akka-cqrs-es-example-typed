@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.j5ik2o.adceet.api.read.use.`case`
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.ThreadId
-import slick.jdbc.JdbcProfile
+package com.github.j5ik2o.adceet.api.read.adaptor.http.json
 
-import scala.concurrent.Future
+import java.time.Instant
 
-final class GetMessagesInteractor(override val profile: JdbcProfile,
-                            db: JdbcProfile#Backend#Database) extends GetMessagesUseCase {
-    import profile.api._
-  override def execute(threadId: ThreadId): Future[Seq[MessageRecord]] = {
-    val query = MessagesQuery.filter(_.threadId === threadId.asString).result
-    db.run(query)
-  }
-
-}
+final case class MemberJson(thread_id: String, account_id: String, created_at: Instant)

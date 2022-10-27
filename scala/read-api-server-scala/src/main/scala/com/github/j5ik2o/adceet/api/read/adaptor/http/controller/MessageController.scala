@@ -18,39 +18,40 @@ package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import com.github.j5ik2o.adceet.api.read.adaptor.http.json.ThreadJson
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ ValidationRejection, Validator }
-import com.github.j5ik2o.adceet.api.read.use.`case`.GetThreadsUseCase
+import com.github.j5ik2o.adceet.api.read.adaptor.http.json.MessageJson
+import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ValidationRejection, Validator}
+import com.github.j5ik2o.adceet.api.read.use.`case`.GetMessagesUseCase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 
-final class ThreadController(private val getThreadsInteractor: GetThreadsUseCase) extends FailFastCirceSupport {
+final class MessageController(private val getMessagesInteractor: GetMessagesUseCase) extends FailFastCirceSupport{
   def toRoute: Route = {
-    concat(getThreads)
+    concat(getMessages)
   }
 
-  def getThreads: Route = {
-    path("threads") {
+  def getMessages: Route = {
+    path("messages") {
       get {
         extractExecutionContext { implicit ec =>
-          parameter("owner_id") { ownerId =>
+          parameter("thread_id") { threadIdString =>
             Validator
-              .validateAccountId(ownerId).fold(
-                { errors =>
-                  reject(ValidationRejection(errors))
-                }, { ownerId =>
-                  val result = getThreadsInteractor.execute(ownerId)
-                  onSuccess(result) { threads =>
-                    complete(
-                      StatusCodes.OK,
-                      threads.map(thread => ThreadJson(thread.id, thread.ownerId, thread.createdAt))
-                    )
-                  }
+              .validateThreadId(threadIdString).fold(
+              { errors =>
+                reject(ValidationRejection(errors))
+              },
+              { threadId =>
+                val result = getMessagesInteractor.execute(threadId)
+                onSuccess(result) { messages =>
+                  complete(
+                    StatusCodes.OK,
+                    messages.map(message => MessageJson(message.id, message.threadId, message.accountId, message.text, message.createdAt)))
                 }
-              )
+              }
+            )
           }
         }
       }
     }
+
   }
 }

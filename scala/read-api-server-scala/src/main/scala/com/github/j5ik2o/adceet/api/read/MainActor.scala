@@ -22,7 +22,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import com.github.j5ik2o.adceet.api.read.MainActor.Command
 import com.github.j5ik2o.adceet.api.read.adaptor.http.Routes
-import com.github.j5ik2o.adceet.api.read.adaptor.http.controller.ThreadController
+import com.github.j5ik2o.adceet.api.read.adaptor.http.controller.{MemberController, MessageController, ThreadController}
 import kamon.Kamon
 import org.slf4j.LoggerFactory
 import wvlet.airframe.Session
@@ -52,11 +52,13 @@ class MainActor(val session: Session, stopWatch: StopWatch) {
     logger.info(s"[${stopWatch.reportElapsedTime}] startHttpServer: start")
 
     val threadController: ThreadController = session.build[ThreadController]
+    val memberController: MemberController = session.build[MemberController]
+    val messageController: MessageController = session.build[MessageController]
 
     implicit val s = system.classicSystem
 
     val route = concat(
-      new Routes(threadController).toRoute,
+      new Routes(threadController, memberController, messageController).toRoute,
       readinessProbe(healthCheck("readiness_check")(healthy)).toRoute,
       livenessProbe(asyncHealthCheck("liveness_check")(Future(healthy))).toRoute
     )

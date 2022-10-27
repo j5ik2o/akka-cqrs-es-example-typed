@@ -18,33 +18,33 @@ package com.github.j5ik2o.adceet.api.read.adaptor.http.controller
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import com.github.j5ik2o.adceet.api.read.adaptor.http.json.ThreadJson
-import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ ValidationRejection, Validator }
-import com.github.j5ik2o.adceet.api.read.use.`case`.GetThreadsUseCase
+import com.github.j5ik2o.adceet.api.read.adaptor.http.json.MemberJson
+import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.{ValidationRejection, Validator}
+import com.github.j5ik2o.adceet.api.read.use.`case`.GetMembersUseCase
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.generic.auto._
 
-final class ThreadController(private val getThreadsInteractor: GetThreadsUseCase) extends FailFastCirceSupport {
+final class MemberController(private val membersInteractor: GetMembersUseCase) extends FailFastCirceSupport {
   def toRoute: Route = {
-    concat(getThreads)
+    concat(getMembers)
   }
 
-  def getThreads: Route = {
-    path("threads") {
+  def getMembers: Route = {
+    path("members") {
       get {
         extractExecutionContext { implicit ec =>
-          parameter("owner_id") { ownerId =>
+          parameter("thread_id") { threadIdString =>
             Validator
-              .validateAccountId(ownerId).fold(
+              .validateThreadId(threadIdString).fold(
                 { errors =>
                   reject(ValidationRejection(errors))
-                }, { ownerId =>
-                  val result = getThreadsInteractor.execute(ownerId)
-                  onSuccess(result) { threads =>
+                },
+                { threadId =>
+                  val result = membersInteractor.execute(threadId)
+                  onSuccess(result) { members =>
                     complete(
                       StatusCodes.OK,
-                      threads.map(thread => ThreadJson(thread.id, thread.ownerId, thread.createdAt))
-                    )
+                      members.map(member => MemberJson(member.threadId, member.accountId, member.createdAt)))
                   }
                 }
               )
