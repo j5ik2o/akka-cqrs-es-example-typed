@@ -185,6 +185,8 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 {"threadId":"01GBCN25M496HB4PK9EWQMH28J"}
 ```
 
+**NOTE: In a local environment, the first event may not consume well. If this is the case, try sending the command again.**
+
 Execute the following command if you use RMU and Read API Server.
 
 ```shell
