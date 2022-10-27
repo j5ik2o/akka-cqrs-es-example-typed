@@ -15,6 +15,7 @@
  */
 package com.github.j5ik2o.adceet.api.read.use.`case`
 
+import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.ThreadId
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -22,8 +23,8 @@ import scala.concurrent.{ExecutionContext, Future}
 final class GetMembersInteractor(override val profile: JdbcProfile,
                            db: JdbcProfile#Backend#Database) extends GetMembersUseCase {
   import profile.api._
-  override def execute(threadId: String)(implicit ec: ExecutionContext): Future[Seq[MemberRecord]] = {
-    val query = MembersQuery.filter(_.threadId === threadId).result
+  override def execute(threadId: ThreadId)(implicit ec: ExecutionContext): Future[Seq[MemberRecord]] = {
+    val query = MembersQuery.filter(_.threadId === threadId.asString).result
     db.run(query)
   }
 }

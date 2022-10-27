@@ -16,9 +16,10 @@
 package com.github.j5ik2o.adceet.api.read.use.`case`
 
 import com.github.j5ik2o.adceet.api.read.adaptor.dao.MessagesSupport
+import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.ThreadId
 
 import scala.concurrent.Future
 
 trait GetMessagesUseCase extends MessagesSupport {
-  def execute(threadId: String): Future[Seq[MessageRecord]]
+  def execute(threadId: ThreadId): Future[Seq[MessageRecord]]
 }

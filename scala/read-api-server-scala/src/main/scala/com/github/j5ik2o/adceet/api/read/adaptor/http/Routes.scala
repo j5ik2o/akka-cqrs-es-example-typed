@@ -18,10 +18,11 @@ package com.github.j5ik2o.adceet.api.read.adaptor.http
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.github.j5ik2o.adceet.api.read.adaptor.http.controller.{MemberController, MessageController, ThreadController}
 
-import com.github.j5ik2o.adceet.api.read.adaptor.http.controller.ThreadController
-
-class Routes(private val threadController: ThreadController) {
+class Routes(private val threadController: ThreadController,
+             private val memberController: MemberController,
+             private val messageController: MessageController) {
 
   def toRoute: Route = {
     handleExceptions(ExceptionHandlers.defaultHandler) {
@@ -29,7 +30,9 @@ class Routes(private val threadController: ThreadController) {
         concat(
           hello,
           new SwaggerDocService("127.0.0.1", 8081, Set(classOf[ThreadController])).toRoute,
-          threadController.toRoute
+          threadController.toRoute,
+          memberController.toRoute,
+          messageController.toRoute
         )
       }
     }

@@ -16,11 +16,12 @@
 package com.github.j5ik2o.adceet.api.read.use.`case`
 
 import com.github.j5ik2o.adceet.api.read.adaptor.dao.MembersSupport
+import com.github.j5ik2o.adceet.api.read.adaptor.http.validation.ThreadId
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait GetMembersUseCase extends MembersSupport {
 
-  def execute(threadId: String)(implicit ec: ExecutionContext): Future[Seq[MemberRecord]]
+  def execute(threadId: ThreadId)(implicit ec: ExecutionContext): Future[Seq[MemberRecord]]
 
 }

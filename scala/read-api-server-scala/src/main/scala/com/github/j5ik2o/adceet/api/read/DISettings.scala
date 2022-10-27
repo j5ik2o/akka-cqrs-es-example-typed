@@ -15,12 +15,12 @@
  */
 package com.github.j5ik2o.adceet.api.read
 
-import akka.actor.typed.{ ActorSystem, Scheduler }
-import com.github.j5ik2o.adceet.api.read.use.`case`.{ GetThreadsInteractor, GetThreadsUseCase }
-import com.typesafe.config.{ Config, ConfigFactory }
+import akka.actor.typed.{ActorSystem, Scheduler}
+import com.github.j5ik2o.adceet.api.read.use.`case`.{GetMembersInteractor, GetMembersUseCase, GetMessagesInteractor, GetMessagesUseCase, GetThreadsInteractor, GetThreadsUseCase}
+import com.typesafe.config.{Config, ConfigFactory}
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
-import wvlet.airframe.{ newDesign, DesignWithContext, Session }
+import wvlet.airframe.{DesignWithContext, Session, newDesign}
 import wvlet.log.io.StopWatch
 
 object DISettings {
@@ -37,4 +37,10 @@ object DISettings {
     .bind[GetThreadsUseCase].toProvider[DatabaseConfig[JdbcProfile]] { databaseConfig =>
       new GetThreadsInteractor(databaseConfig.profile, databaseConfig.db)
     }
+    .bind[GetMembersUseCase].toProvider[DatabaseConfig[JdbcProfile]] { databaseConfig =>
+      new GetMembersInteractor(databaseConfig.profile, databaseConfig.db)
+    }
+    .bind[GetMessagesUseCase].toProvider[DatabaseConfig[JdbcProfile]] { databaseConfig =>
+    new GetMessagesInteractor(databaseConfig.profile, databaseConfig.db)
+  }
 }
