@@ -119,7 +119,7 @@ Execute the following command if you use RMU and Read API Server.
 ```shell
 $ curl -v -H "Content-Type: application/json" http://127.0.0.1:18084/threads?owner_id=01G41J1A2GVT5HE45AH7GP711P
 *   Trying 127.0.0.1:30033...
-* Connected to localhost (127.0.0.1) port 30033 (#0)
+* Connected to localhost (127.0.0.1) port 18084 (#0)
 > GET /threads?owner_id=01G41J1A2GVT5HE45AH7GP711P HTTP/1.1
 > Host: localhost:30033
 > User-Agent: curl/7.79.1
