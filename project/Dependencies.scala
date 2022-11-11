@@ -94,7 +94,7 @@ object Dependencies {
   }
 
   object swaggerAkkaHttp {
-    val swaggerAkkaHttp = "com.github.swagger-akka-http" %% "swagger-akka-http" % "2.7.0"
+    val swaggerAkkaHttp = "com.github.swagger-akka-http" %% "swagger-akka-http" % "2.9.0"
   }
 
   object megard {
