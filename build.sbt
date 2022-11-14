@@ -397,7 +397,7 @@ lazy val `write-api-server-java` = (project in file("java/write-api-server-java"
       vavr.vavr,
       "com.google.inject"  % "guice"          % "5.1.0",
       "org.functionaljava" % "functionaljava" % "5.0",
-      "org.mockito"        % "mockito-core"   % "4.8.1" % Test
+      "org.mockito"        % "mockito-core"   % "4.9.0" % Test
     ),
     Test / publishArtifact := false,
     run / fork := false,
