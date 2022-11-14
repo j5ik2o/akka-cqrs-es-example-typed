@@ -27,7 +27,7 @@ addSbtPlugin("com.lightbend.sbt" % "sbt-javaagent" % "0.1.6")
 
 addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.3")
 
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
 
 // addSbtPlugin("com.github.tmtsoftware" % "kotlin-plugin" % "3.0.3")
 
