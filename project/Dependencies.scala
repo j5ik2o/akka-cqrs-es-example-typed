@@ -8,7 +8,7 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.12"
 
-  val akkaPersistenceDynamoDB = "1.14.90"
+  val akkaPersistenceDynamoDB = "1.14.93"
   val akkaKinesis             = "1.0.294"
   val cats                    = "2.9.0"
 }
@@ -20,8 +20,8 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "22.11.3"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.11.3"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "22.11.4"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.11.4"
   }
 
   object logback {
@@ -156,7 +156,7 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.348"
+      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.349"
       val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.349"
       val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.349"
       val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.329"
