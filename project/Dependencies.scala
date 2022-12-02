@@ -20,8 +20,8 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "22.11.4"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.11.4"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "22.12.0"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "22.12.0"
   }
 
   object logback {
@@ -163,7 +163,7 @@ object Dependencies {
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.18.28"
+      val sts = "software.amazon.awssdk" % "sts" % "2.18.29"
     }
   }
 
