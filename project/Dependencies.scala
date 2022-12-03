@@ -8,7 +8,7 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.5.12"
 
-  val akkaPersistenceDynamoDB = "1.14.99"
+  val akkaPersistenceDynamoDB = "1.14.100"
   val akkaKinesis             = "1.0.297"
   val cats                    = "2.9.0"
 }
