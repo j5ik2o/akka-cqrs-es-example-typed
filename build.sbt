@@ -187,7 +187,7 @@ lazy val `read-api-server-scala` = (project in file("scala/read-api-server-scala
       kamon.systemMetrics,
       kamon.datadog,
       "com.github.scopt" %% "scopt"      % "4.0.1",
-      "com.beachape"     %% "enumeratum" % "1.7.0",
+      "com.beachape"     %% "enumeratum" % "1.7.1",
       swaggerAkkaHttp.swaggerAkkaHttp,
       awssdk.v1.sts,
       awssdk.v2.sts,
@@ -303,7 +303,7 @@ lazy val `write-api-server-scala` = (project in file("scala/write-api-server-sca
     Global / cancelable := false,
     libraryDependencies ++= Seq(
       "com.github.scopt" %% "scopt"      % "4.0.1",
-      "com.beachape"     %% "enumeratum" % "1.7.0"
+      "com.beachape"     %% "enumeratum" % "1.7.1"
     )
   ).dependsOn(`write-api-base` % "compile->compile;test->test", `domain-scala`, `test-base-scala` % "test")
 
