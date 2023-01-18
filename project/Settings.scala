@@ -17,7 +17,7 @@ import scalafix.sbt.ScalafixPlugin.autoImport.{ scalafixScalaBinaryVersion, scal
 object Settings {
 
   val kotlinSettings: Seq[Def.Setting[_]] = Seq(
-    kotlinVersion := "1.8.0",
+    kotlinVersion := "1.6.21",
     kotlincOptions ++= Seq("-jvm-target", "17"),
     kotlinLib("stdlib-jdk8"),
     kotlinLib("reflect"),
