@@ -20,8 +20,8 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "23.1.1"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.1.1"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "23.1.2"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.1.2"
   }
 
   object logback {
@@ -157,13 +157,13 @@ object Dependencies {
   object awssdk {
     object v1 {
       val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.377"
-      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.386"
-      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.386"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.387"
+      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.387"
       val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.329"
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.19.18"
+      val sts = "software.amazon.awssdk" % "sts" % "2.19.19"
     }
   }
 
