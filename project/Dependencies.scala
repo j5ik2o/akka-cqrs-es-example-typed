@@ -8,7 +8,7 @@ object Version {
   val akkaManagement = "1.1.3"
   val kamon          = "2.6.0"
 
-  val akkaPersistenceDynamoDB = "1.14.168"
+  val akkaPersistenceDynamoDB = "1.14.169"
   val akkaKinesis             = "1.0.333"
   val cats                    = "2.9.0"
 }
@@ -20,8 +20,8 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "23.2.3"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.2.3"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "23.2.4"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.2.4"
   }
 
   object logback {
