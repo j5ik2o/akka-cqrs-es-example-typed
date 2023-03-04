@@ -98,7 +98,7 @@ object Dependencies {
   }
 
   object megard {
-    val akkaHttpCors = "ch.megard" %% "akka-http-cors" % "1.1.3"
+    val akkaHttpCors = "ch.megard" %% "akka-http-cors" % "1.2.0"
   }
 
   object fasterXmlJackson {
