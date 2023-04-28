@@ -20,8 +20,8 @@ object Dependencies {
   }
 
   object airframe {
-    val di   = "org.wvlet.airframe" %% "airframe"      % "23.4.6"
-    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.4.6"
+    val di   = "org.wvlet.airframe" %% "airframe"      % "23.4.7"
+    val ulid = "org.wvlet.airframe" %% "airframe-ulid" % "23.4.7"
   }
 
   object logback {
