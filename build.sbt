@@ -395,7 +395,7 @@ lazy val `write-api-server-java` = (project in file("java/write-api-server-java"
     // for Java
     libraryDependencies ++= Seq(
       vavr.vavr,
-      "com.google.inject"  % "guice"          % "5.1.0",
+      "com.google.inject"  % "guice"          % "7.0.0",
       "org.functionaljava" % "functionaljava" % "5.0",
       "org.mockito"        % "mockito-core"   % "5.3.1" % Test
     ),
