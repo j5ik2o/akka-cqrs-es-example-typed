@@ -102,7 +102,7 @@ object Dependencies {
   }
 
   object fasterXmlJackson {
-    val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.15.0"
+    val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.15.1"
     val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.15.1"
   }
 
