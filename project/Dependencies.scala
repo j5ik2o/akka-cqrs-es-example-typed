@@ -103,7 +103,7 @@ object Dependencies {
 
   object fasterXmlJackson {
     val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.15.0"
-    val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.14.3"
+    val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.15.1"
   }
 
   object circre {
@@ -143,7 +143,7 @@ object Dependencies {
   }
 
   object commonsIO {
-    val commonsIO = "commons-io" % "commons-io" % "2.11.0"
+    val commonsIO = "commons-io" % "commons-io" % "2.12.0"
   }
 
   object fusesource {
@@ -158,7 +158,7 @@ object Dependencies {
     object v1 {
       val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.467"
       val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.467"
-      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.469"
+      val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.470"
       val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.329"
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
