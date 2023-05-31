@@ -102,7 +102,7 @@ object Dependencies {
   }
 
   object fasterXmlJackson {
-    val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.15.1"
+    val scala  = "com.fasterxml.jackson.module" %% "jackson-module-scala"  % "2.15.2"
     val kotlin = "com.fasterxml.jackson.module"  % "jackson-module-kotlin" % "2.15.2"
   }
 
@@ -163,7 +163,7 @@ object Dependencies {
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.20.75"
+      val sts = "software.amazon.awssdk" % "sts" % "2.20.76"
     }
   }
 
