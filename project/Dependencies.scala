@@ -143,7 +143,7 @@ object Dependencies {
   }
 
   object commonsIO {
-    val commonsIO = "commons-io" % "commons-io" % "2.12.0"
+    val commonsIO = "commons-io" % "commons-io" % "2.13.0"
   }
 
   object fusesource {
@@ -163,7 +163,7 @@ object Dependencies {
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.20.80"
+      val sts = "software.amazon.awssdk" % "sts" % "2.20.81"
     }
   }
 
