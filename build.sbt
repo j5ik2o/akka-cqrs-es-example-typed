@@ -84,7 +84,7 @@ lazy val `test-base-scala` = (project in file("scala/test-base-scala"))
       typesafeAkka.akkaActorTyped,
       typesafeAkka.actorTestkitTyped,
       scalatest.scalatest,
-      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.15.0",
+      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.15.1",
       "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.15.1",
       "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.15.1",
       "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.15.1",
