@@ -10,7 +10,7 @@ object Version {
 
   val akkaPersistenceDynamoDB = "1.14.196"
   val akkaKinesis             = "1.0.349"
-  val cats                    = "2.9.0"
+  val cats                    = "2.10.0"
 }
 
 object Dependencies {
