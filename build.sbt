@@ -84,11 +84,11 @@ lazy val `test-base-scala` = (project in file("scala/test-base-scala"))
       typesafeAkka.akkaActorTyped,
       typesafeAkka.actorTestkitTyped,
       scalatest.scalatest,
-      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.15.18",
-      "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.15.18",
-      "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.15.18",
-      "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.15.18",
-      "com.github.j5ik2o" %% "docker-controller-scala-flyway"         % "1.15.18",
+      "com.github.j5ik2o" %% "docker-controller-scala-scalatest"      % "1.15.19",
+      "com.github.j5ik2o" %% "docker-controller-scala-localstack"     % "1.15.19",
+      "com.github.j5ik2o" %% "docker-controller-scala-dynamodb-local" % "1.15.19",
+      "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.15.19",
+      "com.github.j5ik2o" %% "docker-controller-scala-flyway"         % "1.15.19",
       awssdk.v1.dynamodb,
       "com.typesafe.slick" %% "slick" % "3.4.1"
     )
