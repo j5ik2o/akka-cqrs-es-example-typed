@@ -16,7 +16,7 @@ object Version {
 object Dependencies {
 
   object mockito {
-    val mocktioScala = "org.mockito" %% "mockito-scala" % "1.17.14"
+    val mocktioScala = "org.mockito" %% "mockito-scala" % "1.17.22"
   }
 
   object airframe {
@@ -157,13 +157,13 @@ object Dependencies {
   object awssdk {
     object v1 {
       val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.539"
-      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.537"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.540"
       val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.539"
       val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.329"
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.20.136"
+      val sts = "software.amazon.awssdk" % "sts" % "2.20.137"
     }
   }
 
