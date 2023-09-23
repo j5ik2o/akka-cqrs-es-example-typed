@@ -16,7 +16,7 @@ object Version {
 object Dependencies {
 
   object mockito {
-    val mocktioScala = "org.mockito" %% "mockito-scala" % "1.17.22"
+    val mocktioScala = "org.mockito" %% "mockito-scala" % "1.17.27"
   }
 
   object airframe {
