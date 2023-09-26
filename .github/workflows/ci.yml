@@ -35,13 +35,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: olafurpg/setup-scala@v14
+      - uses: actions/setup-java@v3
         with:
-          java-version: "17.0-custom=tgz+https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_linux_hotspot_17_35.tar.gz"
-      - uses: coursier/cache-action@v6
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'sbt'
       - run: sbt -v lint
-      - name: clean up
-        run: "${GITHUB_WORKSPACE}/.github/clean-up.sh"
   test:
     runs-on: ubuntu-latest
     needs: lint
@@ -54,14 +53,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: olafurpg/setup-scala@v14
+      - uses: actions/setup-java@v3
         with:
-          java-version: "17.0-custom=tgz+https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_linux_hotspot_17_35.tar.gz"
-      - uses: coursier/cache-action@v6
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'sbt'
       - name: sbt test
         run: sbt -v test
-      - name: clean up
-        run: "${GITHUB_WORKSPACE}/.github/clean-up.sh"
   automerge:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.actor == 'j5ik2o-bot[bot]'
