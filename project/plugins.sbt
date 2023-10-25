@@ -19,7 +19,7 @@ libraryDependencies ++= {
   )
 }
 
-addSbtPlugin("com.github.sbt" % "sbt-javaagent" % "0.1.7")
+addSbtPlugin("com.github.sbt" % "sbt-javaagent" % "0.1.8")
 
 // addSbtPlugin("com.mintbeans" % "sbt-ecr" % "0.16.0")
 //lazy val root       = project.in(file(".")).dependsOn(githubRepo)
