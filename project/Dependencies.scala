@@ -125,9 +125,9 @@ object Dependencies {
   }
 
   object jupiter {
-    val jupiterApi              = "org.junit.jupiter" % "junit-jupiter-api"              % "5.10.0"
-    val jupiter                 = "org.junit.jupiter" % "junit-jupiter"                  % "5.10.0"
-    val jupiterMigrationSupport = "org.junit.jupiter" % "junit-jupiter-migrationsupport" % "5.10.0"
+    val jupiterApi              = "org.junit.jupiter" % "junit-jupiter-api"              % "5.10.1"
+    val jupiter                 = "org.junit.jupiter" % "junit-jupiter"                  % "5.10.1"
+    val jupiterMigrationSupport = "org.junit.jupiter" % "junit-jupiter-migrationsupport" % "5.10.1"
   }
 
   object mockk {
