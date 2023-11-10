@@ -6,7 +6,7 @@ object Version {
 
   val akkaHttp       = "10.2.9"
   val akkaManagement = "1.1.3"
-  val kamon          = "2.6.5"
+  val kamon          = "2.6.6"
 
   val akkaPersistenceDynamoDB = "1.14.196"
   val akkaKinesis             = "1.0.349"
@@ -156,14 +156,14 @@ object Dependencies {
 
   object awssdk {
     object v1 {
-      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.585"
-      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.585"
+      val sts        = "com.amazonaws" % "aws-java-sdk-sts"        % "1.12.586"
+      val dynamodb   = "com.amazonaws" % "aws-java-sdk-dynamodb"   % "1.12.586"
       val cloudwatch = "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.12.584"
       val s3         = "com.amazonaws" % "aws-java-sdk-s3"         % "1.12.329"
       val sqs        = "com.amazonaws" % "aws-java-sdk-sqs"        % "1.12.329"
     }
     object v2 {
-      val sts = "software.amazon.awssdk" % "sts" % "2.21.19"
+      val sts = "software.amazon.awssdk" % "sts" % "2.21.20"
     }
   }
 
