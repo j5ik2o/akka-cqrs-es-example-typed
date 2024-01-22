@@ -33,7 +33,7 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")
 
 addSbtPlugin("net.moznion.sbt" % "sbt-spotless" % "0.1.3")
 
-addSbtPlugin("com.github.sbt" % "sbt-multi-jvm" % "0.5.0")
+addSbtPlugin("com.github.sbt" % "sbt-multi-jvm" % "0.6.0")
 
 addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.16")
 
