@@ -34,15 +34,15 @@ object Settings {
       "-parameters",
       "-Xlint:unchecked",
       "-Xlint:deprecation",
-      "-Xlint:preview",
-      "--enable-preview",
-      "--release",
-      "17"
+      "-Xlint:preview"
+//      "--enable-preview",
+//      "--release",
+//      "17"
     )
   )
 
   val scalaSettings: Seq[Def.Setting[_]] = Seq(
-    scalaVersion := "2.13.11",
+    scalaVersion := "2.13.12",
     Compile / scalacOptions ++= Seq(
       "-target:jvm-17",
       "-encoding",
@@ -63,11 +63,11 @@ object Settings {
     organization := "com.github.j5ik2o",
     version := "1.0.0-SNAPSHOT",
     testOptions += Tests.Argument(jupiterTestFramework, "-q", "-v"),
+    resolvers ++= Resolver.sonatypeOssRepos("staging"),
+    resolvers ++= Resolver.sonatypeOssRepos("releases"),
     resolvers ++= Seq(
       "jitpack" at "https://jitpack.io",
       Resolver.jcenterRepo,
-      Resolver.sonatypeRepo("snapshots"),
-      Resolver.sonatypeRepo("releases"),
       "Seasar Repository" at "https://maven.seasar.org/maven2/"
     )
   )
@@ -132,6 +132,6 @@ object Settings {
   }
 
   val multiJvmSettings: Seq[Def.Setting[_]] =
-    com.typesafe.sbt.SbtMultiJvm.multiJvmSettings
+    com.typesafe.sbt.MultiJvmPlugin.multiJvmSettings
 
 }
