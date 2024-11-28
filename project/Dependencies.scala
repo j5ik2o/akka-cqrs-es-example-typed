@@ -4,7 +4,7 @@ object Version {
   val scalaTest = "3.2.12"
   val akka      = "2.6.19"
 
-  val akkaHttp       = "10.2.9"
+  val akkaHttp       = "10.2.10"
   val akkaManagement = "1.1.3"
   val kamon          = "2.7.0"
 
