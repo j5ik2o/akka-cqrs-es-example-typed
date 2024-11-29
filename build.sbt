@@ -128,7 +128,7 @@ lazy val `read-model-updater-scala` = (project in file("scala/read-model-updater
       awssdk.v1.sts,
       awssdk.v2.sts,
       logback.logbackClassic,
-      "jakarta.xml.bind" % "jakarta.xml.bind-api" % "4.0.0",
+      "jakarta.xml.bind" % "jakarta.xml.bind-api" % "4.0.2",
       "com.sun.xml.bind" % "jaxb-impl"            % "4.0.4"
     )
   )
