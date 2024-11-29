@@ -143,7 +143,7 @@ object Dependencies {
   }
 
   object commonsIO {
-    val commonsIO = "commons-io" % "commons-io" % "2.15.1"
+    val commonsIO = "commons-io" % "commons-io" % "2.18.0"
   }
 
   object fusesource {
