@@ -90,7 +90,7 @@ lazy val `test-base-scala` = (project in file("scala/test-base-scala"))
       "com.github.j5ik2o" %% "docker-controller-scala-mysql"          % "1.15.34",
       "com.github.j5ik2o" %% "docker-controller-scala-flyway"         % "1.15.34",
       awssdk.v1.dynamodb,
-      "com.typesafe.slick" %% "slick" % "3.4.1"
+      "com.typesafe.slick" %% "slick" % "3.5.2"
     )
   ).dependsOn(`infrastructure-scala`)
 
@@ -151,7 +151,7 @@ lazy val `read-api-base-scala` = (project in file("scala/read-api-base-scala"))
     libraryDependencies ++= Seq(
       iheart.ficus,
       airframe.di,
-      "com.typesafe.slick" %% "slick"                % "3.4.1",
+      "com.typesafe.slick" %% "slick"                % "3.5.2",
       "com.typesafe.slick" %% "slick-hikaricp"       % "3.4.1",
       "mysql"               % "mysql-connector-java" % "8.0.30",
       megard.akkaHttpCors,
