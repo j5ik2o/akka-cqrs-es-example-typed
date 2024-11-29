@@ -139,7 +139,7 @@ object Dependencies {
   }
 
   object awaitility {
-    val awaitility = "org.awaitility" % "awaitility" % "4.2.0"
+    val awaitility = "org.awaitility" % "awaitility" % "4.2.2"
   }
 
   object commonsIO {
