@@ -41,6 +41,6 @@ addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.1")
 
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.11.0")
 
-addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.8.0")
+addSbtPlugin("com.github.sbt" % "sbt-java-formatter" % "0.10.0")
 
 addSbtPlugin("io.github.sbt-dao-generator" % "sbt-dao-generator" % "1.3.0")
